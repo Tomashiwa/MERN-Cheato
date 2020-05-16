@@ -64,7 +64,7 @@ class RectangleList extends Component {
                             >
                                 &times;
                             </Button>
-                            {`Rect ${_id} (${length}x${width}) @ (${pos_x},${pos_y})`}
+                            {`Rectangle of ${length} x ${width}`}
                         </ListGroupItem>
                     ))}
                 </ListGroup>
