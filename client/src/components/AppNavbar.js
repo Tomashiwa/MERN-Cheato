@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
+import React, { useState } from 'react'
 import {
     Collapse,
     Navbar,
@@ -10,27 +11,20 @@ import {
     Container
 } from "reactstrap";
 
-class AppNavbar extends Component {
-    state = {
-        isOpen: false
-    };
+function AppNavbar() {
+    const [isOpen, setIsOpen] = useState(false);
 
-    toggle = () => {
-        this.setState({
-            isOpen: !this.state.isOpen
-        });
-    }
+    const toggle = () => setIsOpen(!isOpen);
 
-    render() {
-        return (
-            <div>
+    return (
+        <div>
                 <Navbar color="dark" dark expand="sm" className = "mb-5">
                     <Container>
                         <NavbarBrand href="/">
                             Cheato
                         </NavbarBrand>
-                        <NavbarToggler onClick={this.toggle} />
-                        <Collapse isOpen={this.state.isOpen} navbar>
+                        <NavbarToggler onClick={toggle} />
+                        <Collapse isOpen={isOpen} navbar>
                             <Nav className="ml-auto" navbar>
                                 <NavItem>
                                     <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
@@ -42,8 +36,43 @@ class AppNavbar extends Component {
                     </Container>
                 </Navbar>
             </div>
-        );
-    }
+    )
 }
+
+// class AppNavbar extends Component {
+//     state = {
+//         isOpen: false
+//     };
+
+//     toggle = () => {
+//         this.setState({
+//             isOpen: !this.state.isOpen
+//         });
+//     }
+
+//     render() {
+//         return (
+//             <div>
+//                 <Navbar color="dark" dark expand="sm" className = "mb-5">
+//                     <Container>
+//                         <NavbarBrand href="/">
+//                             Cheato
+//                         </NavbarBrand>
+//                         <NavbarToggler onClick={this.toggle} />
+//                         <Collapse isOpen={this.state.isOpen} navbar>
+//                             <Nav className="ml-auto" navbar>
+//                                 <NavItem>
+//                                     <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
+//                                         Github
+//                                     </NavLink>
+//                                 </NavItem>
+//                             </Nav>
+//                         </Collapse>
+//                     </Container>
+//                 </Navbar>
+//             </div>
+//         );
+//     }
+// }
 
 export default AppNavbar;
