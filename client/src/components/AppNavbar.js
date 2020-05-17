@@ -17,6 +17,7 @@ function AppNavbar() {
 
     useEffect(() => {
         document.querySelector(".navbar-toggler").addEventListener("click", toggle);
+        return () => document.querySelector(".navbar-toggler").removeEventListener("click", toggle);
     })
 
     return (
