@@ -14,7 +14,7 @@ function App() {
         <RectangleList />
         <br></br>
         <br></br>
-        <canvas id="canvas" width="600" height="600"></canvas>
+        <canvas id="canvas" width="850" height="500"></canvas>
       </Container>
     </div>
   );

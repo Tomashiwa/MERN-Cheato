@@ -19,8 +19,8 @@ router.get("/", (req, res) => {
 // @access Public
 router.post("/", (req, res) => {
     const newRectangle = new Rectangle({
-        length: req.body.length,
         width:  req.body.width,
+        height: req.body.height,
         pos_x:  req.body.pos_x,
         pos_y:  req.body.pos_y
     });

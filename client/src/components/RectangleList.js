@@ -35,10 +35,10 @@ function RectangleList() {
         const canvas = document.querySelector("#canvas");
         const ctx = canvas.getContext("2d");
 
-        ctx.clearRect(0, 0, 600, 600);
+        ctx.clearRect(0, 0, 850, 500);
         rectangles.forEach(rect => {
-            ctx.fillStyle = `rgb(${255 * (rect.length/600)}, ${255 * (rect.width/600)}, 0)`;
-            ctx.fillRect(20, 20, rect.length, rect.width);
+            ctx.fillStyle = `rgb(${255 * (rect.width/600)}, ${255 * (rect.height/600)}, 0)`;
+            ctx.fillRect(20, 20, rect.width, rect.height);
         });
     }
 
@@ -76,7 +76,7 @@ function RectangleList() {
             <RectModal addRect={addRect}/>                
 
             <ListGroup className="rect-list">
-                {rectangles.map(({_id, length, width, pos_x, pos_y}) => (
+                {rectangles.map(({_id, width, height, pos_x, pos_y}) => (
                     <ListGroupItem key={_id}>
                         <Button 
                             className="remove-btn" 
@@ -86,7 +86,7 @@ function RectangleList() {
                         >
                             &times;
                         </Button>
-                        {`Rectangle of ${length} x ${width}`}
+                        {`Rectangle of ${width} x ${height}`}
                     </ListGroupItem>
                 ))}
             </ListGroup>
