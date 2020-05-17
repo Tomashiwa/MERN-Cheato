@@ -11,8 +11,36 @@ function RectangleList() {
     useEffect(() => {
         if(!loaded) {
             fetchRects();
+        } else {
+            drawRects();
         }
     });
+
+    useEffect(() => {
+        if(document.querySelectorAll(".remove-btn").length > 0) {
+            const removeBtns = document.querySelectorAll(".remove-btn");
+            const removeRect = e => deleteRect(e.target.getAttribute("index"));
+
+            removeBtns.forEach(btn => {
+                btn.addEventListener("click", removeRect);
+            })
+
+            return () => removeBtns.forEach(btn => {
+                btn.removeEventListener("click", removeRect);
+            })
+        }
+    });
+
+    const drawRects = () => {
+        const canvas = document.querySelector("#canvas");
+        const ctx = canvas.getContext("2d");
+
+        ctx.clearRect(0, 0, 600, 600);
+        rectangles.forEach(rect => {
+            ctx.fillStyle = `rgb(${255 * (rect.length/600)}, ${255 * (rect.width/600)}, 0)`;
+            ctx.fillRect(20, 20, rect.length, rect.width);
+        });
+    }
 
     const fetchRects = () => {
         axios.get("/api/rectangles")
@@ -54,7 +82,7 @@ function RectangleList() {
                             className="remove-btn" 
                             color="danger" 
                             size="sm"
-                            onClick={() => deleteRect(_id)}
+                            index={_id}
                         >
                             &times;
                         </Button>

@@ -30,7 +30,7 @@ function RectModal({addRect}) {
 		setWidth(0);
 	}
 
-	//inline events are used as useEffect and useLayoutEffect did not work with toggleable DOM 	element (ie. Modal) 
+	//inline events are used as useEffect and useLayoutEffect did not work with toggleable DOM element (ie. Modal) 
 	return (
 		<div>
 			<Button
