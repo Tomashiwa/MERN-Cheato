@@ -16,18 +16,31 @@ function RectModal({addRect}) {
 	const [width, setWidth] = useState(0);
 	const [height, setHeight] = useState(0);
 
+	const [x, setX] = useState(0);
+	const [y, setY] = useState(0);
+
 	const toggle = () => setModal(!modal);
 	const onChangeWidth = e => setWidth(e.target.value);
 	const onChangeHeight = e => setHeight(e.target.value);
+	const onChangeX = e => setX(e.target.value);
+	const onChangeY = e => setY(e.target.value);
 
 	const onSubmit = e => {
 		e.preventDefault();
-		const newRect = {width: width, height: height};
+		const newRect = {
+			width: width, 
+			height: height,
+			x: x,
+			y: y
+		};
 
 		addRect(newRect);
+		
 		setModal(false);
 		setWidth(0);
 		setHeight(0);
+		setX(0);
+		setY(0);
 	}
 
 	//inline events are used as useEffect and useLayoutEffect did not work with toggleable DOM element (ie. Modal) 
@@ -65,6 +78,22 @@ function RectModal({addRect}) {
 								id="rect-height"
 								placeholder="0"
 								onChange={onChangeHeight}/>
+							<br></br>
+							<Label for="rect">X</Label>					
+							<Input
+								type="number"
+								name="x"
+								id="rect-x"
+								placeholder="0"
+								onChange={onChangeX}/>
+							<br></br>
+							<Label for="rect">Y</Label>					
+							<Input
+								type="number"
+								name="y"
+								id="rect-y"
+								placeholder="0"
+								onChange={onChangeY}/>
 							<Button 
 								color="dark" 
 								style={{marginTop: "2rem"}}

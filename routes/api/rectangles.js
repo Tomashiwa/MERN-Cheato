@@ -21,8 +21,8 @@ router.post("/", (req, res) => {
     const newRectangle = new Rectangle({
         width:  req.body.width,
         height: req.body.height,
-        pos_x:  req.body.pos_x,
-        pos_y:  req.body.pos_y
+        x:  req.body.x,
+        y:  req.body.y
     });
 
     //Save to database

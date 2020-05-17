@@ -37,8 +37,8 @@ function RectangleList() {
 
         ctx.clearRect(0, 0, 850, 500);
         rectangles.forEach(rect => {
-            ctx.fillStyle = `rgb(${255 * (rect.width/600)}, ${255 * (rect.height/600)}, 0)`;
-            ctx.fillRect(20, 20, rect.width, rect.height);
+            ctx.fillStyle = `rgb(${255 * (rect.width/850)}, ${255 * (rect.height/500)}, 0)`;
+            ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
         });
     }
 
@@ -76,7 +76,7 @@ function RectangleList() {
             <RectModal addRect={addRect}/>                
 
             <ListGroup className="rect-list">
-                {rectangles.map(({_id, width, height, pos_x, pos_y}) => (
+                {rectangles.map(({_id, width, height, x, y}) => (
                     <ListGroupItem key={_id}>
                         <Button 
                             className="remove-btn" 
@@ -86,7 +86,7 @@ function RectangleList() {
                         >
                             &times;
                         </Button>
-                        {`Rectangle of ${width} x ${height}`}
+                        {`Rectangle of ${width} x ${height} @ (${x}, ${y})`}
                     </ListGroupItem>
                 ))}
             </ListGroup>
