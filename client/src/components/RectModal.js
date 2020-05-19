@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useReducer } from 'react'
 
 import {
 	Button,
@@ -12,35 +12,46 @@ import {
 } from "reactstrap";
 
 function RectModal({addRect}) {
-	const [modal, setModal] = useState(false);
-	const [width, setWidth] = useState(0);
-	const [height, setHeight] = useState(0);
+	const initialState = {
+		modal: false,
+		width: 0,
+		height: 0,
+		x: 0,
+		y: 0
+	};
 
-	const [x, setX] = useState(0);
-	const [y, setY] = useState(0);
+	const reducer = (state, action) => {
+		switch(action.attribute) {
+			case "modal":
+				return {...state, ...{modal: !state.modal}};
+			case "width":
+				return {...state, ...{width: action.value}}
+			case "height":
+				return {...state, ...{height: action.value}}
+			case "x":
+				return {...state, ...{x: action.value}}
+			case "y":
+				return {...state, ...{y: action.value}}
+			case "reset":
+				return initialState;
+			default:
+				return state;
+		}
+	}
 
-	const toggle = () => setModal(!modal);
-	const onChangeWidth = e => setWidth(e.target.value);
-	const onChangeHeight = e => setHeight(e.target.value);
-	const onChangeX = e => setX(e.target.value);
-	const onChangeY = e => setY(e.target.value);
+	const [state, dispatch] = useReducer(reducer, initialState);
+	const toggle = () => dispatch({attribute: "modal", value: !state.modal});
 
 	const onSubmit = e => {
 		e.preventDefault();
 		const newRect = {
-			width: width, 
-			height: height,
-			x: x,
-			y: y
+			width: state.width,
+			height: state.height,
+			x: state.x,
+			y: state.y
 		};
-
 		addRect(newRect);
-		
-		setModal(false);
-		setWidth(0);
-		setHeight(0);
-		setX(0);
-		setY(0);
+		dispatch({attribute: "reset", value: 0});
 	}
 
 	//inline events are used as useEffect and useLayoutEffect did not work with toggleable DOM element (ie. Modal) 
@@ -54,7 +65,7 @@ function RectModal({addRect}) {
 				Add Rect
 			</Button>
 			<Modal
-				isOpen={modal}
+				isOpen={state.modal}
 				toggle={toggle}
 			>
 				<ModalHeader toggle={toggle}>Add to Rectangle List</ModalHeader>
@@ -69,7 +80,7 @@ function RectModal({addRect}) {
 								name="width"
 								id="rect-width"
 								placeholder="0"
-								onChange={onChangeWidth}/>
+								onChange={e => dispatch({attribute: "width", value: e.target.value})}/>
 							<br></br>
 							<Label for="rect">Height</Label>					
 							<Input
@@ -77,7 +88,7 @@ function RectModal({addRect}) {
 								name="height"
 								id="rect-height"
 								placeholder="0"
-								onChange={onChangeHeight}/>
+								onChange={e => dispatch({attribute: "height", value: e.target.value})}/>
 							<br></br>
 							<Label for="rect">X</Label>					
 							<Input
@@ -85,7 +96,7 @@ function RectModal({addRect}) {
 								name="x"
 								id="rect-x"
 								placeholder="0"
-								onChange={onChangeX}/>
+								onChange={e => dispatch({attribute: "x", value: e.target.value})}/>
 							<br></br>
 							<Label for="rect">Y</Label>					
 							<Input
@@ -93,7 +104,7 @@ function RectModal({addRect}) {
 								name="y"
 								id="rect-y"
 								placeholder="0"
-								onChange={onChangeY}/>
+								onChange={e => dispatch({attribute: "y", value: e.target.value})}/>
 							<Button 
 								color="dark" 
 								style={{marginTop: "2rem"}}
