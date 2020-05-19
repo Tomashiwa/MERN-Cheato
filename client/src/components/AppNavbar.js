@@ -13,12 +13,12 @@ import {
 function AppNavbar() {
     const [isOpen, setIsOpen] = useState(false);
 
-    const toggle = () => setIsOpen(!isOpen);
-
     useEffect(() => {
-        document.querySelector(".navbar-toggler").addEventListener("click", toggle);
-        return () => document.querySelector(".navbar-toggler").removeEventListener("click", toggle);
-    })
+        const toggler = document.querySelector(".navbar-toggler");
+        const toggle = () => setIsOpen(!isOpen);
+        toggler.addEventListener("click", toggle);
+        return () => toggler.removeEventListener("click", toggle);
+    }, [isOpen])
 
     return (
         <div>
@@ -27,7 +27,7 @@ function AppNavbar() {
                     <NavbarBrand href="/">
                         Cheato
                     </NavbarBrand>
-                    <NavbarToggler id="toggler" />
+                    <NavbarToggler />
                     <Collapse isOpen={isOpen} navbar>
                         <Nav className="ml-auto" navbar>
                             <NavItem>

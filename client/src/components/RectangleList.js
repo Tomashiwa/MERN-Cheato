@@ -9,49 +9,52 @@ function RectangleList() {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
+        const fetchRects = () => {
+            axios.get("/api/rectangles")
+                .then(res => {
+                    setRectangles(res.data);
+                    setLoaded(true);
+                })
+                .catch(err => {
+                    console.log(`Fail to fetch rectangles: ${err}`);
+                });
+        }
+
+        const drawRects = () => {
+            const canvas = document.querySelector("#canvas");
+            const ctx = canvas.getContext("2d");
+    
+            ctx.clearRect(0, 0, 850, 500);
+            rectangles.forEach(rect => {
+                ctx.fillStyle = `rgb(${255 * (rect.width/850)}, ${255 * (rect.height/500)}, 0)`;
+                ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+            });
+        }
+
         if(!loaded) {
             fetchRects();
         } else {
             drawRects();
         }
-    });
+    }, [loaded, rectangles]);
 
     useEffect(() => {
-        if(document.querySelectorAll(".remove-btn").length > 0) {
-            const removeBtns = document.querySelectorAll(".remove-btn");
-            const removeRect = e => deleteRect(e.target.getAttribute("index"));
-
-            removeBtns.forEach(btn => {
-                btn.addEventListener("click", removeRect);
-            })
-
-            return () => removeBtns.forEach(btn => {
-                btn.removeEventListener("click", removeRect);
-            })
+        const deleteRect = id => {
+            axios.delete(`/api/rectangles/${id}`)
+                .then(res => {
+                    setRectangles(rectangles.filter(rect => rect._id !== id));
+                    setLoaded(true);
+                })
+                .catch(err => console.log(`Fail to delete rectangle ${id}: ${err}`));
         }
-    });
 
-    const drawRects = () => {
-        const canvas = document.querySelector("#canvas");
-        const ctx = canvas.getContext("2d");
-
-        ctx.clearRect(0, 0, 850, 500);
-        rectangles.forEach(rect => {
-            ctx.fillStyle = `rgb(${255 * (rect.width/850)}, ${255 * (rect.height/500)}, 0)`;
-            ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-        });
-    }
-
-    const fetchRects = () => {
-        axios.get("/api/rectangles")
-            .then(res => {
-                setRectangles(res.data);
-                setLoaded(true);
-            })
-            .catch(err => {
-                console.log(`Fail to fetch rectangles: ${err}`);
-            });
-    }
+        const removeBtns = document.querySelectorAll(".remove-btn");
+        if(removeBtns.length > 0) {
+            const removeRect = e => deleteRect(e.target.getAttribute("index"));
+            removeBtns.forEach(btn => btn.addEventListener("click", removeRect));
+            return () => removeBtns.forEach(btn => btn.removeEventListener("click", removeRect));
+        }
+    }, [rectangles]);
 
     const addRect = newRect => {
         axios.post("/api/rectangles", newRect)
@@ -60,15 +63,6 @@ function RectangleList() {
                 setLoaded(true);
             })
             .catch(err => console.log(`Fail to create rectangle: ${err}`));
-    }
-
-    const deleteRect = id => {
-        axios.delete(`/api/rectangles/${id}`)
-            .then(res => {
-                setRectangles(rectangles.filter(rect => rect._id !== id));
-                setLoaded(true);
-            })
-            .catch(err => console.log(`Fail to delete rectangle ${id}: ${err}`));
     }
 
     return( 
