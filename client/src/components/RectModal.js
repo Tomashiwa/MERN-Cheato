@@ -59,7 +59,7 @@ function RectModal({addRect}) {
 		<div>
 			<Button
 				color="dark"
-				style={{marginBottom: "2rem"}}
+				style={{marginBottom: "32px"}}
 				onClick={toggle}
 			>
 				Add Rect
@@ -107,7 +107,7 @@ function RectModal({addRect}) {
 								onChange={e => dispatch({attribute: "y", value: e.target.value})}/>
 							<Button 
 								color="dark" 
-								style={{marginTop: "2rem"}}
+								style={{marginTop: "32px"}}
 								block
 							>
 								Add rectangle
