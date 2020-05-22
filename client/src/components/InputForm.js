@@ -1,34 +1,40 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { ImagesContext } from "../App"
 
-import { Input, Button } from "reactstrap";
+import { Form, FormGroup, Label, Input, Button } from "reactstrap";
+
+import "./css/InputForm.css"
 
 function InputForm() {
     const imagesContext = useContext(ImagesContext);
-    
-    const loadPreview = images => {
-        if(document.querySelector("#ul-preview")) {
-            const prevList = document.querySelector("#ul-preview");
-            prevList.parentNode.removeChild(prevList);
-        }
-        
-        if(images.length > 0) {
-            const ul = document.createElement("ul");
-            ul.id = "ul-preview";
-            document.querySelector("#input-container").appendChild(ul);
-            
-            images.forEach(i => {
-                const li = document.createElement("li");
-                ul.appendChild(li);
-                li.appendChild(i);
-                const info = document.createElement("div");
-                info.innerHTML = `${i.name}: ${i.width} x ${i.height}`;
-                li.appendChild(info);
-            })
+
+    const initialState = {
+        loadedImages: [],
+        arrangement: "generated",
+        sortOrder: "largestSide",
+        resolution: "a4"
+    };
+
+    const reducer = (state, action) => {
+        switch(action.attribute) {
+            case "loadedImages":
+                return {...state, ...{loadedImages: action.value}};
+            case "arrangement":
+                return {...state, ...{arrangement: action.value}};
+            case "sortOrder":
+                return {...state, ...{sortOrder: action.value}};
+            case "resolution":
+                return {...state, ...{resolution: action.value}};
+            case "reset":
+                return initialState;
+            default:
+                return state;        
         }
     }
 
-    const submitImages = e => {
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    const loadImages = e => {
         const files = Array.from(e.target.files);
 
         Promise.all(files.map(file => {
@@ -44,7 +50,6 @@ function InputForm() {
         }))
         .then(imgs => {
             console.log(`All img elements loaded`);
-            // loadPreview(imgs);            
             const images = imgs.map(img => {
                 return {
                     element: img, 
@@ -54,16 +59,111 @@ function InputForm() {
                     y: 0
                 };
             });
-            imagesContext.setImages(images);
+            dispatch({attribute:"loadedImages", value: images})
         }).catch(err => {
             console.log(`Error encountered while loading: ${err}`);
         })
     }
 
+    const submitImages = () => {
+        imagesContext.setImages(state.loadedImages);
+    }
+
+    useEffect(() => {
+        const filesInput = document.querySelector("#input-files");
+        const arrangeRadios = document.querySelectorAll("input[name='input-arr']");
+        const sortRadios = document.querySelectorAll("input[name='input-sort']");
+        const resRadios = document.querySelectorAll("input[name='input-res']");
+    
+        const dispatchArrange = e => dispatch({attribute: "arrangement", value: e.target.value});
+        const dispatchSort = e => dispatch({attribute: "sortOrder", value: e.target.value});
+        const dispatchRes = e => dispatch({attribute: "resolution", value: e.target.value});
+
+        filesInput.addEventListener("change", loadImages);
+        arrangeRadios.forEach(r => r.addEventListener("click", dispatchArrange));
+        sortRadios.forEach(r => r.addEventListener("click", dispatchSort));
+        resRadios.forEach(r => r.addEventListener("click", dispatchRes));
+    
+        return () => {
+            filesInput.removeEventListener("change", loadImages);
+            arrangeRadios.forEach(r => r.removeEventListener("click", dispatchArrange));
+            sortRadios.forEach(r => r.removeEventListener("click", dispatchSort));
+            resRadios.forEach(r => r.removeEventListener("click", dispatchRes));
+        }
+    }, [])
+
     return (
-        <div id="input-container">
-            <Input id="input-file" type="file" accept="image/*" multiple onChange={submitImages}/>
-            {/* <Button color="dark" onClick={() => imagesContext.images.forEach(i => console.log(`${i.width}, ${i.height}`))} >Arrange</Button> */}
+        <div id="input-form">
+            <p>Generate your cheatsheet!</p>
+
+            <Form inline>
+                <Label>
+                    Images:
+                    <Input id="input-files" type="file" accept="image/*" multiple />
+                </Label>
+            </Form><br/>
+
+            <Form inline>
+                <Label>Arrangement:</Label>
+                <FormGroup check>
+                    <Label check>
+                        <Input type="radio" name="input-arr" value="generated" defaultChecked/>
+                        Generated
+                    </Label>
+                </FormGroup>
+                <FormGroup check>
+                    <Label>
+                        <Input type="radio" name="input-arr" value="freeForm"/>
+                        Free-form
+                    </Label>
+                </FormGroup>
+            </Form><br/>
+
+            <Form inline>
+                <Label>Sort by:</Label>
+                <FormGroup check>
+                    <Label check>
+                        <Input type="radio" name="input-sort" value="largestSide" defaultChecked/>
+                        Largest side
+                    </Label>
+                </FormGroup>
+                <FormGroup check>
+                    <Label check>
+                        <Input type="radio" name="input-sort" value="width"/>
+                        Width
+                    </Label>
+                </FormGroup>
+                <FormGroup check>
+                    <Label check>
+                        <Input type="radio" name="input-sort" value="height"/>
+                        Height
+                    </Label>
+                </FormGroup>
+                <FormGroup check>
+                    <Label check>
+                        <Input type="radio" name="input-sort" value="area"/>
+                        Area
+                    </Label>
+                </FormGroup>
+            </Form><br/>
+
+            <Form inline>
+                <Label>Resolution:</Label>
+                <FormGroup check>
+                    <Label check>
+                        <Input type="radio" name="input-res" value="a4" defaultChecked/>
+                        A4 landscape
+                    </Label>
+                </FormGroup>
+                <FormGroup check>
+                    <Label check>
+                        <Input type="radio" name="input-res" value="custom"/>
+                        Custom
+                    </Label>
+                </FormGroup>
+            </Form><br/>
+
+            <Button id="input-btn-arr" color="dark" onClick={submitImages}>Arrange</Button>
         </div>
     )
 }

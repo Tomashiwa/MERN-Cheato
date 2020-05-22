@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
 import Container from 'reactstrap/lib/Container';
 
-export const ImagesContext = React.createContext(null);  
+export const ImagesContext = React.createContext(null);
 
 function App() {
   const [images, setImages] = useState([]);

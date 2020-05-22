@@ -32,6 +32,16 @@ function AppNavbar() {
                         <Nav className="ml-auto" navbar>
                             <NavItem>
                                 <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
+                                    Home
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
+                                    Find sheets
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
                                     Github
                                 </NavLink>
                             </NavItem>
