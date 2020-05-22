@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useReducer } from 'react';
-import { ImagesContext } from "../App"
+import { ImagesContext, ConfigContext } from "../App"
 
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 
@@ -7,6 +7,7 @@ import "./css/InputForm.css"
 
 function InputForm() {
     const imagesContext = useContext(ImagesContext);
+    const configContext = useContext(ConfigContext);
 
     const initialState = {
         loadedImages: [],
@@ -67,6 +68,11 @@ function InputForm() {
 
     const submitImages = () => {
         imagesContext.setImages(state.loadedImages);
+        configContext.setConfig({
+            arrangement: state.arrangement,
+            sortOrder: state.sortOrder,
+            resolution: state.resolution
+        });
     }
 
     useEffect(() => {
