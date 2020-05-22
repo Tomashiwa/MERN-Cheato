@@ -36,7 +36,7 @@ function AppNavbar() {
                                 </NavLink>
                             </NavItem>
                         </Nav>
-                    </Collapse>
+                    </Collapse> 
                 </Container>
             </Navbar>
         </div>
