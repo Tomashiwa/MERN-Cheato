@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import { ImagesContext, ConfigContext } from "../App"
-
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 
 import "./css/InputForm.css"
@@ -57,7 +56,8 @@ function InputForm() {
                     width: img.width, 
                     height: img.height, 
                     x: 0, 
-                    y: 0
+                    y: 0,
+                    isRejected: false
                 };
             });
             dispatch({attribute:"loadedImages", value: images})

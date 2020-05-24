@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import AppNavbar from "./components/AppNavbar"
 import InputForm from "./components/InputForm"
 import ImageCanvas from "./components/ImageCanvas"
-import RectangleList from "./components/RectangleList"
-import BinPack from "./components/BinPack"
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
@@ -27,14 +25,9 @@ function App() {
         <ImagesContext.Provider value={{images, setImages}}>
           <ConfigContext.Provider value={{config, setConfig}}>
             <InputForm />
-            <BinPack />
             <ImageCanvas />
           </ConfigContext.Provider>
         </ImagesContext.Provider>
-        <br></br>
-        <RectangleList />
-        <br></br>
-        <canvas id="canvas" width="850" height="500"></canvas>
       </Container>
     </div>
   );
