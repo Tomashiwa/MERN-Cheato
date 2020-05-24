@@ -104,13 +104,13 @@ function InputForm() {
 
             <Form inline>
                 <Label>
-                    Images:
+                    Images
                     <Input id="input-files" type="file" accept="image/*" multiple />
                 </Label>
             </Form><br/>
 
             <Form inline>
-                <Label>Arrangement:</Label>
+                <Label>Arrangement</Label>
                 <FormGroup check>
                     <Label check>
                         <Input type="radio" name="input-arr" value="generated" defaultChecked/>
@@ -126,7 +126,7 @@ function InputForm() {
             </Form><br/>
 
             <Form inline>
-                <Label>Sort by:</Label>
+                <Label>Sort by</Label>
                 <FormGroup check>
                     <Label check>
                         <Input type="radio" name="input-sort" value="largestSide" defaultChecked/>
@@ -154,7 +154,7 @@ function InputForm() {
             </Form><br/>
 
             <Form inline>
-                <Label>Resolution:</Label>
+                <Label>Resolution</Label>
                 <FormGroup check>
                     <Label check>
                         <Input type="radio" name="input-res" value="a4" defaultChecked/>
