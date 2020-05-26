@@ -44,8 +44,6 @@ Example:
 ******************************************************************************/
 
 class GrowingPacker {
-    constructor() {}
-
     fit(blocks) {
         var n, node, block, len = blocks.length;
         var w = len > 0 ? blocks[0].w : 0;
@@ -53,7 +51,8 @@ class GrowingPacker {
         this.root = { x: 0, y: 0, w: w, h: h };
         for (n = 0; n < len ; n++) {
           block = blocks[n];
-          if (node = this.findNode(this.root, block.w, block.h))
+          node = this.findNode(this.root, block.w, block.h)
+          if (node)
             block.fit = this.splitNode(node, block.w, block.h);
           else
             block.fit = this.growNode(block.w, block.h);
