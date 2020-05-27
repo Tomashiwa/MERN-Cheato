@@ -90,10 +90,10 @@ function BinPack({setWidth,setHeight}) {
       
       //calulate the height and width of the canvas based on A4 aspect ratio
       function findMax(width,height) {
-        if(width > height) {
+        if(width/1122 > height/794) {
           x = width;
           y = width * (794/1122);
-        } else if (height > width) {
+        } else if (height/794 > width,1122) {
           x = height * (1122/794);
           y = height;
         }
