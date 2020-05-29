@@ -6,8 +6,14 @@ import { Button } from "reactstrap";
 import "./css/ImageCanvas.css";
 
 function ImageCanvas() {
-    const [width, setWidth] = useState(1122);
-    const [height, setHeight] = useState(794);
+    // 96 PPI  - 1123x794
+    // 150 PPI - 1754x1240
+    // 300 PPI - 3508x2480
+    const baseWidth = 3508;
+    const baseHeight = 2480;
+
+    const [width, setWidth] = useState(baseWidth);
+    const [height, setHeight] = useState(baseHeight);
     const [isDragging, setIsDragging] = useState(false);
     const [clickedImage, setClickedImage] = useState(null);
     const [clickOffset, setClickOffset] = useState({x: 0, y: 0});
@@ -87,15 +93,15 @@ function ImageCanvas() {
 
             const resizedCanvas = document.createElement("canvas");
             const resizedContext = resizedCanvas.getContext("2d");
-            resizedCanvas.width = "1122";
-            resizedCanvas.height = "794";
+            resizedCanvas.width = baseWidth.toString();
+            resizedCanvas.height = baseHeight.toString();
 
-            resizedContext.drawImage(canvasRef.current, 0, 0, 1122, 794);
+            resizedContext.drawImage(canvasRef.current, 0, 0, baseWidth, baseHeight);
             
             const a = document.createElement("a");
             document.body.appendChild(a);
-            a.href = resizedCanvas.toDataURL();
-            a.download = "cheatsheet.jpg";
+            a.href = resizedCanvas.toDataURL("image/png", 1.0);
+            a.download = "cheatsheet.png";
             a.click();
             document.body.removeChild(a);
         };
@@ -106,7 +112,7 @@ function ImageCanvas() {
 
     return (
         <div>
-            <BinPack setWidth={setWidth} setHeight={setHeight}/>
+            <BinPack baseWidth={baseWidth} baseHeight={baseHeight} setWidth={setWidth} setHeight={setHeight}/>
             <canvas className="canvas-img" ref={canvasRef} width={width} height={height} />
             <Button id="canvas-btn-download" color="dark">Download</Button>
         </div>

@@ -4,7 +4,7 @@ import { ImagesContext, ConfigContext } from "../App"
 import React, { useEffect,useContext } from 'react'
 
 
-function BinPack({setWidth,setHeight}) {
+function BinPack({baseWidth, baseHeight, setWidth,setHeight}) {
   const value = useContext(ConfigContext);
   const uploaded = useContext(ImagesContext);
   
@@ -90,11 +90,11 @@ function BinPack({setWidth,setHeight}) {
       
       //calulate the height and width of the canvas based on A4 aspect ratio
       function findMax(width,height) {
-        if(width/1122 > height/794) {
+        if(width/baseWidth > height/baseHeight) {
           x = width;
-          y = width * (794/1122);
-        } else if (height/794 > width,1122) {
-          x = height * (1122/794);
+          y = width * (baseHeight/baseWidth);
+        } else if (height/baseHeight > width/baseWidth) {
+          x = height * (baseWidth/baseHeight);
           y = height;
         }
         return [x,y];
@@ -105,9 +105,9 @@ function BinPack({setWidth,setHeight}) {
   
       //set the canvas width and height
       function setCanvasSize(width,height) {
-        if(width < 1122 && height < 794) {
-          setWidth(1122);
-          setHeight(794);
+        if(width < baseWidth && height < baseHeight) {
+          setWidth(baseWidth);
+          setHeight(baseHeight);
         } else {
           setWidth(width);
           setHeight(height);
@@ -126,7 +126,7 @@ function BinPack({setWidth,setHeight}) {
     */
     } 
     run();
-  }, [value.config, uploaded.images, setHeight, setWidth]);
+  }, [value.config, uploaded.images, baseHeight, baseWidth,  setHeight, setWidth]);
 
   return (<div> </div>);
 }
