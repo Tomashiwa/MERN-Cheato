@@ -6,8 +6,7 @@ import React, { useEffect,useContext } from 'react'
 
 function BinPack({baseWidth, baseHeight, setWidth,setHeight}) {
   const value = useContext(ConfigContext);
-  const uploaded = useContext(ImagesContext);
-  
+  const uploaded = useContext(ImagesContext);  
   
   useEffect(()=> {
     function run() {
@@ -55,12 +54,38 @@ function BinPack({baseWidth, baseHeight, setWidth,setHeight}) {
       
       
       //set the x and y of images
-      for(var i = 0;i < blockade.length;i++) {
-        if (blockade[i].fit) {
-          blocks[i].x = blockade[i].fit.x;
-          blocks[i].y =blockade[i].fit.y;
+      const updatedBlocks = new Array(blocks.length);
+      for(var i = 0; i < blockade.length; i++) {
+        if(blockade[i].fit) {
+          updatedBlocks[i] = {
+            element: blocks[i].element,
+            width: blocks[i].width,
+            height: blocks[i].height,
+            x: blockade[i].fit.x,
+            y: blockade[i].fit.y,
+            isRejected: blocks[i].isRejected
+          };
+        } else {
+          updatedBlocks[i] = {
+            element: blocks[i].element,
+            width: blocks[i].width,
+            height: blocks[i].height,
+            x: blocks[i].x,
+            y: blocks[i].y,
+            isRejected: blocks[i].isRejected
+          };
         }
       }
+
+      uploaded.images = updatedBlocks;
+      // uploaded.setImages(updatedBlocks);
+
+      // for(var i = 0;i < blockade.length;i++) {
+      //   if (blockade[i].fit) {
+      //     blocks[i].x = blockade[i].fit.x;
+      //     blocks[i].y =blockade[i].fit.y;
+      //   }
+      // }
     
       var sortByX = null;  
       var sortByY = null;
@@ -126,7 +151,7 @@ function BinPack({baseWidth, baseHeight, setWidth,setHeight}) {
     */
     } 
     run();
-  }, [value.config, uploaded.images, baseHeight, baseWidth,  setHeight, setWidth]);
+  }, [value.config, uploaded, uploaded.images, baseHeight, baseWidth,  setHeight, setWidth]);
 
   return (<div> </div>);
 }
