@@ -119,7 +119,7 @@ function InputForm() {
                 </FormGroup>
                 <FormGroup check>
                     <Label>
-                        <Input type="radio" name="input-arr" value="freeForm"/>
+                        <Input type="radio" name="input-arr" value="freeForm" disabled/>
                         Free-form
                     </Label>
                 </FormGroup>
@@ -163,7 +163,7 @@ function InputForm() {
                 </FormGroup>
                 <FormGroup check>
                     <Label check>
-                        <Input type="radio" name="input-res" value="custom"/>
+                        <Input type="radio" name="input-res" value="custom" disabled/>
                         Custom
                     </Label>
                 </FormGroup>
