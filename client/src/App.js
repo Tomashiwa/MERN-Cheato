@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AppNavbar from "./components/AppNavbar"
 import InputForm from "./components/InputForm"
-import ImageCanvas from "./components/ImageCanvas"
+import ImageCanvas, { CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "./components/ImageCanvas"
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
@@ -15,7 +15,9 @@ function App() {
   const [config, setConfig] = useState({
     arrangement: "generated",
     sortOrder: "largestSide",
-    resolution: "a4"
+    resolution: "a4",
+    canvasWidth: CANVAS_BASE_WIDTH,
+    canvasHeight: CANVAS_BASE_HEIGHT 
   });
 
   return (

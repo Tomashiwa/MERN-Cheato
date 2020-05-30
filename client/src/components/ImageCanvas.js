@@ -1,25 +1,32 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import BinPack from "../components/BinPack"
-import { ImagesContext } from "../App";
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
+import { ImagesContext, ConfigContext } from "../App";
 import { Button } from "reactstrap";
 
 import "./css/ImageCanvas.css";
 
-function ImageCanvas() {
-    // 96 PPI  - 1123x794
-    // 150 PPI - 1754x1240
-    // 300 PPI - 3508x2480
-    const baseWidth = 3508;
-    const baseHeight = 2480;
+export const CANVAS_BASE_WIDTH = 3508;
+export const CANVAS_BASE_HEIGHT = 2480;
 
-    const [width, setWidth] = useState(baseWidth);
-    const [height, setHeight] = useState(baseHeight);
+function ImageCanvas() {
+    const imagesContext = useContext(ImagesContext);
+    const configContext = useContext(ConfigContext);
+
     const [isDragging, setIsDragging] = useState(false);
     const [clickedImage, setClickedImage] = useState(null);
     const [clickOffset, setClickOffset] = useState({x: 0, y: 0});
 
-    const imagesContext = useContext(ImagesContext);
     const canvasRef = useRef(null);
+
+    var width = configContext.config.canvasWidth;
+    var height = configContext.config.canvasHeight;
+
+    // const drawImages = useCallback(images => {
+    //     const context = canvasRef.current.getContext("2d");
+    //     context.clearRect(0, 0, width, height);
+    //     images
+    //         .filter(i => !i.isRejected)
+    //         .forEach(i => context.drawImage(i.element, i.x, i.y));
+    // }, [width, height]);
 
     // Drawing images when loading has completed
     useEffect(() => {
@@ -29,6 +36,10 @@ function ImageCanvas() {
             .filter(i => !i.isRejected)
             .forEach(i => context.drawImage(i.element, i.x, i.y));
     }, [imagesContext.images, width, height])
+
+    // useEffect(() => {
+    //     drawImages(imagesContext.images);
+    // }, [drawImages, imagesContext.images]);
 
     //Dragging of images within canvas
     useEffect(() => {
@@ -57,11 +68,23 @@ function ImageCanvas() {
 
         const handleMouseMove = e => {
             if(isDragging) {
+                // console.log("is dragging");
+
                 const canvasBound = canvasRef.current.getBoundingClientRect();
                 const scaleFactor = canvasRef.current.width / canvasBound.width;
                 const clickPos = {x: e.clientX - canvasBound.x, y: e.clientY - canvasBound.y};
                 clickedImage.x = scaleFactor * (clickPos.x - clickOffset.x);
                 clickedImage.y = scaleFactor * (clickPos.y - clickOffset.y);
+
+                // console.log(`Dragging to: ${clickedImage.x}, ${clickedImage.y}`)
+
+                imagesContext.setImages(imagesContext.images.map(image => {
+                    if(image.element === clickedImage.element) {
+                        return {...image, ...{x: clickedImage.x, y: clickedImage.y}};
+                    } else {
+                        return {...image};
+                    }
+                }));
 
                 const context = canvasRef.current.getContext("2d");
                 context.clearRect(0, 0, width, height);
@@ -83,7 +106,7 @@ function ImageCanvas() {
             currentCanvas.removeEventListener("mouseup", handleMouseUp);
             currentCanvas.removeEventListener("mouseout", handleMouseUp);
         }
-    }, [imagesContext.images, isDragging, clickedImage, width, height, clickOffset])
+    }, [imagesContext, isDragging, clickedImage, width, height, clickOffset])
 
     //Download a scaled down image of the canvas 
     useEffect(() => {
@@ -93,10 +116,10 @@ function ImageCanvas() {
 
             const resizedCanvas = document.createElement("canvas");
             const resizedContext = resizedCanvas.getContext("2d");
-            resizedCanvas.width = baseWidth.toString();
-            resizedCanvas.height = baseHeight.toString();
+            resizedCanvas.width = CANVAS_BASE_WIDTH.toString();
+            resizedCanvas.height = CANVAS_BASE_HEIGHT.toString();
 
-            resizedContext.drawImage(canvasRef.current, 0, 0, baseWidth, baseHeight);
+            resizedContext.drawImage(canvasRef.current, 0, 0, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
             
             const a = document.createElement("a");
             document.body.appendChild(a);
@@ -112,7 +135,6 @@ function ImageCanvas() {
 
     return (
         <div>
-            <BinPack baseWidth={baseWidth} baseHeight={baseHeight} setWidth={setWidth} setHeight={setHeight}/>
             <canvas className="canvas-img" ref={canvasRef} width={width} height={height} />
             <Button id="canvas-btn-download" color="dark">Download</Button>
         </div>

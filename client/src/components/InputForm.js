@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { ImagesContext, ConfigContext } from "../App"
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 
+import { binPack } from "../library/BinPack"
+
 import "./css/InputForm.css"
 
 function InputForm() {
@@ -66,15 +68,6 @@ function InputForm() {
         })
     }
 
-    const submitImages = () => {
-        imagesContext.setImages(state.loadedImages);
-        configContext.setConfig({
-            arrangement: state.arrangement,
-            sortOrder: state.sortOrder,
-            resolution: state.resolution
-        });
-    }
-
     useEffect(() => {
         const filesInput = document.querySelector("#input-files");
         const arrangeRadios = document.querySelectorAll("input[name='input-arr']");
@@ -89,7 +82,7 @@ function InputForm() {
         arrangeRadios.forEach(r => r.addEventListener("click", dispatchArrange));
         sortRadios.forEach(r => r.addEventListener("click", dispatchSort));
         resRadios.forEach(r => r.addEventListener("click", dispatchRes));
-    
+
         return () => {
             filesInput.removeEventListener("change", loadImages);
             arrangeRadios.forEach(r => r.removeEventListener("click", dispatchArrange));
@@ -97,6 +90,18 @@ function InputForm() {
             resRadios.forEach(r => r.removeEventListener("click", dispatchRes));
         }
     }, [])
+
+    const submitImages = () => {
+        const sortedResult = binPack(state.loadedImages, state.sortOrder, configContext.config.canvasWidth, configContext.config.canvasHeight);
+        imagesContext.setImages(sortedResult.images);
+        configContext.setConfig({...configContext.config, ...{
+            arrangement: state.arrangement,
+            sortOrder: state.sortOrder,
+            resolution: state.resolution,
+            canvasWidth: sortedResult.width,
+            canvasHeight: sortedResult.height
+        }});
+    }
 
     return (
         <div id="input-form">
@@ -169,7 +174,7 @@ function InputForm() {
                 </FormGroup>
             </Form><br/>
 
-            <Button id="input-btn-arr" color="dark" onClick={submitImages}>Arrange</Button>
+            <Button id="input-btn-arr" color="dark" onClick={submitImages} >Arrange</Button>
         </div>
     )
 }
