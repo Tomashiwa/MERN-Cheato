@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ImagesContext, ConfigContext } from "../App";
 import { Button } from "reactstrap";
 
@@ -25,6 +25,10 @@ function ImageCanvas() {
         });
         imagesContext.setImages(newImages);
     };
+
+    useEffect(()=> {
+        console.log(`Rendered canvas dimension: ${width}x${height}`);
+    })
 
     return (
         <div>

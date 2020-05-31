@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { ImagesContext, ConfigContext } from "../App"
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 
+import { CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT } from "./ImageCanvas";
 import { binPack } from "../library/BinPack"
 
 import "./css/InputForm.css"
@@ -92,7 +93,7 @@ function InputForm() {
     }, [])
 
     const submitImages = () => {
-        const sortedResult = binPack(state.loadedImages, state.sortOrder, configContext.config.canvasWidth, configContext.config.canvasHeight);
+        const sortedResult = binPack(state.loadedImages, state.sortOrder, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
         imagesContext.setImages(sortedResult.images);
         configContext.setConfig({...configContext.config, ...{
             arrangement: state.arrangement,

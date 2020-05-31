@@ -1,6 +1,6 @@
 import GrowingPacker from "./GrowingPacker"
 
-export const binPack = (images, sortOrder, canvasWidth, canvasHeight) => {
+export const binPack = (images, sortOrder, baseWidth, baseHeight) => {
     var packer = new GrowingPacker();   
     var blocks = images;
 
@@ -96,11 +96,11 @@ export const binPack = (images, sortOrder, canvasWidth, canvasHeight) => {
 
     //calulate the height and width of the canvas based on A4 aspect ratio
     function findMax(width,height) {
-      if(width/canvasWidth > height/canvasHeight) {
+      if(width/baseWidth > height/baseHeight) {
         x = width;
-        y = width * (canvasHeight/canvasWidth);
-      } else if (height/canvasHeight > width/canvasWidth) {
-        x = height * (canvasWidth/canvasHeight);
+        y = width * (baseHeight/baseWidth);
+      } else if (height/baseHeight > width/baseWidth) {
+        x = height * (baseWidth/baseHeight);
         y = height;
       }
       return [x,y];
@@ -109,16 +109,20 @@ export const binPack = (images, sortOrder, canvasWidth, canvasHeight) => {
     const grownWidth = findMax(findLargestWidth(updatedBlocks),findLargestHeight(updatedBlocks))[0];
     const grownHeight = findMax(findLargestWidth(updatedBlocks),findLargestHeight(updatedBlocks))[1];   
     
-    var newCanvasWidth = grownWidth;
-    var newCanvasHeight = grownHeight;
-    if(grownWidth < canvasWidth && grownHeight < canvasHeight) {
-      newCanvasWidth = canvasWidth;
-      newCanvasHeight = canvasHeight;
+    console.log("Packing images...");
+    console.log(`grown dimension: ${grownWidth}x${grownHeight}`);
+    console.log(`canvas dimension: ${baseWidth}x${baseHeight}`);
+
+    var canvasWidth = grownWidth;
+    var canvasHeight = grownHeight;
+    if(grownWidth < baseWidth && grownHeight < baseHeight) {
+      canvasWidth = baseWidth;
+      canvasHeight = baseHeight;
     }   
 
     return {
       images: updatedBlocks,
-      width: newCanvasWidth,
-      height: newCanvasHeight
+      width: canvasWidth,
+      height: canvasHeight
     }
 }
