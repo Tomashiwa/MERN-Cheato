@@ -3,7 +3,7 @@ import { ImagesContext, ConfigContext } from "../App";
 import { Button } from "reactstrap";
 
 import Konva from 'konva';
-import { Stage, Layer, Image } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 import "./css/ImageCanvas.css";
 
 export const CANVAS_VIEW_WIDTH = 1123;
@@ -19,76 +19,107 @@ function ImageCanvas() {
     const dragLayerRef = useRef(null);
     const stillLayerRef = useRef(null);
 
-    const [stillImages, setStillImages] = useState([]);
-    const [draggedImage, setDraggedImage] = useState(null);
+    const [drawnImages, setDrawnImages] = useState([]);
     
     var width = configContext.config.canvasWidth;
     var height = configContext.config.canvasHeight;
     var scaleRatio = {x: CANVAS_VIEW_WIDTH/width, y: CANVAS_VIEW_HEIGHT/height};
 
-    const mouseDown = e => {
-        if(e.target !== stageRef.current) {
-            const img = e.target;
-            img.moveTo(dragLayerRef.current);
-            stillLayerRef.current.draw();
-            dragLayerRef.current.draw();
-            img.startDrag();
-        }
-    }
+    // Set true resolution of canvases. Drag canvas is  at a lower res to preserve performance.
+    // Opening context menu (ie. right-clicking) of canvas is disabled as "Save Picture As" only captures the drag layer
+    useEffect(()=> {
+        const stillSceneCanvas = stillLayerRef.current.getCanvas();
+        const dragSceneCanvas = dragLayerRef.current.getCanvas();
 
-    const mouseUp = e => {
-        // console.log("Released");
-        // console.log(e.target);
-    }
+        stillSceneCanvas.setPixelRatio(CANVAS_BASE_WIDTH / CANVAS_VIEW_WIDTH);
+        dragSceneCanvas.setPixelRatio(1.0);
+        
+        dragSceneCanvas._canvas.addEventListener("contextmenu", e => {e.preventDefault()});
+    }, []);
 
+    // Shift the image to an appropriate layer before and after the drag event
     useEffect(() => {
+        var draggedImage = null;
+
+        const mouseDown = e => {
+            if(!draggedImage && e.target !== stageRef.current) {
+                const img = e.target;
+                img.moveTo(dragLayerRef.current);
+                stillLayerRef.current.draw();
+                dragLayerRef.current.draw();
+                draggedImage = img;
+            }
+        }
+
+        const mouseUp = e => {
+            if(draggedImage && e.target !== stageRef.current) {
+                draggedImage.moveTo(stillLayerRef.current);
+                stillLayerRef.current.draw();
+                dragLayerRef.current.draw();
+                draggedImage = null;
+            }
+        }
+
         stageRef.current.on("mousedown", mouseDown);
+        stageRef.current.on("mouseup", mouseUp);
     }, [])
 
+    // Updates stillImages when imagesContext updates
     useEffect(() => {
-        const newStillImages = imagesContext.images.map(givenImage => {
+        const newDrawnImages = imagesContext.images.map(givenImage => {
             const img = new Konva.Image({
                 image: givenImage.element,
                 x: givenImage.x,
-                y: givenImage.y
+                y: givenImage.y,
+                draggable: true
             });
             img.transformsEnabled("position");
             return img;
         });
-        setStillImages(newStillImages);
-        setDraggedImage(null);
+
+        setDrawnImages(newDrawnImages);
 
         return () => {
-            // stillImages.forEach(image => image.destroy());
-            setStillImages([]);
-            setDraggedImage(null);
+            setDrawnImages([]);
         }
     }, [imagesContext.images])
 
+    // Draw images within Still layer when stillImages updates
     useEffect(() => {
-        stillImages.forEach(image => {
+        drawnImages.forEach(image => {
             image.moveTo(stillLayerRef.current);
         });
         stillLayerRef.current.draw();
 
-        if(draggedImage) {
-            draggedImage.moveTo(dragLayerRef.current);    
-        }
-        dragLayerRef.current.draw();
-
         return () => {
-            stillImages.forEach(image => image.remove());
-            if(draggedImage) {
-                draggedImage.remove();
-            }
+            drawnImages.forEach(image => image.remove());
         }
-    }, [stillImages, draggedImage])
+    }, [drawnImages])
+
+    //Download a scaled down image of the canvas 
+    useEffect(() => {
+        const downloadBtn = document.querySelector("#canvas-btn-download");
+        const download = () => {            
+            const a = document.createElement("a");
+            document.body.appendChild(a);
+            a.href = stillLayerRef.current.getCanvas()._canvas.toDataURL("image/png", 1.0);
+            a.download = "cheatsheet.png";
+            a.click();
+            document.body.removeChild(a);
+        };
+
+        downloadBtn.addEventListener("click", download);
+        return () => downloadBtn.removeEventListener("click",download);
+    }, [])
 
     return (
-        <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={scaleRatio}>
-            <Layer ref={dragLayerRef}></Layer>
-            <Layer ref={stillLayerRef}></Layer>
-        </Stage>
+        <div>
+            <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={scaleRatio}>
+                <Layer ref={stillLayerRef}></Layer>
+                <Layer ref={dragLayerRef}></Layer>
+            </Stage>
+            <Button id="canvas-btn-download" color="dark">Download</Button>
+        </div>
     )
 }
 
