@@ -11,7 +11,7 @@ const Cheatsheet = require("../../models/Cheatsheet");
 router.get("/", (req, res) => {
     // Mongo query
     Cheatsheet.find()
-        .sort({date: -1})
+        .sort({datetime: -1})
         .then(cheatsheets => res.json(cheatsheets));
 });
 
@@ -20,7 +20,14 @@ router.get("/", (req, res) => {
 // @access Public
 router.post("/", (req, res) => {
     const newCheatsheet = new Cheatsheet({
-        name: req.body.name
+        user: req.body.user,
+        school: req.body.school,
+        module: req.body.module,
+        description: req.body.description,
+        rating: req.body.rating,
+        comments: req.body.comments
+
+        // name: req.body.name
         //Date left out, as it has default value of Date.now()
     });
 

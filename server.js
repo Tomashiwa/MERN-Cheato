@@ -3,6 +3,7 @@ const app = express();
 
 const cheatsheets = require("./routes/api/cheatsheets");
 const rectangles = require("./routes/api/rectangles");
+const uploads = require("./routers/upload.router");
 
 // Load body-parser middleware
 app.use(express.json());
@@ -20,6 +21,7 @@ mongoose.connect(
 //Direct anything with path that goes /api/cheatsheets or /api/cheatsheets/... to cheatsheets.js 
 app.use("/api/cheatsheets", cheatsheets);
 app.use("/api/rectangles", rectangles);
+app.use("/upload", uploads);
 
 //Serve static assets (frontend stuff) if in production
 const path = require("path");
