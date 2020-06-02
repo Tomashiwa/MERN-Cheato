@@ -20,10 +20,12 @@ router.get("/", (req, res) => {
 // @access Public
 router.post("/", (req, res) => {
     const newCheatsheet = new Cheatsheet({
+        file: req.body.file,
         user: req.body.user,
         school: req.body.school,
         module: req.body.module,
         description: req.body.description,
+        datetime: req.body.datetime,
         rating: req.body.rating,
         comments: req.body.comments
 

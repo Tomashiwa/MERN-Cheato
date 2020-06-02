@@ -4,11 +4,6 @@ exports.doUpload = (req, res) => {
   const s3Client = s3.s3Client;
   const params = s3.uploadParams;
   
-  console.log("Request:");
-  console.log(req.file);
-  console.log("upload params:")
-  console.log(s3.uploadParams);
-
   params.Key = req.file.originalname;
   params.Body = req.file.buffer;
     

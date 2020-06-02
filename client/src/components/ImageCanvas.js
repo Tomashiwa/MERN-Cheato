@@ -119,13 +119,33 @@ function ImageCanvas() {
     useEffect(() => {
         const uploadBtn = document.querySelector("#canvas-btn-upload");
         
+        const saveToDb = url => {
+            const newCheatsheet = {
+                file: url,
+                user: 0,
+                school: "nus",
+                module: "cs1101s",
+                description: "nil",
+                datetime: Date.now(),
+                rating: 0,
+                comments: []
+            }
+
+            axios.post("/api/cheatsheets", newCheatsheet)
+                .catch(err => console.log((err)));
+        }
+
         const upload = event => {
             const canvas = stillLayerRef.current.getCanvas()._canvas;
+            
             canvas.toBlob(blob => {
                 const formData = new FormData();
                 formData.append("file", blob, `cheatsheet-${uuid.v4()}.png`);
                 axios.post("/upload", formData)
-                    .then(res => console.log(res.data.data.Location))
+                    .then(res => {
+                        console.log(res.data.data.Location);
+                        saveToDb(res.data.data.Location);
+                    })
                     .catch(err => console.log(err));    
             })
         };
