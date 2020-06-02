@@ -109,10 +109,6 @@ export const binPack = (images, sortOrder, baseWidth, baseHeight) => {
     const grownWidth = findMax(findLargestWidth(updatedBlocks),findLargestHeight(updatedBlocks))[0];
     const grownHeight = findMax(findLargestWidth(updatedBlocks),findLargestHeight(updatedBlocks))[1];   
     
-    console.log("Packing images...");
-    console.log(`grown dimension: ${grownWidth}x${grownHeight}`);
-    console.log(`canvas dimension: ${baseWidth}x${baseHeight}`);
-
     var canvasWidth = grownWidth;
     var canvasHeight = grownHeight;
     if(grownWidth < baseWidth && grownHeight < baseHeight) {

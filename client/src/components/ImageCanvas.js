@@ -4,6 +4,10 @@ import { Button } from "reactstrap";
 
 import Konva from 'konva';
 import { Stage, Layer } from 'react-konva';
+
+import axios from "axios";
+import uuid from "uuid";
+
 import "./css/ImageCanvas.css";
 
 export const CANVAS_VIEW_WIDTH = 1123;
@@ -96,7 +100,7 @@ function ImageCanvas() {
         }
     }, [drawnImages])
 
-    //Download a scaled down image of the canvas 
+    //Add downloading of cheatsheets to a button 
     useEffect(() => {
         const downloadBtn = document.querySelector("#canvas-btn-download");
         const download = () => {            
@@ -112,6 +116,24 @@ function ImageCanvas() {
         return () => downloadBtn.removeEventListener("click",download);
     }, [])
 
+    useEffect(() => {
+        const uploadBtn = document.querySelector("#canvas-btn-upload");
+        
+        const upload = event => {
+            const canvas = stillLayerRef.current.getCanvas()._canvas;
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append("file", blob, `cheatsheet-${uuid.v4()}.png`);
+                axios.post("/upload", formData)
+                    .then(res => console.log(res.data.data.Location))
+                    .catch(err => console.log(err));    
+            })
+        };
+
+        uploadBtn.addEventListener("click", upload);
+        return () => uploadBtn.removeEventListener("click", upload);
+    }, [])
+
     return (
         <div>
             <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={scaleRatio}>
@@ -119,6 +141,7 @@ function ImageCanvas() {
                 <Layer ref={dragLayerRef}></Layer>
             </Stage>
             <Button id="canvas-btn-download" color="dark">Download</Button>
+            <Button id="canvas-btn-upload" color="dark">Upload</Button>
         </div>
     )
 }

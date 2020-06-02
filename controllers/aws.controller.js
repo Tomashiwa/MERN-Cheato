@@ -1,11 +1,14 @@
-var stream = require('stream');
- 
 const s3 = require('../config/s3.config.js');
  
 exports.doUpload = (req, res) => {
   const s3Client = s3.s3Client;
   const params = s3.uploadParams;
   
+  console.log("Request:");
+  console.log(req.file);
+  console.log("upload params:")
+  console.log(s3.uploadParams);
+
   params.Key = req.file.originalname;
   params.Body = req.file.buffer;
     
@@ -13,7 +16,7 @@ exports.doUpload = (req, res) => {
     if (err) {
       res.status(500).json({error:"Error -> " + err});
     }
-    res.json({message: 'File uploaded successfully! -> keyname = ' + req.file.originalname, data: data});
-    
+    res.json({message: 'File uploaded successfully! -> keyname = ' + req.originalname, data: data});
+    return res;
   });
 }
