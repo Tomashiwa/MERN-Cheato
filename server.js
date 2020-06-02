@@ -3,7 +3,7 @@ const app = express();
 
 const cheatsheets = require("./routes/api/cheatsheets");
 const rectangles = require("./routes/api/rectangles");
-const uploads = require("./routers/upload.router");
+const uploads = require("./routes/upload.router");
 
 // Load body-parser middleware
 app.use(express.json());
