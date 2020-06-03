@@ -93,15 +93,24 @@ function InputForm() {
     }, [])
 
     const submitImages = () => {
-        const sortedResult = binPack(state.loadedImages, state.sortOrder, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
-        imagesContext.setImages(sortedResult.images);
-        configContext.setConfig({...configContext.config, ...{
-            arrangement: state.arrangement,
-            sortOrder: state.sortOrder,
-            resolution: state.resolution,
-            canvasWidth: sortedResult.width,
-            canvasHeight: sortedResult.height
-        }});
+        if(state.arrangement === "generated") {
+            const sortedResult = binPack(state.loadedImages, state.sortOrder, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
+            imagesContext.setImages(sortedResult.images);
+            configContext.setConfig({...configContext.config, ...{
+                arrangement: state.arrangement,
+                sortOrder: state.sortOrder,
+                resolution: state.resolution,
+                canvasWidth: sortedResult.width,
+                canvasHeight: sortedResult.height
+            }});
+        } else {
+            imagesContext.setImages(state.loadedImages);
+            configContext.setConfig({...configContext.config, ...{
+                arrangement: state.arrangement,
+                sortOrder: state.sortOrder,
+                resolution: state.resolution
+            }});
+        }
     }
 
     return (
@@ -125,7 +134,7 @@ function InputForm() {
                 </FormGroup>
                 <FormGroup check>
                     <Label>
-                        <Input type="radio" name="input-arr" value="freeForm" disabled/>
+                        <Input type="radio" name="input-arr" value="freeForm"/>
                         Free-form
                     </Label>
                 </FormGroup>
