@@ -21,7 +21,6 @@
     "konva": "^6.0.0",
     "mongoose": "^5.9.14",
     "multer": "^1.4.2",
-    "react-konva": "^16.13.0-3",
     "uuid": "^8.1.0"
   },
   "devDependencies": {
