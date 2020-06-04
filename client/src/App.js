@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import AppNavbar from "./components/AppNavbar"
-import InputForm from "./components/InputForm"
-import ImageCanvas, { CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "./components/ImageCanvas"
-import Container from 'reactstrap/lib/Container';
+import { CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT } from "./components/ImageCanvas"
+
+import { Switch, Route } from "react-router-dom"
+import Home from "./pages/Home"
+import Create from "./pages/Create"
+import Upload from "./pages/Upload"
 
 import "bootstrap/dist/css/bootstrap.min.css"
-import './App.css';
+import './App.css'
 
 export const ImagesContext = React.createContext(null);
 export const ConfigContext = React.createContext(null);
@@ -22,15 +24,15 @@ function App() {
 
   return (
     <div className="App">
-      <AppNavbar />
-      <Container id="container">
         <ImagesContext.Provider value={{images, setImages}}>
           <ConfigContext.Provider value={{config, setConfig}}>
-            <InputForm />
-            <ImageCanvas />
+            <Switch>
+              <Route path="/create" component={Create} />
+              <Route path="/upload" component={Upload} />          
+              <Route path="/" component={Home} />
+            </Switch>
           </ConfigContext.Provider>
         </ImagesContext.Provider>
-      </Container>
     </div>
   );
 }

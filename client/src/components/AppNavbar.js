@@ -31,13 +31,13 @@ function AppNavbar() {
                     <Collapse isOpen={isOpen} navbar>
                         <Nav className="ml-auto" navbar>
                             <NavItem>
-                                <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
-                                    Home
+                                <NavLink href="/create">
+                                    Create
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
-                                    Find sheets
+                                <NavLink href="/upload">
+                                    Upload
                                 </NavLink>
                             </NavItem>
                             <NavItem>
