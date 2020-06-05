@@ -25,10 +25,13 @@ function ImageCanvas() {
     const contextMenuRef = useRef(null);
 
     const [drawnImages, setDrawnImages] = useState([]);
-    
+    const [isCtrlDown, setIsCtrlDown] = useState(false);
+
     var width = configContext.config.canvasWidth;
     var height = configContext.config.canvasHeight;
     var scaleRatio = {x: CANVAS_VIEW_WIDTH/width, y: CANVAS_VIEW_HEIGHT/height};
+
+    const zoomFactorRef = useRef(1.0);
 
     const drawLayers = () => {
         dragLayerRef.current.draw();
@@ -36,7 +39,6 @@ function ImageCanvas() {
     }
 
     // Set true resolution of canvases. Drag canvas is  at a lower res to preserve performance.
-    // Opening context menu (ie. right-clicking) of canvas is disabled as "Save Picture As" only captures the drag layer
     useEffect(()=> {
         const stillSceneCanvas = stillLayerRef.current.getCanvas();
         const dragSceneCanvas = dragLayerRef.current.getCanvas();
@@ -82,9 +84,11 @@ function ImageCanvas() {
                 image: givenImage.element,
                 x: givenImage.x,
                 y: givenImage.y,
-                draggable: true
+                draggable: true,
             });
             img.transformsEnabled("position");
+            img.cache();
+            console.log("cached image");
             return img;
         });
 
@@ -100,6 +104,7 @@ function ImageCanvas() {
         drawnImages.forEach(image => {
             image.moveTo(stillLayerRef.current);
         });
+
         drawLayers();
 
         return () => {
@@ -165,13 +170,63 @@ function ImageCanvas() {
     useEffect(() => {
         var clickedImage = null;
 
-        const zoomIn = e => {
-            console.log("zoom into canvas");
-        };
+        const ctrlDown = e => {
+            if(e.ctrlKey) {
+                setIsCtrlDown(true);
+            }
+        }
 
-        const zoomOut = e => {
-            console.log("zoom out of canvas");
-        };
+        const ctrlUp = e => {
+            if(!e.ctrlKey) {
+                setIsCtrlDown(false);
+            }
+        }
+
+        const zoom = e => {
+            const scrollValue = e.evt.deltaY;
+
+            if(isCtrlDown && scrollValue !== 0) {
+                e.evt.preventDefault();
+
+                const oldScale = {x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}
+                const pointer = stageRef.current.getPointerPosition();
+
+                const pointerRelativePos = {
+                    x: (pointer.x - stageRef.current.x()) / oldScale.x,
+                    y: (pointer.y - stageRef.current.y()) / oldScale.y
+                }
+
+                const zoomIncrement = 0.1;
+
+                if(scrollValue < 0) {
+                    zoomFactorRef.current += zoomIncrement;
+                } else if(scrollValue > 0) {
+                    zoomFactorRef.current = zoomFactorRef.current > 1.0 
+                        ? zoomFactorRef.current - zoomIncrement
+                        : zoomFactorRef.current;
+                }
+
+                const newScale = {
+                    x: zoomFactorRef.current * scaleRatio.x, 
+                    y: zoomFactorRef.current * scaleRatio.y
+                };
+                const newPos = {
+                    x: pointer.x - pointerRelativePos.x * newScale.x,
+                    y: pointer.y - pointerRelativePos.y * newScale.y
+                };
+
+                stageRef.current.scale(newScale);
+
+                if(scrollValue < 0) {
+                    stageRef.current.position(newPos);
+                } else if(scrollValue > 0) {
+                    stageRef.current.position(newPos);
+                    // stageRef.current.position({x: 0, y: 0});
+                }
+                
+                stageRef.current.batchDraw();
+            }
+        }
 
         const layerUp = e => {
             clickedImage.moveUp();
@@ -219,6 +274,9 @@ function ImageCanvas() {
 
         const stage = stageRef.current;
         stage.on("contextmenu", imageMenu);
+        stage.on("wheel", zoom);
+        window.addEventListener("keydown", ctrlDown);
+        window.addEventListener("keyup", ctrlUp);
         window.addEventListener("click", closeImageMenu);
 
         return () => {
@@ -228,14 +286,18 @@ function ImageCanvas() {
             toBackBtn.removeEventListener("click", layerToBack);
 
             stage.off("contextmenu", imageMenu);
+            stage.off("wheel", zoom);
+            window.removeEventListener("keydown", ctrlDown);
+            window.removeEventListener("keyup", ctrlUp);
             window.removeEventListener("click", closeImageMenu);
         }
-    }, [drawnImages])
+    }, [drawnImages, isCtrlDown, scaleRatio])
 
     return (
         <div>
             <div>
-                <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={scaleRatio}>
+                {/* <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={ scaleRatio}> */}
+                <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={{x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}} draggable>
                     <Layer ref={stillLayerRef}></Layer>
                     <Layer ref={dragLayerRef}></Layer>
                 </Stage>
@@ -246,7 +308,7 @@ function ImageCanvas() {
                     <button id="canvas-btn-forward">Bring forward</button>
                     <button id="canvas-btn-backward">Bring backward</button>
                     <button id="canvas-btn-front">Bring to front</button>
-                    <button id="canvas-btn-back">Bring to end</button>
+                    <button id="canvas-btn-back">Bring to back</button>
                 </div>
             </div>
 
