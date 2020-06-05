@@ -22,12 +22,18 @@ function ImageCanvas() {
     const stageRef = useRef(null);
     const dragLayerRef = useRef(null);
     const stillLayerRef = useRef(null);
+    const contextMenuRef = useRef(null);
 
     const [drawnImages, setDrawnImages] = useState([]);
     
     var width = configContext.config.canvasWidth;
     var height = configContext.config.canvasHeight;
     var scaleRatio = {x: CANVAS_VIEW_WIDTH/width, y: CANVAS_VIEW_HEIGHT/height};
+
+    const drawLayers = () => {
+        dragLayerRef.current.draw();
+        stillLayerRef.current.draw();
+    }
 
     // Set true resolution of canvases. Drag canvas is  at a lower res to preserve performance.
     // Opening context menu (ie. right-clicking) of canvas is disabled as "Save Picture As" only captures the drag layer
@@ -37,8 +43,6 @@ function ImageCanvas() {
 
         stillSceneCanvas.setPixelRatio(CANVAS_BASE_WIDTH / CANVAS_VIEW_WIDTH);
         dragSceneCanvas.setPixelRatio(1.0);
-        
-        dragSceneCanvas._canvas.addEventListener("contextmenu", e => {e.preventDefault()});
     }, []);
 
     // Shift the image to an appropriate layer before and after the drag event
@@ -46,29 +50,32 @@ function ImageCanvas() {
         var draggedImage = null;
 
         const mouseDown = e => {
-            if(!draggedImage && e.target !== stageRef.current) {
-                const img = e.target;
-                img.moveTo(dragLayerRef.current);
-                stillLayerRef.current.draw();
-                dragLayerRef.current.draw();
-                draggedImage = img;
+            if(e.evt.button === 0 && !draggedImage && e.target !== stageRef.current) {
+                draggedImage = e.target;
+                draggedImage.moveTo(dragLayerRef.current);                
+                drawLayers();
             }
         }
 
         const mouseUp = e => {
-            if(draggedImage && e.target !== stageRef.current) {
+            if(e.evt.button === 0 && draggedImage && e.target !== stageRef.current) {
                 draggedImage.moveTo(stillLayerRef.current);
-                stillLayerRef.current.draw();
-                dragLayerRef.current.draw();
                 draggedImage = null;
+                drawLayers();
             }
         }
 
-        stageRef.current.on("mousedown", mouseDown);
-        stageRef.current.on("mouseup", mouseUp);
-    }, [])
+        const stage = stageRef.current;
+        stage.on("mousedown", mouseDown);
+        stage.on("mouseup", mouseUp);
 
-    // Updates stillImages when imagesContext updates
+        return () => {
+            stage.off("mousedown", mouseDown);
+            stage.off("mouseup", mouseUp);
+        }
+    }, [drawnImages])
+
+    // Updates drawnImage when imagesContext updates
     useEffect(() => {
         const newDrawnImages = imagesContext.images.map(givenImage => {
             const img = new Konva.Image({
@@ -93,7 +100,7 @@ function ImageCanvas() {
         drawnImages.forEach(image => {
             image.moveTo(stillLayerRef.current);
         });
-        stillLayerRef.current.draw();
+        drawLayers();
 
         return () => {
             drawnImages.forEach(image => image.remove());
@@ -116,6 +123,7 @@ function ImageCanvas() {
         return () => downloadBtn.removeEventListener("click",download);
     }, [])
 
+    //Upload cheatsheet to backend
     useEffect(() => {
         const uploadBtn = document.querySelector("#canvas-btn-upload");
         
@@ -154,12 +162,94 @@ function ImageCanvas() {
         return () => uploadBtn.removeEventListener("click", upload);
     }, [])
 
+    useEffect(() => {
+        var clickedImage = null;
+
+        const zoomIn = e => {
+            console.log("zoom into canvas");
+        };
+
+        const zoomOut = e => {
+            console.log("zoom out of canvas");
+        };
+
+        const layerUp = e => {
+            clickedImage.moveUp();
+            drawLayers();
+        };
+
+        const layerDown = e => {
+            clickedImage.moveDown();
+            drawLayers();
+        };
+
+        const layerToFront = e => {
+            clickedImage.moveToTop();
+            drawLayers();
+        }
+
+        const layerToBack = e => {
+            clickedImage.moveToBottom();
+            drawLayers();
+        }
+
+        const imageMenu = e => {
+            e.evt.preventDefault();
+            if(e.target !== stageRef.current) {
+                clickedImage = e.target;
+                contextMenuRef.current.style.display = "initial";
+                contextMenuRef.current.style.top = e.evt.pageY + 4 + "px";
+                contextMenuRef.current.style.left = e.evt.pageX + 4 + "px";
+            }
+        }
+
+        const closeImageMenu = e => {
+            contextMenuRef.current.style.display = "none";
+        }
+
+        const forwardBtn = document.querySelector("#canvas-btn-forward");
+        const backwardBtn = document.querySelector("#canvas-btn-backward");
+        const toFrontBtn = document.querySelector("#canvas-btn-front");
+        const toBackBtn = document.querySelector("#canvas-btn-back");
+
+        forwardBtn.addEventListener("click", layerUp);
+        backwardBtn.addEventListener("click", layerDown);
+        toFrontBtn.addEventListener("click", layerToFront);
+        toBackBtn.addEventListener("click", layerToBack);
+
+        const stage = stageRef.current;
+        stage.on("contextmenu", imageMenu);
+        window.addEventListener("click", closeImageMenu);
+
+        return () => {
+            forwardBtn.removeEventListener("click", layerUp);
+            backwardBtn.removeEventListener("click", layerDown);
+            toFrontBtn.removeEventListener("click", layerToFront);
+            toBackBtn.removeEventListener("click", layerToBack);
+
+            stage.off("contextmenu", imageMenu);
+            window.removeEventListener("click", closeImageMenu);
+        }
+    }, [drawnImages])
+
     return (
         <div>
-            <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={scaleRatio}>
-                <Layer ref={stillLayerRef}></Layer>
-                <Layer ref={dragLayerRef}></Layer>
-            </Stage>
+            <div>
+                <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={scaleRatio}>
+                    <Layer ref={stillLayerRef}></Layer>
+                    <Layer ref={dragLayerRef}></Layer>
+                </Stage>
+            </div>
+
+            <div id="canvas-context-menu" ref={contextMenuRef}>
+                <div>
+                    <button id="canvas-btn-forward">Bring forward</button>
+                    <button id="canvas-btn-backward">Bring backward</button>
+                    <button id="canvas-btn-front">Bring to front</button>
+                    <button id="canvas-btn-back">Bring to end</button>
+                </div>
+            </div>
+
             <Button id="canvas-btn-download" color="dark">Download</Button>
             <Button id="canvas-btn-upload" color="dark">Upload</Button>
         </div>

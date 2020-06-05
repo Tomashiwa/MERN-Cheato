@@ -11,3 +11,24 @@
     margin-top: 1rem;
     margin-left: 2rem;
 }
+
+#canvas-context-menu {
+    display: none;
+    position: absolute;
+    width: 130px;
+    background-color: white;
+    box-shadow: 0 0 5px grey;
+    border-radius: 3px;
+}
+
+#canvas-context-menu button {
+    width: 100%;
+    background-color: white;
+    border: none;
+    margin: 0;
+    padding: 10px;
+}
+
+#canvas-context-menu button:hover {
+    background-color: lightgray;
+}
