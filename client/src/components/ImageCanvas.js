@@ -51,7 +51,7 @@ function ImageCanvas() {
     useEffect(() => {
         var draggedImage = null;
 
-        const mouseDown = e => {
+        const dragImageStart = e => {
             if(e.evt.button === 0 && !draggedImage && e.target !== stageRef.current) {
                 draggedImage = e.target;
                 draggedImage.moveTo(dragLayerRef.current);                
@@ -59,7 +59,7 @@ function ImageCanvas() {
             }
         }
 
-        const mouseUp = e => {
+        const dragImageEnd = e => {
             if(e.evt.button === 0 && draggedImage && e.target !== stageRef.current) {
                 draggedImage.moveTo(stillLayerRef.current);
                 draggedImage = null;
@@ -68,12 +68,12 @@ function ImageCanvas() {
         }
 
         const stage = stageRef.current;
-        stage.on("mousedown", mouseDown);
-        stage.on("mouseup", mouseUp);
+        stage.on("mousedown", dragImageStart);
+        stage.on("mouseup", dragImageEnd);
 
         return () => {
-            stage.off("mousedown", mouseDown);
-            stage.off("mouseup", mouseUp);
+            stage.off("mousedown", dragImageStart);
+            stage.off("mouseup", dragImageEnd);
         }
     }, [drawnImages])
 
@@ -88,7 +88,6 @@ function ImageCanvas() {
             });
             img.transformsEnabled("position");
             img.cache();
-            console.log("cached image");
             return img;
         });
 
@@ -216,14 +215,7 @@ function ImageCanvas() {
                 };
 
                 stageRef.current.scale(newScale);
-
-                if(scrollValue < 0) {
-                    stageRef.current.position(newPos);
-                } else if(scrollValue > 0) {
-                    stageRef.current.position(newPos);
-                    // stageRef.current.position({x: 0, y: 0});
-                }
-                
+                stageRef.current.position(newPos);
                 stageRef.current.batchDraw();
             }
         }
