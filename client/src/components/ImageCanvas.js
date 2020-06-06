@@ -307,7 +307,6 @@ function ImageCanvas() {
 
         const closeImportMenu = e => {
             if(importMenuRef.current.style.display === "initial" && e.target !== importMenuBtn) {
-                console.log("close import menu");
                 importMenuRef.current.style.display = "none";
             }
         }
@@ -409,7 +408,24 @@ function ImageCanvas() {
 
     //Sorting images
     useEffect(() => {
-        const sortBtn = document.querySelector("#canvas-btn-menu-sort");
+        const sortMenuBtn = document.querySelector("#canvas-btn-menu-sort");
+        const sortLargestSideBtn = document.querySelector("#canvas-btn-sort-largestside");
+        const sortWidthBtn = document.querySelector("#canvas-btn-sort-width");
+        const sortHeightBtn = document.querySelector("#canvas-btn-sort-height");
+        const sortAreaBtn = document.querySelector("#canvas-btn-sort-area");
+
+        const sortMenu = e => {
+            const rect = sortMenuBtn.getBoundingClientRect();
+            sortMenuRef.current.style.display = "initial";
+            sortMenuRef.current.style.top = rect.top + rect.height + window.scrollY + "px";
+            sortMenuRef.current.style.left = rect.left + window.scrollX + "px";
+        }
+
+        const closeSortMenu = e => {
+            if(sortMenuRef.current.style.display === "initial" && e.target !== sortMenuBtn) {
+                sortMenuRef.current.style.display = "none";
+            }
+        }
 
         const sortLargestSide = e => {
             const sortedResult = binPack(imagesContext.images, "largestSide", CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
@@ -417,7 +433,6 @@ function ImageCanvas() {
             configContext.setConfig({...configContext.config, ...{
                 sortOrder: "largestSide"
             }});
-            console.log("Sort images by largest side");
         };
 
         const sortWidth = e => {
@@ -426,7 +441,6 @@ function ImageCanvas() {
             configContext.setConfig({...configContext.config, ...{
                 sortOrder: "width"
             }});
-            console.log("Sort images by width");
         }
 
         const sortHeight = e => {            
@@ -435,7 +449,6 @@ function ImageCanvas() {
             configContext.setConfig({...configContext.config, ...{
                 sortOrder: "height"
             }});
-            console.log("Sort images by height");
         }
 
         const sortArea = e => {
@@ -444,13 +457,22 @@ function ImageCanvas() {
             configContext.setConfig({...configContext.config, ...{
                 sortOrder: "area"
             }});
-            console.log("Sort images by area");
         }
 
-        sortBtn.addEventListener("click", sortWidth);
+        sortMenuBtn.addEventListener("click", sortMenu);
+        window.addEventListener("click", closeSortMenu);
+        sortLargestSideBtn.addEventListener("click", sortLargestSide);
+        sortWidthBtn.addEventListener("click", sortWidth);
+        sortHeightBtn.addEventListener("click", sortHeight);
+        sortAreaBtn.addEventListener("click", sortArea);
 
         return () => {
-            sortBtn.removeEventListener("click", sortWidth);
+            sortMenuBtn.removeEventListener("click", sortMenu);
+            window.removeEventListener("click", closeSortMenu);
+            sortLargestSideBtn.removeEventListener("click", sortLargestSide);
+            sortWidthBtn.removeEventListener("click", sortWidth);
+            sortHeightBtn.removeEventListener("click", sortHeight);
+            sortAreaBtn.removeEventListener("click", sortArea);
         }
     }, [imagesContext, configContext])
 
