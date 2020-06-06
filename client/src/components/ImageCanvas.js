@@ -171,7 +171,7 @@ function ImageCanvas() {
         // return () => uploadBtn.removeEventListener("click", upload);
     }, [])
 
-    //Zooming and panning
+    //Zooming and layer changing
     useEffect(() => {
         var clickedImage = null;
 

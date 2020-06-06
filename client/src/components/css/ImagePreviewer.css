@@ -1,0 +1,28 @@
+#previewer-toolbar {
+    display:flex;
+    align-content: flex-start;
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: flex-end;
+    background-color: #252525;
+}
+
+#previewer-btn-reset {
+    background-color: #252525;
+    border-radius: 0;
+    border-color: #252525;
+}
+
+#previewer-btn-reset:hover {
+    background-color: #4e4e4e; 
+}
+
+#previewer-btn-download {
+    background-color: #252525;
+    border-radius: 0;
+    border-color: #252525;
+}
+
+#previewer-btn-download:hover {
+    background-color: #4e4e4e; 
+}
