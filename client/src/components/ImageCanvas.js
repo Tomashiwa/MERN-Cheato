@@ -532,13 +532,13 @@ function ImageCanvas() {
 
     return (
         <div>
-            <div>
+            <span id="canvas-toolbar">
                 <Button id="canvas-btn-menu-import">Import</Button>
                 <input id="canvas-input-import-arrange" type="file" accept="image/*" multiple style={{display: "none"}} />
                 <input id="canvas-input-import" type="file" accept="image/*" multiple style={{display: "none"}} />
                 <Button id="canvas-btn-menu-sort">Sort by</Button>
                 <Button id="canvas-btn-menu-view">View</Button>
-            </div>
+            </span>
 
             <div>
                 <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={{x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}} draggable>

@@ -1,6 +1,5 @@
 .konvajs-content {
     background-color: black;
-    margin-top: 2.5rem;
 }
 
 #canvas-btn-download {
@@ -33,6 +32,25 @@
     background-color: lightgray;
 }
 
+#canvas-toolbar {
+    display:flex;
+    align-content: flex-start;
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: flex-start;
+    background-color: #252525;
+}
+
+#canvas-btn-menu-import {
+    background-color: #252525;
+    border-radius: 0;
+    border-color: #252525;
+}
+
+#canvas-btn-menu-import:hover {
+    background-color: #4e4e4e;
+}
+
 #canvas-import-menu {
     display: none;
     position: absolute;
@@ -54,6 +72,16 @@
     background-color: lightgray;
 }
 
+#canvas-btn-menu-sort {
+    background-color: #252525;
+    border-radius: 0;
+    border-color: #252525;
+}
+
+#canvas-btn-menu-sort:hover {
+    background-color: #4e4e4e;
+}
+
 #canvas-sort-menu {
     display: none;
     position: absolute;
@@ -73,6 +101,16 @@
 
 #canvas-sort-menu button:hover {
     background-color: lightgray;
+}
+
+#canvas-btn-menu-view {
+    background-color: #252525;
+    border-radius: 0;
+    border-color: #252525;
+}
+
+#canvas-btn-menu-view:hover {
+    background-color: #4e4e4e;
 }
 
 #canvas-view-menu {
