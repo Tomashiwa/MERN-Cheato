@@ -9,6 +9,7 @@ import axios from "axios";
 import uuid from "uuid";
 
 import "./css/ImageCanvas.css";
+import { binPack } from '../library/BinPack';
 
 export const CANVAS_VIEW_WIDTH = 1123;
 export const CANVAS_VIEW_HEIGHT = 794;
@@ -22,7 +23,10 @@ function ImageCanvas() {
     const stageRef = useRef(null);
     const dragLayerRef = useRef(null);
     const stillLayerRef = useRef(null);
+
     const contextMenuRef = useRef(null);
+    const importMenuRef = useRef(null);
+    const sortMenuRef = useRef(null);
 
     const [drawnImages, setDrawnImages] = useState([]);
     const [isCtrlDown, setIsCtrlDown] = useState(false);
@@ -166,6 +170,7 @@ function ImageCanvas() {
         return () => uploadBtn.removeEventListener("click", upload);
     }, [])
 
+    //Zooming and panning
     useEffect(() => {
         var clickedImage = null;
 
@@ -285,14 +290,210 @@ function ImageCanvas() {
         }
     }, [drawnImages, isCtrlDown, scaleRatio])
 
+    //Importing images
+    useEffect(() => {
+        const importMenuBtn = document.querySelector("#canvas-btn-menu-import");
+        const importBtn = document.querySelector("#canvas-btn-import");
+        const importArrangeBtn = document.querySelector("#canvas-btn-import-arrange");
+        const input = document.querySelector("#canvas-input-import");
+        const arrangedInput = document.querySelector("#canvas-input-import-arrange");
+
+        const importMenu = e => {
+            const rect = importMenuBtn.getBoundingClientRect();
+            importMenuRef.current.style.display = "initial";
+            importMenuRef.current.style.top = rect.top + rect.height + window.scrollY + "px";
+            importMenuRef.current.style.left = rect.left + window.scrollX + "px";
+        }
+
+        const closeImportMenu = e => {
+            if(importMenuRef.current.style.display === "initial" && e.target !== importMenuBtn) {
+                console.log("close import menu");
+                importMenuRef.current.style.display = "none";
+            }
+        }
+
+        const importFiles = e => {
+            input.click();
+        };
+
+        const importArrangedFiles = e => {
+            arrangedInput.click();
+        }
+
+        const loadImages = e => {
+            const files = Array.from(e.target.files);
+
+            Promise.all(files.map(file => {
+                return (new Promise((resolve, reject) => {
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(file);
+                    img.addEventListener("load", e => {
+                        URL.revokeObjectURL(file);
+                        resolve(img);
+                    });
+                    img.addEventListener("error", reject);
+                }));
+            }))
+            .then(imgs => {
+                console.log(`All img elements loaded`);
+                const images = imgs.map(img => {
+                    return {
+                        element: img, 
+                        width: img.width, 
+                        height: img.height, 
+                        x: 0, 
+                        y: 0,
+                        isRejected: false
+                    };
+                });
+                imagesContext.setImages(images);
+            }).catch(err => {
+                console.log(`Error encountered while loading: ${err}`);
+            })
+        };
+
+        const loadArrangedImages = e => {
+            const files = Array.from(e.target.files);
+
+            Promise.all(files.map(file => {
+                return (new Promise((resolve, reject) => {
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(file);
+                    img.addEventListener("load", e => {
+                        URL.revokeObjectURL(file);
+                        resolve(img);
+                    });
+                    img.addEventListener("error", reject);
+                }));
+            }))
+            .then(imgs => {
+                console.log(`All img elements loaded`);
+                const images = imgs.map(img => {
+                    return {
+                        element: img, 
+                        width: img.width, 
+                        height: img.height, 
+                        x: 0, 
+                        y: 0,
+                        isRejected: false
+                    };
+                });
+
+                const sortedResult = binPack(images, configContext.config.sortOrder, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
+                imagesContext.setImages(sortedResult.images);
+                configContext.setConfig({...configContext.config, ...{
+                    canvasWidth: sortedResult.width,
+                    canvasHeight: sortedResult.height
+                }});
+            }).catch(err => {
+                console.log(`Error encountered while loading: ${err}`);
+            })
+        }
+
+        window.addEventListener("click", closeImportMenu);
+        importMenuBtn.addEventListener("click", importMenu);
+        importBtn.addEventListener("click", importFiles);
+        importArrangeBtn.addEventListener("click", importArrangedFiles);
+        input.addEventListener("change", loadImages);
+        arrangedInput.addEventListener("change", loadArrangedImages);
+
+        return () => {
+            window.removeEventListener("click", closeImportMenu);
+            importMenuBtn.removeEventListener("click", importMenu);
+            importBtn.removeEventListener("click", importFiles);
+            importArrangeBtn.removeEventListener("click", importArrangedFiles);
+            input.removeEventListener("change", loadImages);
+            arrangedInput.removeEventListener("change", loadArrangedImages);
+        };
+    }, [imagesContext, configContext]);
+
+    //Sorting images
+    useEffect(() => {
+        const sortBtn = document.querySelector("#canvas-btn-menu-sort");
+
+        const sortLargestSide = e => {
+            const sortedResult = binPack(imagesContext.images, "largestSide", CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
+            imagesContext.setImages(sortedResult.images);
+            configContext.setConfig({...configContext.config, ...{
+                sortOrder: "largestSide"
+            }});
+            console.log("Sort images by largest side");
+        };
+
+        const sortWidth = e => {
+            const sortedResult = binPack(imagesContext.images, "width", CANVAS_BASE_WIDTH, CANVAS_VIEW_HEIGHT);
+            imagesContext.setImages(sortedResult.images);
+            configContext.setConfig({...configContext.config, ...{
+                sortOrder: "width"
+            }});
+            console.log("Sort images by width");
+        }
+
+        const sortHeight = e => {            
+            const sortedResult = binPack(imagesContext.images, "height", CANVAS_BASE_WIDTH, CANVAS_VIEW_HEIGHT);
+            imagesContext.setImages(sortedResult.images);
+            configContext.setConfig({...configContext.config, ...{
+                sortOrder: "height"
+            }});
+            console.log("Sort images by height");
+        }
+
+        const sortArea = e => {
+            const sortedResult = binPack(imagesContext.images, "area", CANVAS_BASE_WIDTH, CANVAS_VIEW_HEIGHT);
+            imagesContext.setImages(sortedResult.images);
+            configContext.setConfig({...configContext.config, ...{
+                sortOrder: "area"
+            }});
+            console.log("Sort images by area");
+        }
+
+        sortBtn.addEventListener("click", sortWidth);
+
+        return () => {
+            sortBtn.removeEventListener("click", sortWidth);
+        }
+    }, [imagesContext, configContext])
+
+    //Setting resolution
+    useEffect(() => {
+        const resBtn = document.querySelector("#canvas-btn-res");
+
+        const setRes = e => {
+
+        }
+    }, [])
+
     return (
         <div>
             <div>
-                {/* <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={ scaleRatio}> */}
+                <Button id="canvas-btn-menu-import">Import</Button>
+                <input id="canvas-input-import-arrange" type="file" accept="image/*" multiple style={{display: "none"}} />
+                <input id="canvas-input-import" type="file" accept="image/*" multiple style={{display: "none"}} />
+                <Button id="canvas-btn-menu-sort">Sort by</Button>
+                <Button id="canvas-btn-menu-res">Resolution</Button>
+            </div>
+
+            <div>
                 <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={{x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}} draggable>
                     <Layer ref={stillLayerRef}></Layer>
                     <Layer ref={dragLayerRef}></Layer>
                 </Stage>
+            </div>
+
+            <div id="canvas-import-menu" ref={importMenuRef}>
+                <div>
+                    <button id="canvas-btn-import-arrange">Import files and arrange</button>
+                    <button id="canvas-btn-import">Import files</button>
+                </div>
+            </div>
+
+            <div id="canvas-sort-menu" ref={sortMenuRef}>
+                <div>
+                    <button id="canvas-btn-sort-largestside">Largest side</button>
+                    <button id="canvas-btn-sort-width">Width</button>
+                    <button id="canvas-btn-sort-height">Height</button>
+                    <button id="canvas-btn-sort-area">Area</button>
+                </div>
             </div>
 
             <div id="canvas-context-menu" ref={contextMenuRef}>

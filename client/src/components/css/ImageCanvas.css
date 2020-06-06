@@ -32,3 +32,24 @@
 #canvas-context-menu button:hover {
     background-color: lightgray;
 }
+
+#canvas-import-menu {
+    display: none;
+    position: absolute;
+    width: 200px;
+    background-color: white;
+    box-shadow: 0 0 5px grey;
+    border-radius: 3px;
+}
+
+#canvas-import-menu button {
+    width: 100%;
+    background-color: white;
+    border: none;
+    margin: 0;
+    padding: 10px;
+}
+
+#canvas-import-menu button:hover {
+    background-color: lightgray;
+}
