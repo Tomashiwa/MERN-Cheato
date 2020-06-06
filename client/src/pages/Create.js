@@ -11,7 +11,7 @@ function Create() {
         <div>
             <AppNavbar />
             <Container id="container">
-                <InputForm />
+                {/* <InputForm /> */}
                 <ImageCanvas />
             </Container>
         </div>

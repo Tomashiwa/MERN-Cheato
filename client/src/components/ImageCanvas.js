@@ -27,6 +27,7 @@ function ImageCanvas() {
     const contextMenuRef = useRef(null);
     const importMenuRef = useRef(null);
     const sortMenuRef = useRef(null);
+    const viewMenuRef = useRef(null);
 
     const [drawnImages, setDrawnImages] = useState([]);
     const [isCtrlDown, setIsCtrlDown] = useState(false);
@@ -127,8 +128,8 @@ function ImageCanvas() {
             document.body.removeChild(a);
         };
 
-        downloadBtn.addEventListener("click", download);
-        return () => downloadBtn.removeEventListener("click",download);
+        // downloadBtn.addEventListener("click", download);
+        // return () => downloadBtn.removeEventListener("click",download);
     }, [])
 
     //Upload cheatsheet to backend
@@ -166,8 +167,8 @@ function ImageCanvas() {
             })
         };
 
-        uploadBtn.addEventListener("click", upload);
-        return () => uploadBtn.removeEventListener("click", upload);
+        // uploadBtn.addEventListener("click", upload);
+        // return () => uploadBtn.removeEventListener("click", upload);
     }, [])
 
     //Zooming and panning
@@ -478,12 +479,56 @@ function ImageCanvas() {
 
     //Setting resolution
     useEffect(() => {
-        const resBtn = document.querySelector("#canvas-btn-res");
+        const viewMenuBtn = document.querySelector("#canvas-btn-menu-view");
+        const resetBtn = document.querySelector("#canvas-btn-view-reset");
+        const resetPosBtn = document.querySelector("#canvas-btn-view-resetpos");
+        const resetZoomBtn = document.querySelector("#canvas-btn-view-resetzoom");
 
-        const setRes = e => {
+        const viewMenu = e => {
+            const rect = viewMenuBtn.getBoundingClientRect();
+            viewMenuRef.current.style.display = "initial";
+            viewMenuRef.current.style.top = rect.top + rect.height + window.scrollY + "px";
+            viewMenuRef.current.style.left = rect.left + window.scrollX + "px";
+        };
 
+        const closeViewMenu = e => {
+            if(viewMenuRef.current.style.display === "initial" && e.target !== viewMenuBtn) {
+                viewMenuRef.current.style.display = "none";
+            }
+        };
+
+        const reset = e => {
+            zoomFactorRef.current = 1.0;
+            stageRef.current.scale({x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y});
+            stageRef.current.position({x: 0.0, y: 0.0});
+            stageRef.current.batchDraw();
         }
-    }, [])
+
+        const resetPos = e => {
+            stageRef.current.position({x: 0.0, y: 0.0});
+            stageRef.current.batchDraw();
+        }
+
+        const resetZoom = e => {
+            zoomFactorRef.current = 1.0;
+            stageRef.current.scale({x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y});
+            stageRef.current.batchDraw();
+        }
+
+        viewMenuBtn.addEventListener("click", viewMenu);
+        window.addEventListener("click", closeViewMenu);
+        resetBtn.addEventListener("click", reset);
+        resetPosBtn.addEventListener("click", resetPos);
+        resetZoomBtn.addEventListener("click", resetZoom);
+
+        return () => {
+            viewMenuBtn.removeEventListener("click", viewMenu);
+            window.removeEventListener("click", closeViewMenu);
+            resetBtn.removeEventListener("click", reset);
+            resetPosBtn.removeEventListener("click", resetPos);
+            resetZoomBtn.removeEventListener("click", resetZoom);
+        }
+    }, [scaleRatio])
 
     return (
         <div>
@@ -492,7 +537,7 @@ function ImageCanvas() {
                 <input id="canvas-input-import-arrange" type="file" accept="image/*" multiple style={{display: "none"}} />
                 <input id="canvas-input-import" type="file" accept="image/*" multiple style={{display: "none"}} />
                 <Button id="canvas-btn-menu-sort">Sort by</Button>
-                <Button id="canvas-btn-menu-res">Resolution</Button>
+                <Button id="canvas-btn-menu-view">View</Button>
             </div>
 
             <div>
@@ -518,6 +563,14 @@ function ImageCanvas() {
                 </div>
             </div>
 
+            <div id="canvas-view-menu" ref={viewMenuRef}>
+                <div>
+                    <button id="canvas-btn-view-reset">Reset all</button>
+                    <button id="canvas-btn-view-resetpos">Reset position</button>
+                    <button id="canvas-btn-view-resetzoom">Reset zoom</button>
+                </div>
+            </div>
+
             <div id="canvas-context-menu" ref={contextMenuRef}>
                 <div>
                     <button id="canvas-btn-forward">Bring forward</button>
@@ -527,8 +580,8 @@ function ImageCanvas() {
                 </div>
             </div>
 
-            <Button id="canvas-btn-download" color="dark">Download</Button>
-            <Button id="canvas-btn-upload" color="dark">Upload</Button>
+            {/* <Button id="canvas-btn-download" color="dark">Download</Button>
+            <Button id="canvas-btn-upload" color="dark">Upload</Button> */}
         </div>
     )
 }
