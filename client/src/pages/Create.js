@@ -102,6 +102,7 @@ function Create() {
                     : formStep === CREATE_STEP_FORM
                         ? <CreateForm form={form} setForm={setForm} />
                     : formStep === CREATE_STEP_PREVIEW
+                        // ? <ImagePreviewer imageURL={"https://cheato.s3-ap-southeast-1.amazonaws.com/iop.png"} />
                         ? <ImagePreviewer imageURL={form.url} />
                     : <div></div>
                 }

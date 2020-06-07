@@ -22,8 +22,8 @@ function ImagePreviewer({imageURL}) {
     const [displayImage, setDisplayImage] = useState(null);
     const [isCtrlDown, setIsCtrlDown] = useState(false);
 
-    var width = configContext.config.canvasWidth;
-    var height = configContext.config.canvasHeight;
+    var width = PREVIEWER_BASE_WIDTH;//configContext.config.canvasWidth;
+    var height = PREVIEWER_BASE_HEIGHT;
     var scaleRatio = {x: PREVIEWER_VIEW_WIDTH/width, y: PREVIEWER_VIEW_HEIGHT/height};
 
     // Set true resolution of canvases
@@ -46,7 +46,6 @@ function ImagePreviewer({imageURL}) {
             layerRef.current.batchDraw();
             setDisplayImage(image);
         }
-        // img.setAttribute("crossorigin", "anonymous");
         img.crossOrigin="anonymous";
         img.src = imageURL;
     }, [imageURL]);
@@ -134,7 +133,6 @@ function ImagePreviewer({imageURL}) {
             stageRef.current.scale({x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y});
             stageRef.current.position({x: 0.0, y: 0.0});
             layerRef.current.draw();
-            // stageRef.current.batchDraw();
         }
 
         const download = e => {
@@ -155,6 +153,13 @@ function ImagePreviewer({imageURL}) {
             downloadBtn.removeEventListener("click", download);
         }
     }, [scaleRatio])
+
+    useEffect(() => {
+        console.log(`width x height: ${width} x ${height}`);
+        console.log(`zoom factor: ${zoomFactorRef.current}`);
+        console.log(`scale ratio: ${scaleRatio.x}, ${scaleRatio.y}`);
+        console.log(`canvas scale: ${zoomFactorRef.current * scaleRatio.x}, ${zoomFactorRef.current * scaleRatio.y}`);
+    })
 
     return (
         <div>
