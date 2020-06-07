@@ -7,13 +7,13 @@ function CreateForm({form, setForm}) {
     //Load previous entires if avaliable
     useEffect(() => {
         const nameInput = document.querySelector("#createform-input-name");
-        const instInput = document.querySelector("#createform-input-insti");
+        const schInput = document.querySelector("#createform-input-sch");
         const modInput = document.querySelector("#createform-input-mod");
         const descInput = document.querySelector("#createform-input-desc");
         const isPublicInput = document.querySelector("#createform-input-public");
 
         nameInput.value = form.name;
-        instInput.value = form.institution;
+        schInput.value = form.school;
         modInput.value = form.module;
         descInput.value = form.description;
         isPublicInput.checked = form.isPublic;
@@ -22,26 +22,26 @@ function CreateForm({form, setForm}) {
     //Save given details
     useEffect(() => {
         const nameInput = document.querySelector("#createform-input-name");
-        const instInput = document.querySelector("#createform-input-insti");
+        const schInput = document.querySelector("#createform-input-sch");
         const modInput = document.querySelector("#createform-input-mod");
         const descInput = document.querySelector("#createform-input-desc");
         const isPublicInput = document.querySelector("#createform-input-public");
 
         const changeName = e => setForm({...form, ...{name: e.target.value}});
-        const changeInsti = e => setForm({...form, ...{institution: e.target.value}});
+        const changeSch = e => setForm({...form, ...{school: e.target.value}});
         const changeMod = e => setForm({...form, ...{module: e.target.value}});
         const changeDesc = e => setForm({...form, ...{description: e.target.value}});
         const changeIsPublic = e => setForm({...form, ...{isPublic: e.target.checked}});
 
         nameInput.addEventListener("change", changeName);
-        instInput.addEventListener("change", changeInsti);
+        schInput.addEventListener("change", changeSch);
         modInput.addEventListener("change", changeMod);
         descInput.addEventListener("change", changeDesc);
         isPublicInput.addEventListener("change", changeIsPublic);
 
         return () => {
             nameInput.removeEventListener("change", changeName);
-            instInput.removeEventListener("change", changeInsti);
+            schInput.removeEventListener("change", changeSch);
             modInput.removeEventListener("change", changeMod);
             descInput.removeEventListener("change", changeDesc);
             isPublicInput.removeEventListener("change", changeIsPublic);
@@ -56,9 +56,9 @@ function CreateForm({form, setForm}) {
                 <FormText>Enter the name of your cheatsheet.</FormText>
             </FormGroup>
             <FormGroup>
-                <Label>Institution</Label>
-                <Input id="createform-input-insti"/>
-                <FormText>Institution that your cheatsheet is for.</FormText>
+                <Label>School</Label>
+                <Input id="createform-input-sch"/>
+                <FormText>School that your cheatsheet is for.</FormText>
             </FormGroup>
             <FormGroup>
                 <Label>Module</Label>

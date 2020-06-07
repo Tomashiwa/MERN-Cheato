@@ -16,7 +16,7 @@ export const CANVAS_VIEW_HEIGHT = 794;
 export const CANVAS_BASE_WIDTH = 3508;
 export const CANVAS_BASE_HEIGHT = 2480;
 
-function ImageCanvas() {
+function ImageCanvas({form, setForm}) {
     const imagesContext = useContext(ImagesContext);
     const configContext = useContext(ConfigContext);
 
@@ -529,6 +529,17 @@ function ImageCanvas() {
             resetZoomBtn.removeEventListener("click", resetZoom);
         }
     }, [scaleRatio])
+
+    //Saving canvas blob data to be uploaded later
+    useEffect(() => {
+        const canvas = stillLayerRef.current.getCanvas()._canvas;
+        return () => {
+            if(drawnImages.length > 0) {
+                console.log(`saving blob with ${drawnImages.length} images`);
+                canvas.toBlob(blob => setForm({...form, ...{blob: blob}}));
+            }
+        };
+    }, [drawnImages, form, setForm])
 
     return (
         <div>
