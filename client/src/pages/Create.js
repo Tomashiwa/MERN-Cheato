@@ -17,7 +17,6 @@ export const CREATE_STEP_PREVIEW = 3;
 function Create() {
     const [formStep, setFormStep] = useState(CREATE_STEP_IMPORT);
     const [form, setForm] = useState({
-        blob: null,
         url: "",
         name: "",
         school: "",
@@ -25,6 +24,10 @@ function Create() {
         description: "",
         isPublic: false
     });
+
+    const blobRef = useRef(null);
+
+    const setBlob = blob => blobRef.current = blob;
 
     //Form navigation
     useEffect(() => {
@@ -48,27 +51,19 @@ function Create() {
             }
 
             Axios.post("/api/cheatsheets", newCheatsheet)
-                .catch(err => {
-                    console.log("saving to db error:");
-                    console.log(err);
-                });
+                .catch(err => console.log(err));
         }
 
         const upload = () => {
             const formData = new FormData();
-            formData.append("file", form.blob, `${form.name}.png`);
+            formData.append("file", blobRef.current, `${form.name}.png`);
 
-            console.log(`Start uploading ${form.name}.png...`);
             Axios.post("/upload", formData)
                 .then(res => {
-                    console.log(`Uploaded to ${res.data.data.Location}`);
                     saveToDb(res.data.data.Location);
                     setForm({...form, ...{url: res.data.data.Location}});
                 })
-                .catch(err => {
-                    console.log("upload error:");
-                    console.log(err);
-                });
+                .catch(err => console.log(err));
         };
 
         const next = e => {
@@ -94,16 +89,16 @@ function Create() {
         }
     }, [formStep, form])
 
-    return (
+    return (    
         <div>
             <AppNavbar />
             <Container id="create-container">
                 <Button id="create-btn-prev">Previous</Button>
                 <Button id="create-btn-next">Next</Button>
-                <Button onClick={() => console.log(form)}>Blob test</Button>
+                <Button onClick={() => {console.log(form); console.log(blobRef.current);}}>Blob test</Button>
                 {
                     formStep === CREATE_STEP_IMPORT
-                        ? <ImageCanvas form={form} setForm={setForm}/>
+                        ? <ImageCanvas form={form} setBlob={setBlob} />
                     : formStep === CREATE_STEP_FORM
                         ? <CreateForm form={form} setForm={setForm} />
                     : formStep === CREATE_STEP_PREVIEW

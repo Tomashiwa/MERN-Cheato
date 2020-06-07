@@ -5,8 +5,8 @@ import { Button } from "reactstrap";
 import Konva from 'konva';
 import { Stage, Layer } from 'react-konva';
 
-import axios from "axios";
-import uuid from "uuid";
+// import axios from "axios";
+// import uuid from "uuid";
 
 import "./css/ImageCanvas.css";
 import { binPack } from '../library/BinPack';
@@ -16,7 +16,7 @@ export const CANVAS_VIEW_HEIGHT = 794;
 export const CANVAS_BASE_WIDTH = 3508;
 export const CANVAS_BASE_HEIGHT = 2480;
 
-function ImageCanvas({form, setForm}) {
+function ImageCanvas({setBlob}) {
     const imagesContext = useContext(ImagesContext);
     const configContext = useContext(ConfigContext);
 
@@ -118,15 +118,15 @@ function ImageCanvas({form, setForm}) {
 
     //Add downloading of cheatsheets to a button 
     useEffect(() => {
-        const downloadBtn = document.querySelector("#canvas-btn-download");
-        const download = () => {            
-            const a = document.createElement("a");
-            document.body.appendChild(a);
-            a.href = stillLayerRef.current.getCanvas()._canvas.toDataURL("image/png", 1.0);
-            a.download = "cheatsheet.png";
-            a.click();
-            document.body.removeChild(a);
-        };
+        // const downloadBtn = document.querySelector("#canvas-btn-download");
+        // const download = () => {            
+        //     const a = document.createElement("a");
+        //     document.body.appendChild(a);
+        //     a.href = stillLayerRef.current.getCanvas()._canvas.toDataURL("image/png", 1.0);
+        //     a.download = "cheatsheet.png";
+        //     a.click();
+        //     document.body.removeChild(a);
+        // };
 
         // downloadBtn.addEventListener("click", download);
         // return () => downloadBtn.removeEventListener("click",download);
@@ -134,38 +134,38 @@ function ImageCanvas({form, setForm}) {
 
     //Upload cheatsheet to backend
     useEffect(() => {
-        const uploadBtn = document.querySelector("#canvas-btn-upload");
+        // const uploadBtn = document.querySelector("#canvas-btn-upload");
         
-        const saveToDb = url => {
-            const newCheatsheet = {
-                file: url,
-                user: 0,
-                school: "nus",
-                module: "cs1101s",
-                description: "nil",
-                datetime: Date.now(),
-                rating: 0,
-                comments: []
-            }
+        // const saveToDb = url => {
+        //     const newCheatsheet = {
+        //         file: url,
+        //         user: 0,
+        //         school: "nus",
+        //         module: "cs1101s",
+        //         description: "nil",
+        //         datetime: Date.now(),
+        //         rating: 0,
+        //         comments: []
+        //     }
 
-            axios.post("/api/cheatsheets", newCheatsheet)
-                .catch(err => console.log((err)));
-        }
+        //     axios.post("/api/cheatsheets", newCheatsheet)
+        //         .catch(err => console.log((err)));
+        // }
 
-        const upload = event => {
-            const canvas = stillLayerRef.current.getCanvas()._canvas;
+        // const upload = event => {
+        //     const canvas = stillLayerRef.current.getCanvas()._canvas;
             
-            canvas.toBlob(blob => {
-                const formData = new FormData();
-                formData.append("file", blob, `cheatsheet-${uuid.v4()}.png`);
-                axios.post("/upload", formData)
-                    .then(res => {
-                        console.log(res.data.data.Location);
-                        saveToDb(res.data.data.Location);
-                    })
-                    .catch(err => console.log(err));    
-            })
-        };
+        //     canvas.toBlob(blob => {
+        //         const formData = new FormData();
+        //         formData.append("file", blob, `cheatsheet-${uuid.v4()}.png`);
+        //         axios.post("/upload", formData)
+        //             .then(res => {
+        //                 console.log(res.data.data.Location);
+        //                 saveToDb(res.data.data.Location);
+        //             })
+        //             .catch(err => console.log(err));    
+        //     })
+        // };
 
         // uploadBtn.addEventListener("click", upload);
         // return () => uploadBtn.removeEventListener("click", upload);
@@ -536,10 +536,10 @@ function ImageCanvas({form, setForm}) {
         return () => {
             if(drawnImages.length > 0) {
                 console.log(`saving blob with ${drawnImages.length} images`);
-                canvas.toBlob(blob => setForm({...form, ...{blob: blob}}));
+                canvas.toBlob(blob => setBlob(blob));
             }
         };
-    }, [drawnImages, form, setForm])
+    }, [drawnImages, setBlob])
 
     return (
         <div>
