@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useRef, useState } from 'react';
-import { ConfigContext } from "../App";
 import { Button } from "reactstrap";
 
 import Konva from "konva";
@@ -13,7 +12,6 @@ export const PREVIEWER_BASE_WIDTH = 3508;
 export const PREVIEWER_BASE_HEIGHT = 2480;
 
 function ImagePreviewer({imageURL}) {
-    const configContext = useContext(ConfigContext);
 
     const stageRef = useRef(null);
     const layerRef = useRef(null);
@@ -22,7 +20,7 @@ function ImagePreviewer({imageURL}) {
     const [displayImage, setDisplayImage] = useState(null);
     const [isCtrlDown, setIsCtrlDown] = useState(false);
 
-    var width = PREVIEWER_BASE_WIDTH;//configContext.config.canvasWidth;
+    var width = PREVIEWER_BASE_WIDTH;
     var height = PREVIEWER_BASE_HEIGHT;
     var scaleRatio = {x: PREVIEWER_VIEW_WIDTH/width, y: PREVIEWER_VIEW_HEIGHT/height};
 
@@ -153,13 +151,6 @@ function ImagePreviewer({imageURL}) {
             downloadBtn.removeEventListener("click", download);
         }
     }, [scaleRatio])
-
-    useEffect(() => {
-        console.log(`width x height: ${width} x ${height}`);
-        console.log(`zoom factor: ${zoomFactorRef.current}`);
-        console.log(`scale ratio: ${scaleRatio.x}, ${scaleRatio.y}`);
-        console.log(`canvas scale: ${zoomFactorRef.current * scaleRatio.x}, ${zoomFactorRef.current * scaleRatio.y}`);
-    })
 
     return (
         <div>

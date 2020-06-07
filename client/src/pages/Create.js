@@ -95,14 +95,12 @@ function Create() {
             <Container id="create-container">
                 <Button id="create-btn-prev">Previous</Button>
                 <Button id="create-btn-next">Next</Button>
-                <Button onClick={() => {console.log(form); console.log(blobRef.current);}}>Blob test</Button>
                 {
                     formStep === CREATE_STEP_IMPORT
                         ? <ImageCanvas form={form} setBlob={setBlob} />
                     : formStep === CREATE_STEP_FORM
                         ? <CreateForm form={form} setForm={setForm} />
                     : formStep === CREATE_STEP_PREVIEW
-                        // ? <ImagePreviewer imageURL={"https://cheato.s3-ap-southeast-1.amazonaws.com/iop.png"} />
                         ? <ImagePreviewer imageURL={form.url} />
                     : <div></div>
                 }

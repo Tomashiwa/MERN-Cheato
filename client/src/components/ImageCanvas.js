@@ -116,61 +116,6 @@ function ImageCanvas({setBlob}) {
         }
     }, [drawnImages])
 
-    //Add downloading of cheatsheets to a button 
-    useEffect(() => {
-        // const downloadBtn = document.querySelector("#canvas-btn-download");
-        // const download = () => {            
-        //     const a = document.createElement("a");
-        //     document.body.appendChild(a);
-        //     a.href = stillLayerRef.current.getCanvas()._canvas.toDataURL("image/png", 1.0);
-        //     a.download = "cheatsheet.png";
-        //     a.click();
-        //     document.body.removeChild(a);
-        // };
-
-        // downloadBtn.addEventListener("click", download);
-        // return () => downloadBtn.removeEventListener("click",download);
-    }, [])
-
-    //Upload cheatsheet to backend
-    useEffect(() => {
-        // const uploadBtn = document.querySelector("#canvas-btn-upload");
-        
-        // const saveToDb = url => {
-        //     const newCheatsheet = {
-        //         file: url,
-        //         user: 0,
-        //         school: "nus",
-        //         module: "cs1101s",
-        //         description: "nil",
-        //         datetime: Date.now(),
-        //         rating: 0,
-        //         comments: []
-        //     }
-
-        //     axios.post("/api/cheatsheets", newCheatsheet)
-        //         .catch(err => console.log((err)));
-        // }
-
-        // const upload = event => {
-        //     const canvas = stillLayerRef.current.getCanvas()._canvas;
-            
-        //     canvas.toBlob(blob => {
-        //         const formData = new FormData();
-        //         formData.append("file", blob, `cheatsheet-${uuid.v4()}.png`);
-        //         axios.post("/upload", formData)
-        //             .then(res => {
-        //                 console.log(res.data.data.Location);
-        //                 saveToDb(res.data.data.Location);
-        //             })
-        //             .catch(err => console.log(err));    
-        //     })
-        // };
-
-        // uploadBtn.addEventListener("click", upload);
-        // return () => uploadBtn.removeEventListener("click", upload);
-    }, [])
-
     //Zooming and layer changing
     useEffect(() => {
         var clickedImage = null;
