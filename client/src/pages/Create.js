@@ -18,6 +18,7 @@ function Create() {
     const [formStep, setFormStep] = useState(CREATE_STEP_IMPORT);
     const [form, setForm] = useState({
         blob: null,
+        url: "",
         name: "",
         school: "",
         module: "",
@@ -46,27 +47,28 @@ function Create() {
                 comments: []
             }
 
-            console.log(newCheatsheet);
-            // Axios.post("/api/cheatsheets", newCheatsheet)
-            //     .catch(err => console.log(err));
+            Axios.post("/api/cheatsheets", newCheatsheet)
+                .catch(err => {
+                    console.log("saving to db error:");
+                    console.log(err);
+                });
         }
 
         const upload = () => {
             const formData = new FormData();
             formData.append("file", form.blob, `${form.name}.png`);
 
-            console.log("uploading formdata");
-            console.log(formData);
-
-            // console.log("saving to db");
-            // saveToDb("dummyurl");
-
-            // Axios.post("/upload", formData)
-            //     .then(res => {
-            //         console.log(res.data.data.Location);
-            //         saveToDb(res.data.data.Location);                    
-            //     })
-            //     .catch(err => console.log(err));
+            console.log(`Start uploading ${form.name}.png...`);
+            Axios.post("/upload", formData)
+                .then(res => {
+                    console.log(`Uploaded to ${res.data.data.Location}`);
+                    saveToDb(res.data.data.Location);
+                    setForm({...form, ...{url: res.data.data.Location}});
+                })
+                .catch(err => {
+                    console.log("upload error:");
+                    console.log(err);
+                });
         };
 
         const next = e => {
