@@ -9,7 +9,8 @@ const CheatsheetSchema = new Schema({
     description: {type: String, required: true},
     datetime: {type: Date, required: true},
     rating: {type: Number, required: true},
-    comments: {type: Array, required: true}
+    comments: {type: Array, required: true},
+    isPublic: {type:Boolean, required:true}
     
     // name: {type: String, required: true},
     // date: {type: Date, default: Date.now}
