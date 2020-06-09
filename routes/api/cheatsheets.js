@@ -27,7 +27,8 @@ router.post("/", (req, res) => {
         description: req.body.description,
         datetime: req.body.datetime,
         rating: req.body.rating,
-        comments: req.body.comments
+        comments: req.body.comments,
+        isPublic: req.body.isPublic
 
         // name: req.body.name
         //Date left out, as it has default value of Date.now()

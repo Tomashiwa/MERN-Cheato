@@ -47,7 +47,8 @@ function Create() {
                 description: form.description,
                 datetime: Date.now(),
                 rating: 0,
-                comments: []
+                comments: [],
+                isPublic: form.isPublic
             }
 
             Axios.post("/api/cheatsheets", newCheatsheet)
