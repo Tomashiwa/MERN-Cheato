@@ -29,7 +29,8 @@ function ImageCanvas({setBlob}) {
     const sortMenuRef = useRef(null);
     const viewMenuRef = useRef(null);
 
-    const [drawnImages, setDrawnImages] = useState([]);
+    const drawnImagesRef = useRef([]);
+    // const [drawnImages, setDrawnImages] = useState([]);
     const isCtrlDownRef = useRef(false);
 
     var width = configContext.config.canvasWidth;
@@ -41,7 +42,28 @@ function ImageCanvas({setBlob}) {
     const drawLayers = () => {
         dragLayerRef.current.draw();
         stillLayerRef.current.draw();
+        console.log("Layers drawn");
     }
+
+    useEffect(() => {
+        console.log("imageContext changed !!");
+    }, [imagesContext]);
+
+    useEffect(() => {
+        console.log("configContext changed !!");
+    }, [configContext]);
+
+    useEffect(() => {
+        console.log("drawImagesRef.current changed !!");
+    }, [drawnImagesRef]);
+
+    useEffect(() => {
+        console.log("setBlob changed !!");
+    }, [setBlob]);
+
+    useEffect(() => {
+        console.log("scaleRatio changed !!");
+    }, [scaleRatio]);
 
     // Set true resolution of canvases. Drag canvas is  at a lower res to preserve performance.
     useEffect(()=> {
@@ -80,10 +102,16 @@ function ImageCanvas({setBlob}) {
             stage.off("mousedown", dragImageStart);
             stage.off("mouseup", dragImageEnd);
         }
-    }, [drawnImages])
+    }, [])
+    // }, [drawnImages])
 
     // Updates drawnImage when imagesContext updates
     useEffect(() => {
+        if(drawnImagesRef.current.length > 0) {
+            drawnImagesRef.current.forEach(image => image.remove());
+            drawnImagesRef.current = [];
+        }
+
         const newDrawnImages = imagesContext.images.map(givenImage => {
             const img = new Konva.Image({
                 image: givenImage.element,
@@ -96,25 +124,49 @@ function ImageCanvas({setBlob}) {
             return img;
         });
 
-        setDrawnImages(newDrawnImages);
+        drawnImagesRef.current = newDrawnImages;
+        // setDrawnImages(newDrawnImages);
+
+        //
+        drawnImagesRef.current.forEach(image => {
+            image.moveTo(stillLayerRef.current);
+        });
+        // drawnImages.forEach(image => {
+        //     image.moveTo(stillLayerRef.current);
+        // });
+
+        drawLayers();
+        //
 
         return () => {
-            setDrawnImages([]);
+            //
+            // drawnImagesRef.current.forEach(image => image.remove());
+            // drawnImages.forEach(image => image.remove());
+            //
+            
+            // drawnImagesRef.current = [];
+            // console.log("drawnImages cleared:");
+            // console.log(drawnImagesRef.current);
+            // setDrawnImages([]);
         }
     }, [imagesContext.images])
 
     // Draw images within Still layer when stillImages updates
-    useEffect(() => {
-        drawnImages.forEach(image => {
-            image.moveTo(stillLayerRef.current);
-        });
+    // useEffect(() => {
+    //     drawnImagesRef.current.forEach(image => {
+    //         image.moveTo(stillLayerRef.current);
+    //     });
+    //     // drawnImages.forEach(image => {
+    //     //     image.moveTo(stillLayerRef.current);
+    //     // });
 
-        drawLayers();
+    //     drawLayers();
 
-        return () => {
-            drawnImages.forEach(image => image.remove());
-        }
-    }, [drawnImages])
+    //     return () => {
+    //         drawnImagesRef.current.forEach(image => image.remove());
+    //         // drawnImages.forEach(image => image.remove());
+    //     }
+    // })
 
     //Zooming and layer changing
     useEffect(() => {
@@ -234,7 +286,7 @@ function ImageCanvas({setBlob}) {
             window.removeEventListener("keyup", ctrlUp);
             window.removeEventListener("click", closeImageMenu);
         }
-    }, [drawnImages, scaleRatio])
+    }, [scaleRatio])
 
     //Importing images
     useEffect(() => {
@@ -486,13 +538,30 @@ function ImageCanvas({setBlob}) {
     //Saving canvas blob data to be uploaded later
     useEffect(() => {
         const canvas = stillLayerRef.current.getCanvas()._canvas;
+        const stage = stageRef.current;
+        const drawnImages = drawnImagesRef.current;
+
         return () => {
+            console.log(`images: ${drawnImages.length}`);
+
             if(drawnImages.length > 0) {
-                console.log(`saving blob with ${drawnImages.length} images`);
-                canvas.toBlob(blob => setBlob(blob));
+                console.log(`saving blob`);
+    
+                zoomFactorRef.current = 1.0;
+                stage.position({x: 0.0, y: 0.0});
+                stage.scale({x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y});
+                stage.draw();
+                console.log("Stage redrawn");
+    
+                canvas.toBlob(blob => {
+                    setBlob(blob);
+                    console.log("blob saved");
+                    console.log(blob);
+                });
             }
         };
-    }, [drawnImages, setBlob])
+    })
+    // }, [drawnImages, setBlob])
 
     return (
         <div>
