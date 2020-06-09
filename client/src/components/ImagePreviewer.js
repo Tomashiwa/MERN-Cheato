@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from "reactstrap";
 
 import Konva from "konva";

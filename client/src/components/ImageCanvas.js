@@ -30,7 +30,7 @@ function ImageCanvas({setBlob}) {
     const viewMenuRef = useRef(null);
 
     const [drawnImages, setDrawnImages] = useState([]);
-    const [isCtrlDown, setIsCtrlDown] = useState(false);
+    const isCtrlDownRef = useRef(false);
 
     var width = configContext.config.canvasWidth;
     var height = configContext.config.canvasHeight;
@@ -122,20 +122,20 @@ function ImageCanvas({setBlob}) {
 
         const ctrlDown = e => {
             if(e.ctrlKey) {
-                setIsCtrlDown(true);
+                isCtrlDownRef.current = true;
             }
         }
 
         const ctrlUp = e => {
             if(!e.ctrlKey) {
-                setIsCtrlDown(false);
+                isCtrlDownRef.current = false
             }
         }
 
         const zoom = e => {
             const scrollValue = e.evt.deltaY;
 
-            if(isCtrlDown && scrollValue !== 0) {
+            if(isCtrlDownRef.current && scrollValue !== 0) {
                 e.evt.preventDefault();
 
                 const oldScale = {x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}
@@ -234,7 +234,7 @@ function ImageCanvas({setBlob}) {
             window.removeEventListener("keyup", ctrlUp);
             window.removeEventListener("click", closeImageMenu);
         }
-    }, [drawnImages, isCtrlDown, scaleRatio])
+    }, [drawnImages, scaleRatio])
 
     //Importing images
     useEffect(() => {
@@ -474,6 +474,14 @@ function ImageCanvas({setBlob}) {
             resetZoomBtn.removeEventListener("click", resetZoom);
         }
     }, [scaleRatio])
+
+    useEffect(() => {
+        console.log("Mount ImageCanvas");
+        
+        return () => {
+            console.log("Unmount ImageCanvas");
+        }
+    })
 
     //Saving canvas blob data to be uploaded later
     useEffect(() => {
