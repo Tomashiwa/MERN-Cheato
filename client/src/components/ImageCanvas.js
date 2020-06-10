@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { ImagesContext, ConfigContext } from "../App";
 import { Button } from "reactstrap";
 
 import Konva from 'konva';
 import { Stage, Layer } from 'react-konva';
 
-// import axios from "axios";
-// import uuid from "uuid";
-
 import "./css/ImageCanvas.css";
 import { binPack } from '../library/BinPack';
 
+//Dimension of the canvas window presented in the page
 export const CANVAS_VIEW_WIDTH = 1123;
 export const CANVAS_VIEW_HEIGHT = 794;
+//Actual dimension of the canvas within
 export const CANVAS_BASE_WIDTH = 3508;
 export const CANVAS_BASE_HEIGHT = 2480;
 
@@ -20,6 +19,7 @@ function ImageCanvas({setBlob}) {
     const imagesContext = useContext(ImagesContext);
     const configContext = useContext(ConfigContext);
 
+    //Refs are used to prevent any unnecessary re-render which may cause performance issues
     const stageRef = useRef(null);
     const dragLayerRef = useRef(null);
     const stillLayerRef = useRef(null);
@@ -30,42 +30,22 @@ function ImageCanvas({setBlob}) {
     const viewMenuRef = useRef(null);
 
     const drawnImagesRef = useRef([]);
-    // const [drawnImages, setDrawnImages] = useState([]);
     const isCtrlDownRef = useRef(false);
 
-    var width = configContext.config.canvasWidth;
-    var height = configContext.config.canvasHeight;
-    var scaleRatio = {x: CANVAS_VIEW_WIDTH/width, y: CANVAS_VIEW_HEIGHT/height};
+    const widthRef = useRef(configContext.config.canvasWidth);
+    const heightRef = useRef(configContext.config.canvasHeight);
+    const scaleRatioRef = useRef({x: CANVAS_VIEW_WIDTH/widthRef.current, y: CANVAS_VIEW_HEIGHT/heightRef.current});
 
     const zoomFactorRef = useRef(1.0);
 
     const drawLayers = () => {
         dragLayerRef.current.draw();
         stillLayerRef.current.draw();
-        console.log("Layers drawn");
     }
 
-    useEffect(() => {
-        console.log("imageContext changed !!");
-    }, [imagesContext]);
-
-    useEffect(() => {
-        console.log("configContext changed !!");
-    }, [configContext]);
-
-    useEffect(() => {
-        console.log("drawImagesRef.current changed !!");
-    }, [drawnImagesRef]);
-
-    useEffect(() => {
-        console.log("setBlob changed !!");
-    }, [setBlob]);
-
-    useEffect(() => {
-        console.log("scaleRatio changed !!");
-    }, [scaleRatio]);
-
-    // Set true resolution of canvases. Drag canvas is  at a lower res to preserve performance.
+    // Set true resolution of canvases. 
+    // 1st canvas: Render the image that is being dragged at a lower resolution. Remove the need of rendering the still images as well
+    // 2nd canvas: Render the other images that are not moving at a higher resolution. 
     useEffect(()=> {
         const stillSceneCanvas = stillLayerRef.current.getCanvas();
         const dragSceneCanvas = dragLayerRef.current.getCanvas();
@@ -74,7 +54,7 @@ function ImageCanvas({setBlob}) {
         dragSceneCanvas.setPixelRatio(1.0);
     }, []);
 
-    // Shift the image to an appropriate layer before and after the drag event
+    // Shift an image to its appropriate layer before and after a mouseDrag event
     useEffect(() => {
         var draggedImage = null;
 
@@ -103,9 +83,8 @@ function ImageCanvas({setBlob}) {
             stage.off("mouseup", dragImageEnd);
         }
     }, [])
-    // }, [drawnImages])
 
-    // Updates drawnImage when imagesContext updates
+    // Refresh drawnImages when imagesContext updates
     useEffect(() => {
         if(drawnImagesRef.current.length > 0) {
             drawnImagesRef.current.forEach(image => image.remove());
@@ -118,6 +97,7 @@ function ImageCanvas({setBlob}) {
                 x: givenImage.x,
                 y: givenImage.y,
                 draggable: true,
+                isLoad: false
             });
             img.transformsEnabled("position");
             img.cache();
@@ -125,50 +105,14 @@ function ImageCanvas({setBlob}) {
         });
 
         drawnImagesRef.current = newDrawnImages;
-        // setDrawnImages(newDrawnImages);
-
-        //
         drawnImagesRef.current.forEach(image => {
             image.moveTo(stillLayerRef.current);
         });
-        // drawnImages.forEach(image => {
-        //     image.moveTo(stillLayerRef.current);
-        // });
 
         drawLayers();
-        //
-
-        return () => {
-            //
-            // drawnImagesRef.current.forEach(image => image.remove());
-            // drawnImages.forEach(image => image.remove());
-            //
-            
-            // drawnImagesRef.current = [];
-            // console.log("drawnImages cleared:");
-            // console.log(drawnImagesRef.current);
-            // setDrawnImages([]);
-        }
     }, [imagesContext.images])
 
-    // Draw images within Still layer when stillImages updates
-    // useEffect(() => {
-    //     drawnImagesRef.current.forEach(image => {
-    //         image.moveTo(stillLayerRef.current);
-    //     });
-    //     // drawnImages.forEach(image => {
-    //     //     image.moveTo(stillLayerRef.current);
-    //     // });
-
-    //     drawLayers();
-
-    //     return () => {
-    //         drawnImagesRef.current.forEach(image => image.remove());
-    //         // drawnImages.forEach(image => image.remove());
-    //     }
-    // })
-
-    //Zooming and layer changing
+    // Zooming via ctrl + scrollwheel and layer change via right clicking to access a context menu
     useEffect(() => {
         var clickedImage = null;
 
@@ -190,7 +134,7 @@ function ImageCanvas({setBlob}) {
             if(isCtrlDownRef.current && scrollValue !== 0) {
                 e.evt.preventDefault();
 
-                const oldScale = {x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}
+                const oldScale = {x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y}
                 const pointer = stageRef.current.getPointerPosition();
 
                 const pointerRelativePos = {
@@ -209,8 +153,8 @@ function ImageCanvas({setBlob}) {
                 }
 
                 const newScale = {
-                    x: zoomFactorRef.current * scaleRatio.x, 
-                    y: zoomFactorRef.current * scaleRatio.y
+                    x: zoomFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * scaleRatioRef.current.y
                 };
                 const newPos = {
                     x: pointer.x - pointerRelativePos.x * newScale.x,
@@ -286,9 +230,9 @@ function ImageCanvas({setBlob}) {
             window.removeEventListener("keyup", ctrlUp);
             window.removeEventListener("click", closeImageMenu);
         }
-    }, [scaleRatio])
+    }, [scaleRatioRef])
 
-    //Importing images
+    // Import user's images and arrange them if declared, before sending them to be drawn on the canvas
     useEffect(() => {
         const importMenuBtn = document.querySelector("#canvas-btn-menu-import");
         const importBtn = document.querySelector("#canvas-btn-import");
@@ -382,6 +326,13 @@ function ImageCanvas({setBlob}) {
                     canvasWidth: sortedResult.width,
                     canvasHeight: sortedResult.height
                 }});
+
+                widthRef.current = sortedResult.width;
+                heightRef.current = sortedResult.height;
+                scaleRatioRef.current = {x: CANVAS_VIEW_WIDTH/widthRef.current, y: CANVAS_VIEW_HEIGHT/heightRef.current};
+
+                stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+                stageRef.current.draw();
             }).catch(err => {
                 console.log(`Error encountered while loading: ${err}`);
             })
@@ -404,7 +355,7 @@ function ImageCanvas({setBlob}) {
         };
     }, [imagesContext, configContext]);
 
-    //Sorting images
+    // Sorting of images via a dropdown menus in the toolbar's Sort by button
     useEffect(() => {
         const sortMenuBtn = document.querySelector("#canvas-btn-menu-sort");
         const sortLargestSideBtn = document.querySelector("#canvas-btn-sort-largestside");
@@ -425,37 +376,27 @@ function ImageCanvas({setBlob}) {
             }
         }
 
-        const sortLargestSide = e => {
-            const sortedResult = binPack(imagesContext.images, "largestSide", CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
+        const sort = method => {
+            const sortedResult = binPack(imagesContext.images, method, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
             imagesContext.setImages(sortedResult.images);
             configContext.setConfig({...configContext.config, ...{
-                sortOrder: "largestSide"
+                canvasWidth: sortedResult.width,
+                canvasHeight: sortedResult.height,
+                sortOrder: method
             }});
-        };
-
-        const sortWidth = e => {
-            const sortedResult = binPack(imagesContext.images, "width", CANVAS_BASE_WIDTH, CANVAS_VIEW_HEIGHT);
-            imagesContext.setImages(sortedResult.images);
-            configContext.setConfig({...configContext.config, ...{
-                sortOrder: "width"
-            }});
+            
+            widthRef.current = sortedResult.width;
+            heightRef.current = sortedResult.height;
+            scaleRatioRef.current = {x: CANVAS_VIEW_WIDTH/widthRef.current, y: CANVAS_VIEW_HEIGHT/heightRef.current};
+            
+            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+            stageRef.current.draw();
         }
 
-        const sortHeight = e => {            
-            const sortedResult = binPack(imagesContext.images, "height", CANVAS_BASE_WIDTH, CANVAS_VIEW_HEIGHT);
-            imagesContext.setImages(sortedResult.images);
-            configContext.setConfig({...configContext.config, ...{
-                sortOrder: "height"
-            }});
-        }
-
-        const sortArea = e => {
-            const sortedResult = binPack(imagesContext.images, "area", CANVAS_BASE_WIDTH, CANVAS_VIEW_HEIGHT);
-            imagesContext.setImages(sortedResult.images);
-            configContext.setConfig({...configContext.config, ...{
-                sortOrder: "area"
-            }});
-        }
+        const sortLargestSide = () => sort("largestSide");
+        const sortWidth = () => sort("width");
+        const sortHeight = () => sort("height");
+        const sortArea = () => sort("area");
 
         sortMenuBtn.addEventListener("click", sortMenu);
         window.addEventListener("click", closeSortMenu);
@@ -474,7 +415,7 @@ function ImageCanvas({setBlob}) {
         }
     }, [imagesContext, configContext])
 
-    //Setting resolution
+    // Reseting stage's postion and scaling via a drop down menu in the toolbar's View button
     useEffect(() => {
         const viewMenuBtn = document.querySelector("#canvas-btn-menu-view");
         const resetBtn = document.querySelector("#canvas-btn-view-reset");
@@ -496,7 +437,7 @@ function ImageCanvas({setBlob}) {
 
         const reset = e => {
             zoomFactorRef.current = 1.0;
-            stageRef.current.scale({x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y});
+            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
             stageRef.current.position({x: 0.0, y: 0.0});
             stageRef.current.batchDraw();
         }
@@ -508,7 +449,7 @@ function ImageCanvas({setBlob}) {
 
         const resetZoom = e => {
             zoomFactorRef.current = 1.0;
-            stageRef.current.scale({x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y});
+            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
             stageRef.current.batchDraw();
         }
 
@@ -525,43 +466,28 @@ function ImageCanvas({setBlob}) {
             resetPosBtn.removeEventListener("click", resetPos);
             resetZoomBtn.removeEventListener("click", resetZoom);
         }
-    }, [scaleRatio])
+    }, [scaleRatioRef])
 
-    useEffect(() => {
-        console.log("Mount ImageCanvas");
-        
-        return () => {
-            console.log("Unmount ImageCanvas");
-        }
-    })
-
-    //Saving canvas blob data to be uploaded later
+    //Saves canvas data when this component unmounts. This data will then be uploaded as an image.
     useEffect(() => {
         const canvas = stillLayerRef.current.getCanvas()._canvas;
         const stage = stageRef.current;
         const drawnImages = drawnImagesRef.current;
 
         return () => {
-            console.log(`images: ${drawnImages.length}`);
-
             if(drawnImages.length > 0) {
-                console.log(`saving blob`);
-    
                 zoomFactorRef.current = 1.0;
                 stage.position({x: 0.0, y: 0.0});
-                stage.scale({x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y});
+                stage.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+
                 stage.draw();
-                console.log("Stage redrawn");
     
                 canvas.toBlob(blob => {
                     setBlob(blob);
-                    console.log("blob saved");
-                    console.log(blob);
                 });
             }
         };
     })
-    // }, [drawnImages, setBlob])
 
     return (
         <div>
@@ -574,7 +500,7 @@ function ImageCanvas({setBlob}) {
             </span>
 
             <div>
-                <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={{x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}} draggable>
+                <Stage ref={stageRef} width={CANVAS_VIEW_WIDTH} height={CANVAS_VIEW_HEIGHT} draggable>
                     <Layer ref={stillLayerRef}></Layer>
                     <Layer ref={dragLayerRef}></Layer>
                 </Stage>
@@ -612,9 +538,6 @@ function ImageCanvas({setBlob}) {
                     <button id="canvas-btn-back">Bring to back</button>
                 </div>
             </div>
-
-            {/* <Button id="canvas-btn-download" color="dark">Download</Button>
-            <Button id="canvas-btn-upload" color="dark">Upload</Button> */}
         </div>
     )
 }
