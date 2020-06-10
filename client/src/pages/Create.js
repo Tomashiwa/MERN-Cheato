@@ -8,7 +8,9 @@ import ImagePreviewer from '../components/ImagePreviewer';
 
 import {Container, Button} from 'reactstrap';
 import "./css/Create.css"
+
 import Axios from 'axios';
+import uuid from "uuid";
 
 export const CREATE_STEP_IMPORT = 1;
 export const CREATE_STEP_FORM = 2;
@@ -57,7 +59,7 @@ function Create() {
 
         const upload = () => {
             const formData = new FormData();
-            formData.append("file", blobRef.current, `${form.name}.png`);
+            formData.append("file", blobRef.current, `${form.name}-${uuid.v4()}.png`);
 
             Axios.post("/upload", formData)
                 .then(res => {
