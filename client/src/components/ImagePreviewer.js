@@ -18,13 +18,11 @@ function ImagePreviewer({imageURL}) {
     const zoomFactorRef = useRef(1.0);
     
     const [displayImage, setDisplayImage] = useState(null);
-    // const [isCtrlDown, setIsCtrlDown] = useState(false);
-
     const isCtrlDownRef = useRef(false);
 
-    var width = PREVIEWER_BASE_WIDTH;
-    var height = PREVIEWER_BASE_HEIGHT;
-    var scaleRatio = {x: PREVIEWER_VIEW_WIDTH/width, y: PREVIEWER_VIEW_HEIGHT/height};
+    const widthRef = useRef(PREVIEWER_BASE_WIDTH);
+    const heightRef = useRef(PREVIEWER_BASE_HEIGHT);
+    const scaleRatioRef = useRef({x: PREVIEWER_VIEW_WIDTH/widthRef.current, y: PREVIEWER_VIEW_HEIGHT/heightRef.current});
 
     // Set true resolution of canvases
     useEffect(()=> {
@@ -42,8 +40,14 @@ function ImagePreviewer({imageURL}) {
                 image: img
             });
             image.transformsEnabled("none");
+
             layerRef.current.add(image);
-            layerRef.current.batchDraw();
+
+            zoomFactorRef.current = 1.0;
+            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+            stageRef.current.position({x: 0.0, y: 0.0});
+            layerRef.current.draw();
+
             setDisplayImage(image);
         }
         img.crossOrigin="anonymous";
@@ -54,24 +58,23 @@ function ImagePreviewer({imageURL}) {
     useEffect(() => {
         const ctrlDown = e => {
             if(e.ctrlKey) {
-                setIsCtrlDown(true);
+                isCtrlDownRef.current = true;
             }
         }
 
         const ctrlUp = e => {
             if(!e.ctrlKey) {
-                setIsCtrlDown(false);
+                isCtrlDownRef.current = false;
             }
         }
 
         const zoom = e => {
             const scrollValue = e.evt.deltaY;
 
-            if(isCtrlDownRef && scrollValue !== 0) {
-            // if(isCtrlDown && scrollValue !== 0) {
+            if(isCtrlDownRef.current && scrollValue !== 0) {
                 e.evt.preventDefault();
 
-                const oldScale = {x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}
+                const oldScale = {x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y}
                 const pointer = stageRef.current.getPointerPosition();
 
                 const pointerRelativePos = {
@@ -90,8 +93,8 @@ function ImagePreviewer({imageURL}) {
                 }
 
                 const newScale = {
-                    x: zoomFactorRef.current * scaleRatio.x, 
-                    y: zoomFactorRef.current * scaleRatio.y
+                    x: zoomFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * scaleRatioRef.current.y
                 };
                 const newPos = {
                     x: pointer.x - pointerRelativePos.x * newScale.x,
@@ -114,8 +117,7 @@ function ImagePreviewer({imageURL}) {
             window.removeEventListener("keyup", ctrlUp);
             stage.off("wheel", zoom);
         }
-    }, [isCtrlDownRef, scaleRatio])
-    // }, [isCtrlDown, scaleRatio])
+    }, [isCtrlDownRef, scaleRatioRef])
 
     //Disable context menu
     useEffect(() => {
@@ -132,7 +134,7 @@ function ImagePreviewer({imageURL}) {
 
         const reset = e => {
             zoomFactorRef.current = 1.0;
-            stageRef.current.scale({x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y});
+            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
             stageRef.current.position({x: 0.0, y: 0.0});
             layerRef.current.draw();
         }
@@ -154,11 +156,11 @@ function ImagePreviewer({imageURL}) {
             resetBtn.removeEventListener("click", reset);
             downloadBtn.removeEventListener("click", download);
         }
-    }, [scaleRatio])
+    }, [scaleRatioRef])
 
     return (
         <div>
-            <Stage ref={stageRef} width={scaleRatio.x * width} height={scaleRatio.y * height} scale={{x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}} draggable>
+            <Stage ref={stageRef} width={PREVIEWER_VIEW_WIDTH} height={PREVIEWER_VIEW_HEIGHT} draggable>
                 <Layer ref={layerRef}></Layer>
             </Stage>
 
