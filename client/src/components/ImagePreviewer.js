@@ -18,7 +18,9 @@ function ImagePreviewer({imageURL}) {
     const zoomFactorRef = useRef(1.0);
     
     const [displayImage, setDisplayImage] = useState(null);
-    const [isCtrlDown, setIsCtrlDown] = useState(false);
+    // const [isCtrlDown, setIsCtrlDown] = useState(false);
+
+    const isCtrlDownRef = useRef(false);
 
     var width = PREVIEWER_BASE_WIDTH;
     var height = PREVIEWER_BASE_HEIGHT;
@@ -65,7 +67,8 @@ function ImagePreviewer({imageURL}) {
         const zoom = e => {
             const scrollValue = e.evt.deltaY;
 
-            if(isCtrlDown && scrollValue !== 0) {
+            if(isCtrlDownRef && scrollValue !== 0) {
+            // if(isCtrlDown && scrollValue !== 0) {
                 e.evt.preventDefault();
 
                 const oldScale = {x: zoomFactorRef.current * scaleRatio.x, y: zoomFactorRef.current * scaleRatio.y}
@@ -111,7 +114,8 @@ function ImagePreviewer({imageURL}) {
             window.removeEventListener("keyup", ctrlUp);
             stage.off("wheel", zoom);
         }
-    }, [isCtrlDown, scaleRatio])
+    }, [isCtrlDownRef, scaleRatio])
+    // }, [isCtrlDown, scaleRatio])
 
     //Disable context menu
     useEffect(() => {
