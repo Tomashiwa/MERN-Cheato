@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {Form, FormGroup, Label, Input, FormFeedback, FormText, Button} from "reactstrap";
 
 import "./css/CreateForm.css"
 
+import axios from "axios";
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
 
 function CreateForm({form, setForm}) {
     const [testBool, setTestBool] = useState(false);
+
+    const schoolsRef = useRef([]);
+    const modulesRef = useRef([]);
 
     const [nameState, setNameState] = useState({valid: false, invalid: false});
 
@@ -20,6 +24,38 @@ function CreateForm({form, setForm}) {
         }
         return isInvalid;
     }
+
+    // Fetching schools and modules from server
+    useEffect(() => {
+        const fetchSchs = () => {
+            axios.get("/api/schools")
+                .then(res => {
+                    schoolsRef.current = res.data;
+
+                    console.log("Schools loaded: ");
+                    console.log(schoolsRef.current);
+                })
+                .catch(err => {
+                    console.log(`Fail to fetch Schools: ${err}`);
+                });
+        }
+
+        const fetchMods = () => {
+            axios.get("/api/modules")
+                .then(res => {
+                    modulesRef.current = res.data;
+
+                    console.log("Modules loaded: ");
+                    console.log(modulesRef.current);
+                })
+                .catch(err => {
+                    console.log(`Fail to fetch modules: ${err}`);
+                });
+        }
+
+        fetchSchs();
+        fetchMods();
+    }, []);
 
     //Load previous entires if avaliable
     useEffect(() => {
@@ -101,8 +137,7 @@ function CreateForm({form, setForm}) {
             </FormGroup>
             <FormGroup>
                 <Label>School</Label>
-                <Input id="createform-input-sch" invalid/>
-                <FormFeedback invalid>invalid school</FormFeedback>
+                <Input id="createform-input-sch"/>
                 <FormText>School that your cheatsheet is for.</FormText>
             </FormGroup>
             <FormGroup>

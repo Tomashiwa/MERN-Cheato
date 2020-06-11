@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const CommentSchema = new Schema({
     user: {type:String, required: true},
     datetime:  {type:Date, required: true},
-    cheatsheet:  {type:ObjectId, required: true},
+    cheatsheet:  {type: Object, required: true},
     body:  {type:String, required: true}
 });
 

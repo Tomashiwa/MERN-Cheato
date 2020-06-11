@@ -1,8 +1,11 @@
 const express = require("express");
 const app = express();
 
+const users = require("./routes/api/users");
+const schools = require("./routes/api/schools");
+const modules = require("./routes/api/modules");
 const cheatsheets = require("./routes/api/cheatsheets");
-const rectangles = require("./routes/api/rectangles");
+const comments = require("./routes/api/comments");
 const uploads = require("./routes/upload.router");
 
 // Load body-parser middleware
@@ -18,9 +21,12 @@ mongoose.connect(
 );
 
 //Use Routes
-//Direct anything with path that goes /api/cheatsheets or /api/cheatsheets/... to cheatsheets.js 
+//Direct anything with path that goes /api/cheatsheets or /api/cheatsheets/... to cheatsheets.js
+app.use("/api/users", users);
+app.use("/api/schools", schools);
+app.use("/api/modules", modules);
 app.use("/api/cheatsheets", cheatsheets);
-app.use("/api/rectangles", rectangles);
+app.use("/api/comments", comments);
 app.use("/upload", uploads);
 
 //Serve static assets (frontend stuff) if in production
