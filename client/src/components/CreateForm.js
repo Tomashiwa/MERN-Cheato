@@ -8,14 +8,14 @@ import axios from "axios";
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
 
 function CreateForm({form, setForm}) {
-    const [testBool, setTestBool] = useState(false);
-
     const [schools, setSchools] = useState([]);
     const [modules, setModules] = useState([]);
-    // const schoolsRef = useRef([]);
-    // const modulesRef = useRef([]);
 
     const [nameState, setNameState] = useState({valid: false, invalid: false});
+    const [schState, setSchState] = useState({isLoading: false, isDisabled: false, selected: {}});
+    const [modState, setModState] = useState({isLoading: false, isDisabled: false, selected: {}});
+
+    const [testBool, setTestBool] = useState(false);
 
     const hasInvalidSymbols = str => {
         let isInvalid = false;
@@ -28,68 +28,62 @@ function CreateForm({form, setForm}) {
         return isInvalid;
     }
 
+    const fetchSchs = callback => {
+        axios.get("/api/schools")
+            .then(res => {
+                const newSchools = res.data.map(school => {
+                    return {label: school.name, value: school.name};
+                })
+
+                console.log("Schools loaded: ");
+                console.log(newSchools);
+
+                setSchools(newSchools);
+                callback();
+            })
+            .catch(err => {
+                console.log(`Fail to fetch Schools: ${err}`);
+            });
+    }
+
+    const fetchMods = callback => {
+        axios.get("/api/modules")
+            .then(res => {
+                const newModules = res.data.map(module => {
+                    return {label: `${module.code} - ${module.title}`, value: module.code};
+                })
+
+                console.log("Modules loaded: ");
+                console.log(newModules);
+
+                setModules(newModules);
+                callback();
+            })
+            .catch(err => {
+                console.log(`Fail to fetch modules: ${err}`);
+            });
+    }
+
     // Fetching schools and modules from server
     useEffect(() => {
-        const fetchSchs = () => {
-            axios.get("/api/schools")
-                .then(res => {
-                    const newSchools = res.data.map(school => {
-                        return {label: school.name, value: school.name};
-                    })
-
-                    console.log("Schools loaded: ");
-                    console.log(newSchools);
-
-                    setSchools(newSchools);
-                })
-                .catch(err => {
-                    console.log(`Fail to fetch Schools: ${err}`);
-                });
-        }
-
-        const fetchMods = () => {
-            axios.get("/api/modules")
-                .then(res => {
-                    const newModules = res.data.map(module => {
-                        return {label: `${module.code} - ${module.title}`, value: module.code};
-                    })
-
-                    console.log("Modules loaded: ");
-                    console.log(newModules);
-
-                    setModules(newModules);
-                })
-                .catch(err => {
-                    console.log(`Fail to fetch modules: ${err}`);
-                });
-        }
-
         fetchSchs();
         fetchMods();
     }, []);
 
-    //Load previous entires if avaliable
+    // Load previous entires if avaliable
     useEffect(() => {
         const nameInput = document.querySelector("#createform-input-name");
-        // const schInput = document.querySelector("#createform-input-sch");
-        // const     = document.querySelector("#createform-input-mod");
         const descInput = document.querySelector("#createform-input-desc");
         const isPublicInput = document.querySelector("#createform-input-public");
 
         nameInput.value = form.name;
-        // schInput.value = form.school;
-        // modInput.value = form.module;
         descInput.value = form.description;
         isPublicInput.checked = form.isPublic;
     }, [form]);
 
-    //Save given details
+    // Verify the name and save it to the form
     useEffect(() => {
         const nameInput = document.querySelector("#createform-input-name");
-        // const schInput = document.querySelector("#createform-input-sch ");
-        // const modInput = document.querySelector("#createform-input-mod");
-        const descInput = document.querySelector("#createform-input-desc");
-        const isPublicInput = document.querySelector("#createform-input-public");
 
         const checkName = e => {
             const isValid = e.target.value.length && !hasInvalidSymbols(e.target.value);
@@ -99,47 +93,104 @@ function CreateForm({form, setForm}) {
                 setNameState({valid: isValid, invalid: isInvalid});
             }
         }
+
         const changeName = e => setForm({...form, ...{name: e.target.value}});
-
-        const checkSch = e => {
-            // Search through the fetched schools and check if the value matches any of those
-
-            // Create context menu that help to autocomplete with another button to add a new school
-        }
-        const changeSch = e => setForm({...form, ...{school: e.target.value}});
-        
-        const checkMod = e => {
-            // Search through the fetched modules and check if the value matches any of those
-
-            // Create context menu that help to autocomplete with another button to add a new module
-        }
-        const changeMod = e => setForm({...form, ...{module: e.target.value}});
-
-        const changeDesc = e => setForm({...form, ...{description: e.target.value}});
-        const changeIsPublic = e => setForm({...form, ...{isPublic: e.target.checked}});
 
         nameInput.addEventListener("input", checkName);
         nameInput.addEventListener("change", changeName);
 
-        // schInput.addEventListener("change", changeSch);
-        // modInput.addEventListener("change", changeMod);
-        descInput.addEventListener("change", changeDesc);
-        isPublicInput.addEventListener("change", changeIsPublic);
-
         return () => {
             nameInput.removeEventListener("input", checkName);
             nameInput.removeEventListener("change", changeName);
-            
-            // schInput.removeEventListener("change", changeSch);
-            // modInput.removeEventListener("change", changeMod);
-            descInput.removeEventListener("change", changeDesc);
-            isPublicInput.removeEventListener("change", changeIsPublic);
-        }
+        };
+    }, [form, nameState, setForm])
+
+    // Saving the description to the form
+    useEffect(() => {
+        const descInput = document.querySelector("#createform-input-desc");
+        const changeDesc = e => setForm({...form, ...{description: e.target.value}});
+        
+        descInput.addEventListener("change", changeDesc);
+
+        return () => descInput.removeEventListener("change", changeDesc);
     }, [form, setForm, nameState]);
+
+    // Saving the isPublic to the form
+    useEffect(() => {
+        const isPublicInput = document.querySelector("#createform-input-public");
+        const changeIsPublic = e => setForm({...form, ...{isPublic: e.target.checked}});
+
+        isPublicInput.addEventListener("change", changeIsPublic);
+
+        return () => isPublicInput.removeEventListener("change", changeIsPublic);
+    }, [form, setForm, nameState]);
+
+    // Save a selected school to the form
+    const saveSchool = option => {
+        console.log(`Saving sch:`);
+        console.log(option);
+
+        setSchState({...schState, ...{selected: {label: option.label, value: option.value}}});
+        setForm({...form, ...{school: option.value}})
+    }
+
+    // Save a selected module to the form
+    const saveModule = option => {
+        console.log(`Saving mod:`);
+        console.log(option);
+
+        setModState({...modState, ...{selected: {label: option.label, value: option.value}}});
+        setForm({...form, ...{module: option.value}});
+    }
+
+    // Add new school to the backend
+    const addSchool = value => {
+        console.log(`Adding a new school: ${value}`);
+
+        const newSchool = {name: value}
+
+        setSchState({...schState, ...{isDisabled: true, isLoading: true}});
+
+        axios.post("/api/schools", newSchool)
+            .then(res => {
+                console.log("Added new school, result is:");
+                console.log(res);
+
+                fetchSchs(() => {
+                    console.log("Saved to form and return state");
+                    setSchState({isDisabled: false, isLoading: false, selected: {label: value, value: value}});
+                    setForm({...form, ...{school: value}})
+                });
+            })
+            .catch(err => console.log(`Fail to add school: ${err}`));
+    }
+
+    // Add new module to the backend
+    const addModule = value => {
+        console.log(`Adding a new module: ${value}`);
+
+        const newModule = {code: value, title: value}
+
+        setModState({...modState, ...{isDisabled: true, isLoading: true}});
+
+        axios.post("/api/modules", newModule)
+            .then(res => {
+                console.log("Added new module, result is:");
+                console.log(res);
+
+                fetchMods(() => {
+                    console.log("Saved to form and return state");
+                    setModState({isDisabled: false, isLoading: false, selected: {label: value, value: value}});
+                    setForm({...form, ...{module: value}})
+                });
+            })
+            .catch(err => console.log(`Fail to add mod: ${err}`));
+    }
 
     return (
         <Form id="form-create">
-            <Button onClick={() => setTestBool(!testBool)}>Test bool</Button>
+            {/* <Button onClick={() => setTestBool(!testBool)}>test bool</Button>
+            <Button onClick={() => console.log(form)}>print form</Button> */}
             <FormGroup>
                 <Label>Name</Label>
                 <Input id="createform-input-name" 
@@ -152,34 +203,26 @@ function CreateForm({form, setForm}) {
                 <Label>School</Label>
                 <CreatableSelect 
                     isClearable
-                    isDisabled={false}
-                    isLoading={false}
-                    onChange={option => {
-                        console.log(`changed to ${option.value}`);
-                        setForm({...form, ...{school: option.value}})
-                    }}
-                    onCreateOption={newValue => console.log(`Created a new value: ${newValue}`)}
+                    isDisabled={schState.isDisabled}
+                    isLoading={schState.isLoading}
+                    onChange={saveSchool}
+                    onCreateOption={addSchool}
                     options={schools}
-                    value={form.school.name}
+                    value={schState.selected}
                 />
-                {/* <Input id="createform-input-sch"/> */}
                 <FormText>School that your cheatsheet is for.</FormText>
             </FormGroup>
             <FormGroup>
                 <Label>Module</Label>
                 <CreatableSelect
                     isClearable
-                    isDisabled={false}
-                    isLoading={false}
-                    onChange={option => {
-                        console.log(`changed to ${option.value}`);
-                        setForm({...form, ...{module: option.value}});
-                    }}
-                    onCreateOption={newOption => console.log(`Created a new mod: ${newOption}`)}
+                    isDisabled={modState.isDisabled}
+                    isLoading={modState.isLoading}
+                    onChange={saveModule}
+                    onCreateOption={addModule}
                     options={modules}
-                    value={form.module.name}
+                    value={modState.selected}
                 />
-                {/* <Input id="createform-input-mod"/> */}
                 <FormText>Module that your cheatsheet is for.</FormText>
             </FormGroup>
             <FormGroup>
