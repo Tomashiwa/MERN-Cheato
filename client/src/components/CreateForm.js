@@ -1,9 +1,26 @@
-import React, { useEffect } from 'react'
-import {Form, FormGroup, Label, Input, FormText} from "reactstrap";
+import React, { useEffect, useState } from 'react'
+import {Form, FormGroup, Label, Input, FormFeedback, FormText, Button} from "reactstrap";
 
 import "./css/CreateForm.css"
 
+import { invalidSymbols } from "../misc/InvalidSymbols.js";
+
 function CreateForm({form, setForm}) {
+    const [testBool, setTestBool] = useState(false);
+
+    const [nameState, setNameState] = useState({valid: false, invalid: false});
+
+    const hasInvalidSymbols = str => {
+        let isInvalid = false;
+        for(let symbol of invalidSymbols) {
+            if(str.includes(symbol)) {
+                isInvalid = true;
+                break;
+            }
+        }
+        return isInvalid;
+    }
+
     //Load previous entires if avaliable
     useEffect(() => {
         const nameInput = document.querySelector("#createform-input-name");
@@ -27,37 +44,65 @@ function CreateForm({form, setForm}) {
         const descInput = document.querySelector("#createform-input-desc");
         const isPublicInput = document.querySelector("#createform-input-public");
 
+        const checkName = e => {
+            const isValid = e.target.value.length && !hasInvalidSymbols(e.target.value);
+            const isInvalid = e.target.value.length && hasInvalidSymbols(e.target.value);
+
+            if(nameState.valid !== isValid || nameState.invalid !== isInvalid) {
+                setNameState({valid: isValid, invalid: isInvalid});
+            }
+        }
         const changeName = e => setForm({...form, ...{name: e.target.value}});
+
+        const checkSch = e => {
+            // Search through the fetched schools and check if the value matches any of those
+
+            // Create context menu that help to autocomplete with another button to add a new school
+        }
         const changeSch = e => setForm({...form, ...{school: e.target.value}});
+        
+        const checkMod = e => {
+            // Search through the fetched modules and check if the value matches any of those
+
+            // Create context menu that help to autocomplete with another button to add a new module
+        }
         const changeMod = e => setForm({...form, ...{module: e.target.value}});
+
         const changeDesc = e => setForm({...form, ...{description: e.target.value}});
         const changeIsPublic = e => setForm({...form, ...{isPublic: e.target.checked}});
 
+        nameInput.addEventListener("input", checkName);
         nameInput.addEventListener("change", changeName);
+
         schInput.addEventListener("change", changeSch);
         modInput.addEventListener("change", changeMod);
         descInput.addEventListener("change", changeDesc);
         isPublicInput.addEventListener("change", changeIsPublic);
 
         return () => {
+            nameInput.removeEventListener("input", checkName);
             nameInput.removeEventListener("change", changeName);
+            
             schInput.removeEventListener("change", changeSch);
             modInput.removeEventListener("change", changeMod);
             descInput.removeEventListener("change", changeDesc);
             isPublicInput.removeEventListener("change", changeIsPublic);
         }
-    }, [form, setForm])
+    }, [form, setForm, nameState]);
 
     return (
         <Form id="form-create">
+            <Button onClick={() => setTestBool(!testBool)}>Test bool</Button>
             <FormGroup>
                 <Label>Name</Label>
-                <Input id="createform-input-name"/>
+                <Input id="createform-input-name" valid={nameState.valid} invalid={nameState.invalid}/>
+                <FormFeedback invalid>Name cannot contains an invalid symbol.</FormFeedback>
                 <FormText>Enter the name of your cheatsheet.</FormText>
             </FormGroup>
             <FormGroup>
                 <Label>School</Label>
-                <Input id="createform-input-sch"/>
+                <Input id="createform-input-sch" invalid/>
+                <FormFeedback invalid>invalid school</FormFeedback>
                 <FormText>School that your cheatsheet is for.</FormText>
             </FormGroup>
             <FormGroup>
