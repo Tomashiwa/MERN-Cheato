@@ -46,7 +46,7 @@ function Create() {
 
     const setBlob = blob => blobRef.current = blob;
 
-    // Navigation by pressing Next button
+    // Navigation events that happened when Next button is pressed
     useEffect(() => {
         const saveToDb = url => {
             const newCheatsheet = {
@@ -70,11 +70,11 @@ function Create() {
             formData.append("file", blobRef.current, `${form.name}-${uuid.v4()}.png`);
             
             axios.post("/upload", formData)
-            .then(res => {
-                saveToDb(res.data.data.Location);
-                setForm({...form, ...{url: res.data.data.Location}});
-            })
-            .catch(err => console.log(err));
+                .then(res => {
+                    saveToDb(res.data.data.Location);
+                    setForm({...form, ...{url: res.data.data.Location}});
+                })
+                .catch(err => console.log(err));
         };
 
         const hasStepCompleted = () => {

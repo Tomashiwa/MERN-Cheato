@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button } from "reactstrap";
+import { Button, Spinner } from "reactstrap";
 
 import Konva from "konva";
 import { Stage, Layer } from "react-konva";
@@ -18,6 +18,7 @@ function ImagePreviewer({imageURL}) {
     const zoomFactorRef = useRef(1.0);
     
     const [displayImage, setDisplayImage] = useState(null);
+    const [hasLoaded, setHasLoaded] = useState(false);
     const isCtrlDownRef = useRef(false);
 
     const widthRef = useRef(PREVIEWER_BASE_WIDTH);
@@ -49,6 +50,7 @@ function ImagePreviewer({imageURL}) {
             layerRef.current.draw();
 
             setDisplayImage(image);
+            setHasLoaded(true);
         }
         img.crossOrigin="anonymous";
         img.src = imageURL;
@@ -159,7 +161,8 @@ function ImagePreviewer({imageURL}) {
     }, [scaleRatioRef])
 
     return (
-        <div>
+        <div id="previewer">
+
             <Stage ref={stageRef} width={PREVIEWER_VIEW_WIDTH} height={PREVIEWER_VIEW_HEIGHT} draggable>
                 <Layer ref={layerRef}></Layer>
             </Stage>
@@ -168,6 +171,9 @@ function ImagePreviewer({imageURL}) {
                 <Button id="previewer-btn-reset">Reset view</Button>
                 <Button id="previewer-btn-download">Download</Button>
             </span>
+
+            { hasLoaded ? "" : <Spinner id="previewer-spinner" color="light"/> }
+            {/* <Spinner id="previewer-spinner" color="light"/> */}
         </div>
     )
 }
