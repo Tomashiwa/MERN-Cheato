@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react'
-import {Form, FormGroup, Label, Input, FormFeedback, FormText, Button} from "reactstrap";
+import React, { useEffect, useState } from 'react'
+import { Form, FormGroup, Label, Input, FormFeedback, FormText } from "reactstrap";
 import CreatableSelect from "react-select/creatable";
 
 import "./css/CreateForm.css"
@@ -14,8 +14,6 @@ function CreateForm({form, setForm}) {
     const [nameState, setNameState] = useState({valid: false, invalid: false});
     const [schState, setSchState] = useState({isLoading: false, isDisabled: false, selected: {}});
     const [modState, setModState] = useState({isLoading: false, isDisabled: false, selected: {}});
-
-    const [testBool, setTestBool] = useState(false);
 
     const hasInvalidSymbols = str => {
         let isInvalid = false;
@@ -34,10 +32,6 @@ function CreateForm({form, setForm}) {
                 const newSchools = res.data.map(school => {
                     return {label: school.name, value: school.name};
                 })
-
-                console.log("Schools loaded: ");
-                console.log(newSchools);
-
                 setSchools(newSchools);
                 callback();
             })
@@ -52,10 +46,6 @@ function CreateForm({form, setForm}) {
                 const newModules = res.data.map(module => {
                     return {label: `${module.code} - ${module.title}`, value: module.code};
                 })
-
-                console.log("Modules loaded: ");
-                console.log(newModules);
-
                 setModules(newModules);
                 callback();
             })
@@ -127,37 +117,29 @@ function CreateForm({form, setForm}) {
 
     // Save a selected school to the form
     const saveSchool = option => {
-        console.log(`Saving sch:`);
-        console.log(option);
-
-        setSchState({...schState, ...{selected: {label: option.label, value: option.value}}});
-        setForm({...form, ...{school: option.value}})
+        if(option) {
+            setSchState({...schState, ...{selected: {label: option.label, value: option.value}}});
+            setForm({...form, ...{school: option.value}})
+        }
     }
 
     // Save a selected module to the form
     const saveModule = option => {
-        console.log(`Saving mod:`);
-        console.log(option);
-
-        setModState({...modState, ...{selected: {label: option.label, value: option.value}}});
-        setForm({...form, ...{module: option.value}});
+        if(option) {
+            setModState({...modState, ...{selected: {label: option.label, value: option.value}}});
+            setForm({...form, ...{module: option.value}});
+        }
     }
 
     // Add new school to the backend
     const addSchool = value => {
-        console.log(`Adding a new school: ${value}`);
-
         const newSchool = {name: value}
 
         setSchState({...schState, ...{isDisabled: true, isLoading: true}});
 
         axios.post("/api/schools", newSchool)
             .then(res => {
-                console.log("Added new school, result is:");
-                console.log(res);
-
                 fetchSchs(() => {
-                    console.log("Saved to form and return state");
                     setSchState({isDisabled: false, isLoading: false, selected: {label: value, value: value}});
                     setForm({...form, ...{school: value}})
                 });
@@ -167,19 +149,13 @@ function CreateForm({form, setForm}) {
 
     // Add new module to the backend
     const addModule = value => {
-        console.log(`Adding a new module: ${value}`);
-
         const newModule = {code: value, title: value}
 
         setModState({...modState, ...{isDisabled: true, isLoading: true}});
 
         axios.post("/api/modules", newModule)
             .then(res => {
-                console.log("Added new module, result is:");
-                console.log(res);
-
                 fetchMods(() => {
-                    console.log("Saved to form and return state");
                     setModState({isDisabled: false, isLoading: false, selected: {label: value, value: value}});
                     setForm({...form, ...{module: value}})
                 });
@@ -189,8 +165,6 @@ function CreateForm({form, setForm}) {
 
     return (
         <Form id="form-create">
-            {/* <Button onClick={() => setTestBool(!testBool)}>test bool</Button>
-            <Button onClick={() => console.log(form)}>print form</Button> */}
             <FormGroup>
                 <Label>Name</Label>
                 <Input id="createform-input-name" 
