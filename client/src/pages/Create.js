@@ -7,6 +7,7 @@ import CreateForm from '../components/CreateForm';
 import ImagePreviewer from '../components/ImagePreviewer';
 
 import {Container, Button} from 'reactstrap';
+import {Link} from "react-router-dom"
 import "./css/Create.css"
 
 import axios from 'axios';
@@ -45,7 +46,7 @@ function Create() {
 
     const setBlob = blob => blobRef.current = blob;
 
-    //Form navigation
+    // Navigation by pressing Next button
     useEffect(() => {
         const saveToDb = url => {
             const newCheatsheet = {
@@ -86,26 +87,12 @@ function Create() {
             }
         }
 
-        const prevStep = () => {
-            const prevStep = formStep - 1 > 0
-                ? formStep - 1
-                : CREATE_STEP_IMPORT;
-            setFormStep(prevStep);
-        }
-
         const nextStep = () => {
             const nextStep = formStep + 1 < 3
                 ? formStep + 1
                 : CREATE_STEP_PREVIEW;
             setFormStep(nextStep);
         }
-
-        const prev = e => {
-            if(hasStepCompleted()) {
-                endStep();
-                prevStep();
-            }
-        };
 
         const next = e => {
             if(hasStepCompleted()) {
@@ -114,15 +101,15 @@ function Create() {
             }
         };
 
-        // const prevBtn = document.querySelector("#create-btn-prev");
         const nextBtn = document.querySelector("#create-btn-next");
-
-        // prevBtn.addEventListener("click", prev);
-        nextBtn.addEventListener("click", next);
+        if(nextBtn) {
+            nextBtn.addEventListener("click", next);
+        }
 
         return () => {
-            // prevBtn.removeEventListener("click", prev);
-            nextBtn.removeEventListener("click", next);
+            if(nextBtn) {
+                nextBtn.removeEventListener("click", next);
+            }
         }
     }, [formStep, form])
 
@@ -151,8 +138,13 @@ function Create() {
             <Container id="create-container">
                 <ImagesContext.Provider value={{images, setImages}}>
                     <ConfigContext.Provider value={{config, setConfig}}>    
-                        {/* <Button id="create-btn-prev">Previous</Button> */}
-                        <Button id="create-btn-next" disabled={!nextEnabled}>Next</Button>
+                        {
+                            formStep === CREATE_STEP_PREVIEW
+                                ? <Link to="/">
+                                    <Button id="create-btn-finish">Finish</Button>
+                                  </Link>
+                                : <Button id="create-btn-next" disabled={!nextEnabled}>Next</Button>
+                        }
                         {
                             formStep === CREATE_STEP_IMPORT
                                 ? <ImageCanvas form={form} setBlob={setBlob} />
