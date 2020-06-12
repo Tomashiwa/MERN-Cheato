@@ -9,14 +9,27 @@ import ImagePreviewer from '../components/ImagePreviewer';
 import {Container, Button} from 'reactstrap';
 import "./css/Create.css"
 
-import Axios from 'axios';
+import axios from 'axios';
 import uuid from "uuid";
+
+import {CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "../components/ImageCanvas"
 
 export const CREATE_STEP_IMPORT = 1;
 export const CREATE_STEP_FORM = 2;
 export const CREATE_STEP_PREVIEW = 3;
 
+export const ImagesContext = React.createContext(null);
+export const ConfigContext = React.createContext(null);
+
 function Create() {
+    const [images, setImages] = useState([]);
+    const [config, setConfig] = useState({
+        arrangement: "generated",
+        sortOrder: "largestSide",
+        resolution: "a4",
+        canvasWidth: CANVAS_BASE_WIDTH,
+        canvasHeight: CANVAS_BASE_HEIGHT
+    });
     const [formStep, setFormStep] = useState(CREATE_STEP_IMPORT);
     const [form, setForm] = useState({
         url: "",
@@ -26,6 +39,7 @@ function Create() {
         description: "",
         isPublic: false
     });
+    const [nextEnabled, setNextEnabled] = useState(false);
 
     const blobRef = useRef(null);
 
@@ -33,13 +47,6 @@ function Create() {
 
     //Form navigation
     useEffect(() => {
-        const prev = e => {
-            const prevStep = formStep - 1 > 0
-                ? formStep - 1
-                : CREATE_STEP_IMPORT;
-            setFormStep(prevStep);
-        };
-
         const saveToDb = url => {
             const newCheatsheet = {
                 file: url,
@@ -53,60 +60,110 @@ function Create() {
                 isPublic: form.isPublic
             }
 
-            Axios.post("/api/cheatsheets", newCheatsheet)
+            axios.post("/api/cheatsheets", newCheatsheet)
                 .catch(err => console.log(err));
         }
-
+        
         const upload = () => {
             const formData = new FormData();
             formData.append("file", blobRef.current, `${form.name}-${uuid.v4()}.png`);
-
-            Axios.post("/upload", formData)
-                .then(res => {
-                    saveToDb(res.data.data.Location);
-                    setForm({...form, ...{url: res.data.data.Location}});
-                })
-                .catch(err => console.log(err));
+            
+            axios.post("/upload", formData)
+            .then(res => {
+                saveToDb(res.data.data.Location);
+                setForm({...form, ...{url: res.data.data.Location}});
+            })
+            .catch(err => console.log(err));
         };
 
-        const next = e => {
+        const hasStepCompleted = () => {
+            return true;
+        }
+
+        const endStep = () => {
             if(formStep === CREATE_STEP_FORM) {
                 upload();
             }
+        }
 
+        const prevStep = () => {
+            const prevStep = formStep - 1 > 0
+                ? formStep - 1
+                : CREATE_STEP_IMPORT;
+            setFormStep(prevStep);
+        }
+
+        const nextStep = () => {
             const nextStep = formStep + 1 < 3
                 ? formStep + 1
                 : CREATE_STEP_PREVIEW;
             setFormStep(nextStep);
+        }
+
+        const prev = e => {
+            if(hasStepCompleted()) {
+                endStep();
+                prevStep();
+            }
         };
 
-        const prevBtn = document.querySelector("#create-btn-prev");
+        const next = e => {
+            if(hasStepCompleted()) {
+                endStep();
+                nextStep();
+            }
+        };
+
+        // const prevBtn = document.querySelector("#create-btn-prev");
         const nextBtn = document.querySelector("#create-btn-next");
 
-        prevBtn.addEventListener("click", prev);
+        // prevBtn.addEventListener("click", prev);
         nextBtn.addEventListener("click", next);
 
         return () => {
-            prevBtn.removeEventListener("click", prev);
+            // prevBtn.removeEventListener("click", prev);
             nextBtn.removeEventListener("click", next);
         }
     }, [formStep, form])
+
+    // Verify if user can proceed to next step and toggle the Next button
+    useEffect(() => {
+        if(formStep === CREATE_STEP_PREVIEW && nextEnabled) {
+            setNextEnabled(false);
+        } else if(formStep === CREATE_STEP_FORM) {
+            if(!nextEnabled && form.name.length > 0 && form.school.length > 0 && form.module.length > 0) {
+                setNextEnabled(true);
+            } else if(nextEnabled && (form.name.length === 0 || form.school.length === 0 || form.module.length === 0)) {
+                setNextEnabled(false);
+            }
+        } else if(formStep === CREATE_STEP_IMPORT) {
+            if(!nextEnabled && images.length > 0) {
+                setNextEnabled(true);
+            } else if(nextEnabled && images.length <= 0) {
+                setNextEnabled(false);
+            }
+        }
+    }, [formStep, form.name, form.school, form.module, images, nextEnabled]);
 
     return (    
         <div>
             <AppNavbar />
             <Container id="create-container">
-                <Button id="create-btn-prev">Previous</Button>
-                <Button id="create-btn-next">Next</Button>
-                {
-                    formStep === CREATE_STEP_IMPORT
-                        ? <ImageCanvas form={form} setBlob={setBlob} />
-                    : formStep === CREATE_STEP_FORM
-                        ? <CreateForm form={form} setForm={setForm} />
-                    : formStep === CREATE_STEP_PREVIEW
-                        ? <ImagePreviewer imageURL={form.url} />
-                    : <div></div>
-                }
+                <ImagesContext.Provider value={{images, setImages}}>
+                    <ConfigContext.Provider value={{config, setConfig}}>    
+                        {/* <Button id="create-btn-prev">Previous</Button> */}
+                        <Button id="create-btn-next" disabled={!nextEnabled}>Next</Button>
+                        {
+                            formStep === CREATE_STEP_IMPORT
+                                ? <ImageCanvas form={form} setBlob={setBlob} />
+                            : formStep === CREATE_STEP_FORM
+                                ? <CreateForm form={form} setForm={setForm} />
+                            : formStep === CREATE_STEP_PREVIEW
+                                ? <ImagePreviewer imageURL={form.url} />
+                            : <div></div>
+                        }
+                    </ConfigContext.Provider>
+                </ImagesContext.Provider>
             </Container>
         </div>
     )

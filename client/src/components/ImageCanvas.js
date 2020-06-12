@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { Button } from "reactstrap";
 
 import Konva from 'konva';
@@ -6,6 +6,8 @@ import { Stage, Layer } from 'react-konva';
 
 import "./css/ImageCanvas.css";
 import { binPack } from '../library/BinPack';
+
+import { ImagesContext, ConfigContext } from "../pages/Create";
 
 //Dimension of the canvas window presented in the page
 export const CANVAS_VIEW_WIDTH = 1123;
@@ -25,20 +27,14 @@ function ImageCanvas({setBlob}) {
     const sortMenuRef = useRef(null);
     const viewMenuRef = useRef(null);
 
-    const [givenImages, setGivenImages] = useState([]);
-    const [config, setConfig] = useState({
-        arrangement: "generated",
-        sortOrder: "largestSide",
-        resolution: "a4",
-        canvasWidth: CANVAS_BASE_WIDTH,
-        canvasHeight: CANVAS_BASE_HEIGHT 
-    });
+    const imagesContext = useContext(ImagesContext);
+    const configContext = useContext(ConfigContext);
 
     const drawnImagesRef = useRef([]);
     const isCtrlDownRef = useRef(false);
 
-    const widthRef = useRef(config.canvasWidth);
-    const heightRef = useRef(config.canvasHeight);
+    const widthRef = useRef(configContext.config.canvasWidth);
+    const heightRef = useRef(configContext.config.canvasHeight);
     const scaleRatioRef = useRef({x: CANVAS_VIEW_WIDTH/widthRef.current, y: CANVAS_VIEW_HEIGHT/heightRef.current});
 
     const zoomFactorRef = useRef(1.0);
@@ -96,7 +92,7 @@ function ImageCanvas({setBlob}) {
             drawnImagesRef.current = [];
         }
 
-        const newDrawnImages = givenImages.map(givenImage => {
+        const newDrawnImages = imagesContext.images.map(givenImage => {
             const img = new Konva.Image({
                 image: givenImage.element,
                 x: givenImage.x,
@@ -115,7 +111,7 @@ function ImageCanvas({setBlob}) {
         });
 
         drawLayers();
-    }, [givenImages])
+    }, [imagesContext.images])
 
     // Zooming via ctrl + scrollwheel and layer change via right clicking to access a context menu
     useEffect(() => {
@@ -293,7 +289,7 @@ function ImageCanvas({setBlob}) {
                     };
                 });
                 
-                setGivenImages(images);
+                imagesContext.setImages(images);
             }).catch(err => {
                 console.log(`Error encountered while loading: ${err}`);
             })
@@ -326,10 +322,10 @@ function ImageCanvas({setBlob}) {
                     };
                 });
 
-                const sortedResult = binPack(images, config.sortOrder, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
+                const sortedResult = binPack(images, configContext.config.sortOrder, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
                 
-                setGivenImages(sortedResult.images);
-                setConfig({...config, ...{canvasWidth: sortedResult.width, canvasHeight: sortedResult.height}});
+                imagesContext.setImages(sortedResult.images);
+                configContext.setConfig({...configContext.config, ...{canvasWidth: sortedResult.width, canvasHeight: sortedResult.height}});
 
                 widthRef.current = sortedResult.width;
                 heightRef.current = sortedResult.height;
@@ -357,7 +353,7 @@ function ImageCanvas({setBlob}) {
             input.removeEventListener("change", loadImages);
             arrangedInput.removeEventListener("change", loadArrangedImages);
         };
-    }, [givenImages, setGivenImages, config, setConfig]);
+    }, [imagesContext, configContext]);
 
     // Sorting of images via a dropdown menus in the toolbar's Sort by button
     useEffect(() => {
@@ -381,10 +377,10 @@ function ImageCanvas({setBlob}) {
         }
 
         const sort = method => {
-            const sortedResult = binPack(givenImages, method, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
+            const sortedResult = binPack(imagesContext.images, method, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
 
-            setGivenImages(sortedResult.images);
-            setConfig({...config, ...{
+            imagesContext.setImages(sortedResult.images);
+            configContext.setConfig({...configContext.config, ...{
                 canvasWidth: sortedResult.width,
                 canvasHeight: sortedResult.height,
                 sortOrder: method
@@ -418,7 +414,7 @@ function ImageCanvas({setBlob}) {
             sortHeightBtn.removeEventListener("click", sortHeight);
             sortAreaBtn.removeEventListener("click", sortArea);
         }
-    }, [givenImages, setGivenImages, config, setConfig])
+    }, [imagesContext, configContext])
 
     // Reseting stage's postion and scaling via a drop down menu in the toolbar's View button
     useEffect(() => {
