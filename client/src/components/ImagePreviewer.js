@@ -12,7 +12,6 @@ export const PREVIEWER_BASE_WIDTH = 3508;
 export const PREVIEWER_BASE_HEIGHT = 2480;
 
 function ImagePreviewer({imageURL}) {
-
     const stageRef = useRef(null);
     const layerRef = useRef(null);
     const zoomFactorRef = useRef(1.0);
@@ -162,7 +161,6 @@ function ImagePreviewer({imageURL}) {
 
     return (
         <div id="previewer">
-
             <Stage ref={stageRef} width={PREVIEWER_VIEW_WIDTH} height={PREVIEWER_VIEW_HEIGHT} draggable>
                 <Layer ref={layerRef}></Layer>
             </Stage>
@@ -173,7 +171,6 @@ function ImagePreviewer({imageURL}) {
             </span>
 
             { hasLoaded ? "" : <Spinner id="previewer-spinner" color="light"/> }
-            {/* <Spinner id="previewer-spinner" color="light"/> */}
         </div>
     )
 }

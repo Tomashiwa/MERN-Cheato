@@ -133,3 +133,16 @@
 #canvas-view-menu button:hover {
     background-color: lightgray;
 }
+
+#canvas-stage-div {
+    position: relative;
+}
+
+#canvas-spinner {
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useContext } from 'react';
-import { Button } from "reactstrap";
+import React, { useEffect, useRef, useContext, useState } from 'react';
+import { Button, Spinner } from "reactstrap";
 
 import Konva from 'konva';
 import { Stage, Layer } from 'react-konva';
@@ -38,6 +38,8 @@ function ImageCanvas({setBlob}) {
     const scaleRatioRef = useRef({x: CANVAS_VIEW_WIDTH/widthRef.current, y: CANVAS_VIEW_HEIGHT/heightRef.current});
 
     const zoomFactorRef = useRef(1.0);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const drawLayers = () => {
         dragLayerRef.current.draw();
@@ -264,6 +266,7 @@ function ImageCanvas({setBlob}) {
 
         const loadImages = e => {
             const files = Array.from(e.target.files);
+            setIsLoading(true);
 
             Promise.all(files.map(file => {
                 return (new Promise((resolve, reject) => {
@@ -290,6 +293,7 @@ function ImageCanvas({setBlob}) {
                 });
                 
                 imagesContext.setImages(images);
+                setIsLoading(false);
             }).catch(err => {
                 console.log(`Error encountered while loading: ${err}`);
             })
@@ -297,6 +301,7 @@ function ImageCanvas({setBlob}) {
 
         const loadArrangedImages = e => {
             const files = Array.from(e.target.files);
+            setIsLoading(true);
 
             Promise.all(files.map(file => {
                 return (new Promise((resolve, reject) => {
@@ -310,7 +315,6 @@ function ImageCanvas({setBlob}) {
                 }));
             }))
             .then(imgs => {
-                console.log(`All img elements loaded`);
                 const images = imgs.map(img => {
                     return {
                         element: img, 
@@ -333,6 +337,8 @@ function ImageCanvas({setBlob}) {
 
                 stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
                 stageRef.current.draw();
+
+                setIsLoading(false);
             }).catch(err => {
                 console.log(`Error encountered while loading: ${err}`);
             })
@@ -491,7 +497,7 @@ function ImageCanvas({setBlob}) {
     })
 
     return (
-        <div>
+        <div id="canvas">
             <span id="canvas-toolbar">
                 <Button id="canvas-btn-menu-import">Import</Button>
                 <input id="canvas-input-import-arrange" type="file" accept="image/*" multiple style={{display: "none"}} />
@@ -500,11 +506,13 @@ function ImageCanvas({setBlob}) {
                 <Button id="canvas-btn-menu-view">View</Button>
             </span>
 
-            <div>
+            <div id="canvas-stage-div">
                 <Stage ref={stageRef} width={CANVAS_VIEW_WIDTH} height={CANVAS_VIEW_HEIGHT} draggable>
                     <Layer ref={stillLayerRef}></Layer>
                     <Layer ref={dragLayerRef}></Layer>
                 </Stage>
+
+                { isLoading ? <Spinner id="canvas-spinner" color="light" /> : ""}
             </div>
 
             <div id="canvas-import-menu" ref={importMenuRef}>
@@ -539,6 +547,7 @@ function ImageCanvas({setBlob}) {
                     <button id="canvas-btn-back">Bring to back</button>
                 </div>
             </div>
+
         </div>
     )
 }
