@@ -12,6 +12,7 @@ import "./css/Create.css"
 
 import axios from 'axios';
 import uuid from "uuid";
+import Stepper from 'react-stepper-horizontal';
 
 import {CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "../components/ImageCanvas"
 
@@ -137,7 +138,11 @@ function Create() {
             <AppNavbar />
             <Container id="create-container">
                 <ImagesContext.Provider value={{images, setImages}}>
-                    <ConfigContext.Provider value={{config, setConfig}}>    
+                    <ConfigContext.Provider value={{config, setConfig}}>
+                        <Stepper
+                            steps={[{title: "Create"}, {title: "Details"}, {title: "Preview"}]}
+                            activeStep={formStep - 1}
+                        />
                         {
                             formStep === CREATE_STEP_PREVIEW
                                 ? <Link to="/">
