@@ -161,9 +161,13 @@ function Create() {
                             {
                                 formStep === CREATE_STEP_PREVIEW
                                     ? <Link to="/">
-                                        <Button id="create-btn-finish">Finish</Button>
-                                    </Link>
-                                    : <Button id="create-btn-next" disabled={!nextEnabled}>Next</Button>
+                                        <Button id="create-btn-finish" outline color="light">
+                                            Finish
+                                        </Button>
+                                      </Link>
+                                    : <Button id="create-btn-next" disabled={!nextEnabled} outline color="light">
+                                        Next
+                                      </Button>
                             }
                         </div>
                         {
