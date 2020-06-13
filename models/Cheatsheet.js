@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const CheatsheetSchema = new Schema({
     file: {type: String, required: true},
     user: {type: Number, required: true},
+    name: {type: String, required: true},
     school: {type: String, required: true},
     module: {type: String, required: true},
     description: {type: String, required: true},

@@ -11,6 +11,7 @@ import './App.css'
 
 export const ImagesContext = React.createContext(null);
 export const ConfigContext = React.createContext(null);
+export const UserContext = React.createContext(null);
 
 function App() {
   const [images, setImages] = useState([]);
@@ -21,16 +22,19 @@ function App() {
     canvasWidth: CANVAS_BASE_WIDTH,
     canvasHeight: CANVAS_BASE_HEIGHT 
   });
+  const [userStatus, setUserStatus] = useState(false);
 
   return (
     <div className="App">
         <ImagesContext.Provider value={{images, setImages}}>
           <ConfigContext.Provider value={{config, setConfig}}>
-            <Switch>
-              <Route path="/create" component={Create} />
-              <Route path="/upload" component={Upload} />          
-              <Route path="/" component={Home} />
-            </Switch>
+            <UserContext.Provider value ={{userStatus, setUserStatus}}>
+              <Switch>
+                <Route path="/create" component={Create} />
+                <Route path="/upload" component={Upload} />          
+                <Route path="/" component={Home} />
+              </Switch>
+            </UserContext.Provider>
           </ConfigContext.Provider>
         </ImagesContext.Provider>
     </div>

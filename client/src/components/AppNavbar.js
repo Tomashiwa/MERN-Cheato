@@ -11,6 +11,8 @@ import {
     Container
 } from "reactstrap";
 
+import "./css/AppNavbar.css";
+
 function AppNavbar() {
     const [isOpen, setIsOpen] = useState(false);
     const userContext = useContext(UserContext);
@@ -44,7 +46,11 @@ function AppNavbar() {
                                         </svg>
                                     </button>
                                 </form>
+                                
+                                
                             </NavItem>
+                        
+                            <div class="d-flex align-items-center">
                             <NavItem>
                                 <NavLink href="/create">
                                     Create
@@ -65,7 +71,8 @@ function AppNavbar() {
                                     Login
                                 </NavLink>
                             </NavItem>
-                        </Nav>
+                            </div>
+                         </Nav>
                     </Collapse> 
                 </Container>
             </Navbar>

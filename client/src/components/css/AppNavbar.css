@@ -1,7 +1,5 @@
-.form{
-  align-self:center;
-}
-  
-.btn {
-   align-self:center;
+.form-inline{
+  position: absolute;
+  left: 500px;
+  top: 0px;
 }

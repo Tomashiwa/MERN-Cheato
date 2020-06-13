@@ -1,0 +1,94 @@
+*{
+    
+}
+
+/*body,html {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:100%;
+}*/
+
+.cheatsheet {
+    display:flex;
+    width:90%;
+    justify-content: space-around;
+}
+
+.first{
+    width:250px;
+    height:250px;
+    padding:0px;
+    position:relative;
+    background:#fff;
+    display:flex;
+    align-items:flex-end;
+    transition: .6s ease-out;
+    box-shadow:  0 10px 10px rbga(0,0,0),0.5;
+}
+
+.first img {
+    width:100%;
+    height:80%;
+    position:absolute;
+    top:0;
+    left:0;
+    object-fit:cover;
+
+}
+
+.cheatsheet-text {
+    position:absolute;
+    top:100;
+    left:100;
+
+}
+
+.first:hover .cheatsheet-text{
+    opacity:1;
+}
+
+.download {
+    position: absolute;
+    top:100;
+    right:0;
+    opacity:0;
+}
+
+.bookmark {
+    position:absolute;
+    top:0;
+    right:0;
+    opacity:0;
+}
+
+.preview {
+    position:relative;
+    top:0px;
+    left:125px;
+    opacity:0;
+}
+
+.author {
+    position:relative;
+    top:0px;
+    left:125px;
+    opacity:0;
+}
+
+.first:hover .download{
+    opacity:1;
+} 
+
+.first:hover .bookmark{
+    opacity:1;
+} 
+
+.first:hover .author{
+    opacity:1;
+} 
+
+.first:hover .preview{
+    opacity:1;
+} 
