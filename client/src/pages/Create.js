@@ -149,6 +149,15 @@ function Create() {
                             activeStep={formStep - 1}
                         />
                         {
+                            formStep === CREATE_STEP_IMPORT
+                                ? <h1>Import your cheatsheets</h1>
+                            : formStep === CREATE_STEP_FORM
+                                ? <h1>Fill in details</h1>
+                            : formStep === CREATE_STEP_PREVIEW
+                                ? <h1>Preview</h1>
+                            : <div></div>
+                        }
+                        {
                             formStep === CREATE_STEP_PREVIEW
                                 ? <Link to="/">
                                     <Button id="create-btn-finish">Finish</Button>

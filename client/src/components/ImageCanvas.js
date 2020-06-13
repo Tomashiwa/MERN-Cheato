@@ -268,6 +268,11 @@ function ImageCanvas({setBlob}) {
             const files = Array.from(e.target.files);
             setIsLoading(true);
 
+            if(files.length === 0) {
+                setIsLoading(false);
+                return;
+            }
+
             Promise.all(files.map(file => {
                 return (new Promise((resolve, reject) => {
                     const img = document.createElement("img");
@@ -302,6 +307,11 @@ function ImageCanvas({setBlob}) {
         const loadArrangedImages = e => {
             const files = Array.from(e.target.files);
             setIsLoading(true);
+
+            if(files.length === 0) {
+                setIsLoading(false);
+                return;
+            }
 
             Promise.all(files.map(file => {
                 return (new Promise((resolve, reject) => {
