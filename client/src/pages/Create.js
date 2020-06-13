@@ -140,6 +140,11 @@ function Create() {
                 <ImagesContext.Provider value={{images, setImages}}>
                     <ConfigContext.Provider value={{config, setConfig}}>
                         <Stepper
+                            size={40}
+                            activeColor="#505050"
+                            completeColor="#505050"
+                            activeTitleColor="#FFF"
+                            completeTitleColor="#FFF"
                             steps={[{title: "Create"}, {title: "Details"}, {title: "Preview"}]}
                             activeStep={formStep - 1}
                         />

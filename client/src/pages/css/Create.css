@@ -5,10 +5,6 @@
     justify-content: center;
 }
 
-#create-container div div div div a {
-    line-height: 30px !important;
-}
-
-#create-container div div div div span {
-    line-height: 30px !important;
+#create-container div div div div a,  #create-container div div div div span{
+    line-height: 35px !important;
 }
