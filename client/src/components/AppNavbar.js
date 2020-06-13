@@ -1,5 +1,5 @@
 import React, { useState, useEffect,useContext } from 'react'
-import { UserContext } from "../App";
+//import { UserContext } from "../App";
 import {
     Collapse,
     Navbar,
@@ -11,9 +11,11 @@ import {
     Container
 } from "reactstrap";
 
+import "./css/AppNavbar.css"
+
 function AppNavbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const userContext = useContext(UserContext);
+   // const userContext = useContext(UserContext);
     
     useEffect(() => {
         const toggler = document.querySelector(".navbar-toggler");
@@ -44,12 +46,8 @@ function AppNavbar() {
                                         </svg>
                                     </button>
                                 </form>
-<<<<<<< Updated upstream
-                            </NavItem>
-=======
                              </NavItem>
                         <div className="d-flex align-items-center">
->>>>>>> Stashed changes
                             <NavItem>
                                 <NavLink href="/create">
                                     Create
@@ -70,11 +68,12 @@ function AppNavbar() {
                                     Login
                                 </NavLink>
                             </NavItem>
+                          </div>  
                         </Nav>
                     </Collapse> 
                 </Container>
             </Navbar>
-        </div>
+        </div>    
     )
 }
 

@@ -1,14 +1,5 @@
-<<<<<<< Updated upstream
-.form{
-  align-self:center;
-=======
 .form-inline{
   position: relative;
   left: -200px;
   top: 0px;
->>>>>>> Stashed changes
-}
-  
-.btn {
-   align-self:center;
 }
