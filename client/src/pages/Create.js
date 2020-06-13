@@ -148,22 +148,24 @@ function Create() {
                             steps={[{title: "Create"}, {title: "Details"}, {title: "Preview"}]}
                             activeStep={formStep - 1}
                         />
-                        {
-                            formStep === CREATE_STEP_IMPORT
-                                ? <h1>Import your cheatsheets</h1>
-                            : formStep === CREATE_STEP_FORM
-                                ? <h1>Fill in details</h1>
-                            : formStep === CREATE_STEP_PREVIEW
-                                ? <h1>Preview</h1>
-                            : <div></div>
-                        }
-                        {
-                            formStep === CREATE_STEP_PREVIEW
-                                ? <Link to="/">
-                                    <Button id="create-btn-finish">Finish</Button>
-                                  </Link>
-                                : <Button id="create-btn-next" disabled={!nextEnabled}>Next</Button>
-                        }
+                        <div id="create-title-nav">
+                            {
+                                formStep === CREATE_STEP_IMPORT
+                                    ? <h2>Import your cheatsheets</h2>
+                                : formStep === CREATE_STEP_FORM
+                                    ? <h2>Fill in details</h2>
+                                : formStep === CREATE_STEP_PREVIEW
+                                    ? <h2>Preview</h2>
+                                : <div></div>
+                            }
+                            {
+                                formStep === CREATE_STEP_PREVIEW
+                                    ? <Link to="/">
+                                        <Button id="create-btn-finish">Finish</Button>
+                                    </Link>
+                                    : <Button id="create-btn-next" disabled={!nextEnabled}>Next</Button>
+                            }
+                        </div>
                         {
                             formStep === CREATE_STEP_IMPORT
                                 ? <ImageCanvas form={form} setBlob={setBlob} />

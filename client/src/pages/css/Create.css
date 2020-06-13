@@ -1,10 +1,26 @@
 #create-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
+}
+
+#create-container #form-create {
+    align-self: center;
 }
 
 #create-container div div div div a,  #create-container div div div div span{
     line-height: 35px !important;
+}
+
+#create-title-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#create-title-nav h2 {
+    color: white
 }
