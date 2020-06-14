@@ -11,6 +11,8 @@ import {
     Container
 } from "reactstrap";
 
+import SearchBar from "../components/SearchBar"
+
 import "./css/AppNavbar.css"
 
 function AppNavbar() {
@@ -35,7 +37,8 @@ function AppNavbar() {
                     <Collapse isOpen={isOpen} navbar>
                         <Nav className="ml-auto" navbar>
                             <NavItem>
-                                <form className = "form-inline">
+                                <SearchBar />
+                                {/* <form className = "form-inline">
                                     <input className = "form-control mr-sm-1" type = "search"
                                         placeholder = "Search" >
                                     </input>
@@ -45,7 +48,7 @@ function AppNavbar() {
                                             <path fillRule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
                                         </svg>
                                     </button>
-                                </form>
+                                </form> */}
                              </NavItem>
                         <div className="d-flex align-items-center">
                             <NavItem>

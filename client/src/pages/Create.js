@@ -12,6 +12,7 @@ import "./css/Create.css"
 
 import axios from 'axios';
 import uuid from "uuid";
+import mongoose from "mongoose";
 import Stepper from 'react-stepper-horizontal';
 
 import {CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "../components/ImageCanvas"
@@ -52,9 +53,14 @@ function Create() {
         const saveToDb = url => {
             const newCheatsheet = {
                 file: url,
-                user: 0,
-                school: form.school,
-                module: form.module,
+                user: mongoose.Types.ObjectId("5ed3517b37916dd3a876582d"),
+                // user: mongoose.Types.ObjectId(form.user._id),
+                // user: 0,
+                name: form.name,
+                school: mongoose.Types.ObjectId(form.school._id),
+                // school: form.school,
+                module: mongoose.Types.ObjectId(form.module._id),
+                // module: form.module,
                 description: form.description,
                 datetime: Date.now(),
                 rating: 0,

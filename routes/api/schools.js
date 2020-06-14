@@ -21,9 +21,6 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
     const newSchool = new School({
         name: req.body.name
-
-        // name: req.body.name
-        //Date left out, as it has default value of Date.now()
     });
 
     //Save to database
@@ -39,6 +36,20 @@ router.delete("/:id", (req, res) => {
         .then(school => school.remove().then(() => res.json({success: true})))
         .catch(err => res.status(404).json({success: false}));
 });
+
+// @route GET api/schools/searchTerm/limit
+// @descr Retrieve a set amount of schools that matches the search term
+// @access Public
+router.get("/search/:searchTerm/:limit", (req,res) => {
+    School
+        .find({$or: [
+            {name: {$regex: req.params.searchTerm, $options: "i"}}
+        ]})
+        .limit(parseInt(req.params.limit))
+        .sort({name: -1})
+        .then(schools => res.json(schools))
+        .catch(err => res.status(404).json({success: false}));
+})
 
 //So other files can read what's in this file
 module.exports = router;

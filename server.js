@@ -19,6 +19,7 @@ mongoose.connect(
     {useNewUrlParser: true, useUnifiedTopology: true},
     () => console.log("Connected...")
 );
+mongoose.set("useCreateIndex", true);
 
 //Use Routes
 //Direct anything with path that goes /api/cheatsheets or /api/cheatsheets/... to cheatsheets.js

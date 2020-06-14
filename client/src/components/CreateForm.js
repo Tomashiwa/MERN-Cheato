@@ -11,9 +11,12 @@ function CreateForm({form, setForm}) {
     const [schools, setSchools] = useState([]);
     const [modules, setModules] = useState([]);
 
+    const [schoolOptions, setSchoolOptions] = useState([]);
+    const [moduleOptions, setModuleOptions] = useState([]);
+
     const [nameState, setNameState] = useState({valid: false, invalid: false});
-    const [schState, setSchState] = useState({isLoading: false, isDisabled: false, selected: {}});
-    const [modState, setModState] = useState({isLoading: false, isDisabled: false, selected: {}});
+    const [schState, setSchState] = useState({isLoading: false, isDisabled: false, selected: null});
+    const [modState, setModState] = useState({isLoading: false, isDisabled: false, selected: null});
 
     const hasInvalidSymbols = str => {
         let isInvalid = false;
@@ -29,10 +32,7 @@ function CreateForm({form, setForm}) {
     const fetchSchs = callback => {
         axios.get("/api/schools")
             .then(res => {
-                const newSchools = res.data.map(school => {
-                    return {label: school.name, value: school.name};
-                })
-                setSchools(newSchools);
+                setSchools(res.data);
                 callback();
             })
             .catch(err => {
@@ -43,10 +43,7 @@ function CreateForm({form, setForm}) {
     const fetchMods = callback => {
         axios.get("/api/modules")
             .then(res => {
-                const newModules = res.data.map(module => {
-                    return {label: `${module.code} - ${module.title}`, value: module.code};
-                })
-                setModules(newModules);
+                setModules(res.data);
                 callback();
             })
             .catch(err => {
@@ -59,6 +56,13 @@ function CreateForm({form, setForm}) {
         fetchSchs();
         fetchMods();
     }, []);
+
+    useEffect(() => {
+        setSchoolOptions(schools.map(school => {return {label: school.name, value: school._id}}));
+        setModuleOptions(modules
+            .filter(module => module.school && schState.selected && module.school === schState.selected.value)
+            .map(module => {return {label: `${module.code} - ${module.name}`, value: module._id}}));
+    }, [schools, modules, schState.selected])
 
     // Load previous entires if avaliable
     useEffect(() => {
@@ -119,6 +123,7 @@ function CreateForm({form, setForm}) {
     const saveSchool = option => {
         if(option) {
             setSchState({...schState, ...{selected: {label: option.label, value: option.value}}});
+            setModState({...modState, ...{selected: null}})
             setForm({...form, ...{school: option.value}})
         }
     }
@@ -149,7 +154,7 @@ function CreateForm({form, setForm}) {
 
     // Add new module to the backend
     const addModule = value => {
-        const newModule = {code: value, title: value}
+        const newModule = {school: schState.selected.value, code: value, name: value}
 
         setModState({...modState, ...{isDisabled: true, isLoading: true}});
 
@@ -181,7 +186,7 @@ function CreateForm({form, setForm}) {
                     isLoading={schState.isLoading}
                     onChange={saveSchool}
                     onCreateOption={addSchool}
-                    options={schools}
+                    options={schoolOptions}
                     value={schState.selected}
                 />
                 <FormText>School that your cheatsheet is for.</FormText>
@@ -190,11 +195,11 @@ function CreateForm({form, setForm}) {
                 <Label>Module</Label>
                 <CreatableSelect
                     isClearable
-                    isDisabled={modState.isDisabled}
+                    isDisabled={modState.isDisabled || schState.selected === null}
                     isLoading={modState.isLoading}
                     onChange={saveModule}
                     onCreateOption={addModule}
-                    options={modules}
+                    options={moduleOptions}
                     value={modState.selected}
                 />
                 <FormText>Module that your cheatsheet is for.</FormText>
