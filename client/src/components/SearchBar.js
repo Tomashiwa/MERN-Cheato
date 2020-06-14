@@ -29,14 +29,16 @@ function SearchBar() {
                 .all([searchSheets, searchSchools, searchModules])
                 .then(results => {
                     const sheets = Array.prototype.slice.call(results[0].data)
-                        .sort(nameComparator)
-                        .map(sheet => {return {key: sheet._id, value: `Sheet - ${sheet.name}`}});
+                        // .sort(nameComparator)
+                        .map(sheet => {return {key: `sheet-${sheet._id}`, value: sheet.name}});
+                        // .map(sheet => {return {key: sheet._id, value: `Sheet - ${sheet.name}`}});
                     const schools =  Array.prototype.slice.call(results[1].data)
-                        .sort(nameComparator)
-                        .map(school => {return {key: school._id, value: `School - ${school.name}`}});
+                        // .sort(nameComparator)
+                        .map(school => {return {key: `school-${school._id}`, value: school.name}});
+                        // .map(school => {return {key: school._id, value: `School - ${school.name}`}});
                     const modules = Array.prototype.slice.call(results[2].data)
-                        .sort(nameComparator)
-                        .map(module => {return {key: module._id, value: `Module - ${module.name}`}});
+                        // .sort(nameComparator)
+                        .map(module => {return {key: `module-${module._id}`, value: module.name}});
                 
                     const newAutocompletes = sheets.concat(schools, modules).slice(0, resultLimit);
 
@@ -53,12 +55,12 @@ function SearchBar() {
         console.log(`option clicked: ${option.value}`);
         const clicked = option.value;
 
-        if(clicked.includes("Sheet")) {
+        if(clicked.includes("sheet")) {
             history.push(`/view/${option.key}`);
-        } else if(clicked.includes("School")) {
+        } else if(clicked.includes("school")) {
             console.log(`View sheets from the school, ${clicked}`);
             history.push(`/${option.key}`);
-        } else if(clicked.includes("Module")) {
+        } else if(clicked.includes("module")) {
             console.log(`View sheets from the module, ${clicked}`);
             history.push(`/${option.key}`);
         }
@@ -77,7 +79,7 @@ function SearchBar() {
             onChange={updateTerm}
             value={searchTerm}
             fuseConfigs={{
-                threshold: 0.8,
+                threshold: 0.6
               }}
         />
     )
