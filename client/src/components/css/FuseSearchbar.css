@@ -1,0 +1,5 @@
+#searchbar-list {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}

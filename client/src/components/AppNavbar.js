@@ -14,6 +14,7 @@ import {
 import SearchBar from "../components/SearchBar"
 
 import "./css/AppNavbar.css"
+import FuseSearchbar from './FuseSearchbar';
 
 function AppNavbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +38,8 @@ function AppNavbar() {
                     <Collapse isOpen={isOpen} navbar>
                         <Nav className="ml-auto" navbar>
                             <NavItem>
-                                <SearchBar />
+                                <FuseSearchbar />``
+                                {/* <SearchBar /> */}
                                 {/* <form className = "form-inline">
                                     <input className = "form-control mr-sm-1" type = "search"
                                         placeholder = "Search" >
