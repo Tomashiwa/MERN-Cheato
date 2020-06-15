@@ -5,6 +5,9 @@ import Fuse from "fuse.js";
 import {useHistory} from "react-router-dom";
 
 import "./css/FuseSearchbar.css"
+import sheetIcon from "../icons/icon-sheet.svg";
+import schoolIcon from "../icons/icon-school.svg";
+import moduleIcon from "../icons/icon-module.svg";
 
 function FuseSearchbar() {
     const [term, setTerm] = useState("");
@@ -22,6 +25,7 @@ function FuseSearchbar() {
             "data.description"
         ]
     });
+    const iconSizeRef = useRef(24);
 
     const history = useHistory();
 
@@ -96,10 +100,10 @@ function FuseSearchbar() {
         }
     }, [term, list, optionsRef, setResults])
 
-    useEffect(() => console.log("term changed !!"), [term]);
-    useEffect(() => console.log("list changed !!"), [list]);
-    useEffect(() => console.log("options changed !!"), [optionsRef]);
-    useEffect(() => console.log("results changed !!"), [setResults]);
+    // useEffect(() => console.log("term changed !!"), [term]);
+    // useEffect(() => console.log("list changed !!"), [list]);
+    // useEffect(() => console.log("options changed !!"), [optionsRef]);
+    // useEffect(() => console.log("results changed !!"), [setResults]);
 
     const browse = result => {
         console.log("Will be browsing...");
@@ -107,7 +111,6 @@ function FuseSearchbar() {
         if(result.type === "sheet") {
             console.log("Browsing a sheet");
             history.push(`/view/${result.id}`);
-            setIsFocused(false);
         } else if(result.type === "school") {
             console.log("Browsing a school");
             history.push(`/${result.id}`);
@@ -115,6 +118,10 @@ function FuseSearchbar() {
             console.log("Browsing a module");
             history.push(`/${result.id}`);
         }
+
+        setIsFocused(false);
+        setResults([]);
+        document.querySelector("#searchbar-input").value = "";
     }
 
     return (
@@ -128,7 +135,19 @@ function FuseSearchbar() {
                 {
                     isFocused && results.map(result => (
                         <Button key={result.id} onClick={() => browse(result)}>
-                            {`${result.type} - ${result.data.name}`}
+                            <div>
+                                <img 
+                                    src={result.type === "sheet" 
+                                            ? sheetIcon
+                                        :result.type === "school"
+                                            ? schoolIcon 
+                                        : moduleIcon} 
+                                    width={`${iconSizeRef.current}px`} 
+                                    height={`${iconSizeRef.current}px`} 
+                                    alt=""
+                                />
+                                {result.data.name}
+                            </div>
                         </Button>
                     ))
                 }
