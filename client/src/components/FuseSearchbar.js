@@ -100,10 +100,27 @@ function FuseSearchbar() {
         }
     }, [term, list, optionsRef, setResults])
 
-    // useEffect(() => console.log("term changed !!"), [term]);
-    // useEffect(() => console.log("list changed !!"), [list]);
-    // useEffect(() => console.log("options changed !!"), [optionsRef]);
-    // useEffect(() => console.log("results changed !!"), [setResults]);
+    // Search term upon pressing enter
+    useEffect(() => {
+        const searchBar = document.querySelector("#searchbar-input");
+        const search = e => {
+            if(e.key === "Enter" && term.length > 0) {
+                const fuse = new Fuse(list, optionsRef.current);
+                const results = fuse.search(term);
+                
+                setIsFocused(false);
+                setResults([]);
+                document.querySelector("#searchbar-input").value = "";
+                history.push(`/search/${term}`);
+                
+                console.log(`Going to search page with ${term} and results of...`); 
+                console.log(results);
+            }
+        }
+
+        searchBar.addEventListener("keydown", search);
+        return () => searchBar.removeEventListener("keydown", search);
+    })
 
     const browse = result => {
         console.log("Will be browsing...");
@@ -135,6 +152,7 @@ function FuseSearchbar() {
             <Input 
                 id="searchbar-input"
                 type="text"
+                placeholder="Search here..."
             />
 
             <div id="searchbar-list">
