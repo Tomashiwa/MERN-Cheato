@@ -1,5 +1,4 @@
-import React, { useState, useEffect,useContext } from 'react'
-//import { UserContext } from "../App";
+import React, { useState, useEffect } from 'react'
 import {
     Collapse,
     Navbar,
@@ -11,14 +10,12 @@ import {
     Container
 } from "reactstrap";
 
-import SearchBar from "../components/SearchBar"
+import FuseSearchbar from './FuseSearchbar';
 
 import "./css/AppNavbar.css"
-import FuseSearchbar from './FuseSearchbar';
 
 function AppNavbar() {
     const [isOpen, setIsOpen] = useState(false);
-   // const userContext = useContext(UserContext);
     
     useEffect(() => {
         const toggler = document.querySelector(".navbar-toggler");
@@ -38,8 +35,7 @@ function AppNavbar() {
                     <Collapse isOpen={isOpen} navbar>
                         <Nav className="ml-auto" navbar>
                             <NavItem>
-                                <FuseSearchbar />``
-                                {/* <SearchBar /> */}
+                                <FuseSearchbar />
                                 {/* <form className = "form-inline">
                                     <input className = "form-control mr-sm-1" type = "search"
                                         placeholder = "Search" >

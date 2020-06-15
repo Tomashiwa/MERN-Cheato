@@ -93,7 +93,9 @@ function FuseSearchbar() {
     useEffect(() => {
         if(term.length > 0) {
             const fuse = new Fuse(list, optionsRef.current);
-            const results = fuse.search(term).slice(0, limitRef.current);
+            const results = fuse.search(term)
+                .slice(0, limitRef.current)
+                .map(result => result.item);
             setResults(results);
         } else {
             setResults([]);
@@ -106,13 +108,13 @@ function FuseSearchbar() {
         const search = e => {
             if(e.key === "Enter" && term.length > 0) {
                 const fuse = new Fuse(list, optionsRef.current);
-                const results = fuse.search(term);
+                const results = fuse.search(term).map(result => result.item);
                 
                 setIsFocused(false);
                 setResults([]);
                 document.querySelector("#searchbar-input").value = "";
-                history.push(`/search/${term}`);
                 
+                history.push(`/search/${term}`);
                 console.log(`Going to search page with ${term} and results of...`); 
                 console.log(results);
             }
