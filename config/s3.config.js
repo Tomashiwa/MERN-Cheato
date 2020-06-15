@@ -22,7 +22,7 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     const s3Client = new AWS.S3({accessKeyId: process.env.S3_KEY, secretAccessKey: process.env.S3_SECRET, region: process.env.S3_REGION});
 
     const uploadParams = {
-        Bucket: env.Bucket, 
+        Bucket: process.env.S3_BUCKET, 
         Key: '', // pass key
         Body: null, // pass file body
         ACL: 'public-read'
