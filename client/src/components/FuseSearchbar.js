@@ -110,12 +110,18 @@ function FuseSearchbar() {
         
         if(result.type === "sheet") {
             console.log("Browsing a sheet");
+            console.log(result);
+
             history.push(`/view/${result.id}`);
         } else if(result.type === "school") {
             console.log("Browsing a school");
+            console.log(result);
+
             history.push(`/${result.id}`);
         } else if(result.type === "module") {
             console.log("Browsing a module");
+            console.log(result);
+
             history.push(`/${result.id}`);
         }
 
@@ -134,7 +140,7 @@ function FuseSearchbar() {
             <div id="searchbar-list">
                 {
                     isFocused && results.map(result => (
-                        <Button key={result.id} onClick={() => browse(result)}>
+                        <Button key={result.id} onClick={() => browse(result)} color="light">
                             <div>
                                 <img 
                                     src={result.type === "sheet" 
@@ -146,7 +152,9 @@ function FuseSearchbar() {
                                     height={`${iconSizeRef.current}px`} 
                                     alt=""
                                 />
-                                {result.data.name}
+                                <div>
+                                    <span>{result.data.name}</span>
+                                </div>
                             </div>
                         </Button>
                     ))

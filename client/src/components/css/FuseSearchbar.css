@@ -25,3 +25,22 @@
 #searchbar-list button div img {
     margin-right: 10px;
 }
+
+#searchbar-list button div div {
+    min-width: 0;
+}
+
+#searchbar-list button div div span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#searchbar-list .btn-light {
+    border-radius: 0;
+    border-bottom: 0.5px solid rgb(224, 224, 224);
+}
+
+#searchbar-list .btn-light:last-child {
+    border-bottom: none;
+}
