@@ -1,46 +1,36 @@
-.gallery{
-    display:flex;
-    width: 100%;
-    height:auto;
-    flex-direction: row;
-    flex-wrap:wrap;
-    justify-content:space-around;
-}
-
-/*.cheatsheet {
+.cheatsheet {
     display:flex;
     width:90%;
     justify-content: space-around;
 }
-*/
+
 .first{
     width:250px;
     height:250px;
     padding:0px;
     position:relative;
-    top:0px;
-    right:-100px;
     background:#fff;
     display:flex;
+    align-items:flex-end;
+    margin:20px;
     transition: .6s ease-out;
     box-shadow:  0 10px 10px rbga(0,0,0),0.5;
-    
 }
 
 .first img {
     width:100%;
-    height:70%;
+    height:80%;
     position:absolute;
-    top:0px;
-    left:0px;
+    top:0;
+    left:0;
     object-fit:cover;
 
 }
 
 .cheatsheet-text {
-    position:relative;
-    top:0px;
-    left:0px;
+    position:absolute;
+    top:100;
+    left:100;
 
 }
 
@@ -51,28 +41,28 @@
 .download {
     position: relative;
     top:0px;
-    right:8px;
+    right:0px;
     opacity:0;
 }
 
 .bookmark {
-    position:absolute;
-    top:0px;
-    right:0px;
+    position:relative;
+    top:0;
+    right:0;
     opacity:0;
 }
 
 .preview {
     position:relative;
     top:0px;
-    left:-8px;
+    left:0px;
     opacity:0;
 }
 
 .author {
     position:relative;
     top:0px;
-    left:-8px;
+    left:0px;
     opacity:0;
 }
 
@@ -91,4 +81,3 @@
 .first:hover .preview{
     opacity:1;
 } 
-
