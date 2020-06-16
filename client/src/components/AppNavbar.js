@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
     Collapse,
     Navbar,
@@ -7,16 +7,36 @@ import {
     Nav,
     NavItem,
     NavLink,
-    Container
+    Container,
+    Button
 } from "reactstrap";
+import { useHistory } from 'react-router-dom';
 
 import FuseSearchbar from './FuseSearchbar';
+import UserContext from '../context/UserContext';
 
 import "./css/AppNavbar.css"
 
 function AppNavbar() {
-    const [isOpen, setIsOpen] = useState(false);
+    const {userData, setUserData} = useContext(UserContext);
     
+    const [isOpen, setIsOpen] = useState(false);
+
+    const history = useHistory();
+
+    const register = () => {
+        history.push("/register");
+    }
+
+    const login = () => {
+        history.push("/login");
+    }
+
+    const logout = () => {
+        setUserData({token: undefined, user: undefined});
+        localStorage.setItem("auth-token", "");
+    }
+
     useEffect(() => {
         const toggler = document.querySelector(".navbar-toggler");
         const toggle = () => setIsOpen(!isOpen);
@@ -36,17 +56,6 @@ function AppNavbar() {
                         <Nav className="ml-auto" navbar>
                             <NavItem>
                                 <FuseSearchbar />
-                                {/* <form className = "form-inline">
-                                    <input className = "form-control mr-sm-1" type = "search"
-                                        placeholder = "Search" >
-                                    </input>
-                                    <button className = "btn btn-light my-sm-2" type = "submit">
-                                        <svg className ="bi bi-search" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
-                                            <path fillRule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
-                                        </svg>
-                                    </button>
-                                </form> */}
                              </NavItem>
                         <div className="d-flex align-items-center">
                             <NavItem>
@@ -65,9 +74,14 @@ function AppNavbar() {
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                               <NavLink>
-                                    Login
-                                </NavLink>
+                                {
+                                    userData.user 
+                                        ? <Button onClick={logout}>Logout</Button>
+                                        : <div>
+                                            <Button onClick={register}>Register</Button>
+                                            <Button onClick={login}>Login</Button>
+                                        </div> 
+                                }
                             </NavItem>
                           </div>  
                         </Nav>

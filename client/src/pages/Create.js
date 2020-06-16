@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import AppNavbar from '../components/AppNavbar'
-
 import ImageCanvas from "../components/ImageCanvas";
 import CreateForm from '../components/CreateForm';
 import ImagePreviewer from '../components/ImagePreviewer';
@@ -141,7 +139,6 @@ function Create() {
 
     return (    
         <div>
-            <AppNavbar />
             <Container id="create-container">
                 <ImagesContext.Provider value={{images, setImages}}>
                     <ConfigContext.Provider value={{config, setConfig}}>

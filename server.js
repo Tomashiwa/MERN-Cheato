@@ -7,15 +7,16 @@ const modules = require("./routes/api/modules");
 const cheatsheets = require("./routes/api/cheatsheets");
 const comments = require("./routes/api/comments");
 const uploads = require("./routes/upload.router");
+const auth = require("./routes/api/auth");
 
 // Load body-parser middleware
 app.use(express.json());
 
 //Connect to URI of mongoDB's cluster
 const mongoose = require('mongoose');
-const dbURI = require("./config/keys").mongoURI;
+const db = require("./config/keys").mongoURI;
 mongoose.connect(
-    dbURI,
+    db,
     {useNewUrlParser: true, useUnifiedTopology: true},
     () => console.log("Connected...")
 );
@@ -28,6 +29,7 @@ app.use("/api/schools", schools);
 app.use("/api/modules", modules);
 app.use("/api/cheatsheets", cheatsheets);
 app.use("/api/comments", comments);
+app.use("/api/auth", auth);
 app.use("/upload", uploads);
 
 //Serve static assets (frontend stuff) if in production

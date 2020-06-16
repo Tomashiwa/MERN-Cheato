@@ -1,8 +1,12 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
+const jwtSecret = require("../../config/keys").jwtSecret;
 
 //User model
 const User = require("../../models/User");
+const { response } = require("express");
 
 // @route GET api/users
 // @descr Get all users
@@ -18,21 +22,72 @@ router.get("/", (req, res) => {
 // @route POST api/users
 // @descr Create a user
 // @access Public
-router.post("/", (req, res) => {
-    const newUser = new User({
-        username: req.body.username,
-        name: req.body.name,
-        password: req.body.password,
-        bookmarks: req.body.bookmarks,
-        type: req.body.type
+router.post("/register", (req, res) => {
+    const {name, password, isAdmin} = req.body;
 
-        // name: req.body.name
-        //Date left out, as it has default value of Date.now()
-    });
+    if(!name || !password) {
+        return res.status(400).json({msg: "Please provide both name and password"});
+    }
 
-    //Save to database
-    newUser.save()
-        .then(item => res.json(item));
+    //Check if there's an existing user with that name before creating it
+    User.findOne({name})
+        .then(user => {
+            if(user) {
+                return res.status(400).json({msg: "User with that name already exists"});
+            }
+            
+            const newUser = new User({
+                name,
+                password,
+                bookmarks: [],
+                isAdmin
+            });
+            
+            //Hashes password and save the user to backend
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(newUser.password, salt, (err, hash) => {
+                    if(err) {
+                        return res.status(400).json({msg: "Error encountered when hashing password"});
+                    }
+
+                    newUser.password = hash;
+                    newUser
+                        .save()
+                        .then(user => {
+                            jwt.sign({id: user.id}, jwtSecret, {}, 
+                                (err, token) => {
+                                    res.json({token, user: {id: user.id, name: user.name, isAdmin: user.isAdmin}});
+                                }
+                            );
+                        })
+                })
+            })
+        })
+});
+
+router.post("/tokenIsValid", (req, res) => {
+    const token = req.header("x-auth-token");
+    if(!token) {
+        return res.json({isValid: false,  msg: "Token not found"});
+    }
+
+    const verified = jwt.verify(token, jwtSecret);
+    if(!verified) {
+        return res.json({isValid: false, msg: "Invalid Token"});
+    }
+
+    User.findById(verified.id)
+        .then(user => {
+            if(!user) {
+                return res.json({isValid: false, msg: "No user found with the given id"});
+            }
+
+            return res.json({
+                isValid: true, 
+                msg: "Token is valid", 
+                user: {id: user._id, name: user.name, isAdmin: user.isAdmin}
+            }); 
+        });
 });
 
 // @route DELETE api/users
