@@ -33,7 +33,7 @@ router.post("/register", (req, res) => {
     User.findOne({name})
         .then(user => {
             if(user) {
-                return res.status(400).json({msg: "User with that name already exists"});
+                return res.status(400).json({msg: "This name is being used, please consider other possible names."});
             }
             
             const newUser = new User({

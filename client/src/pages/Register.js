@@ -7,6 +7,9 @@ import UserContext from '../context/UserContext'
 import "./css/Register.css"
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
+export const NAME_MIN_LENGTH = 6;
+export const PASSWORD_MIN_LENGTH = 8;
+
 function Register() {
     const { setUserData } = useContext(UserContext);
 
@@ -14,67 +17,91 @@ function Register() {
     const [password, setPassword] = useState("");
     const [passwordCheck, setPasswordCheck] = useState("");
 
-    const [nameState, setNameState] = useState({valid: false, invalid: false});
-    const [passState, setPassState] = useState({valid: false, invalid: false});
-    const [checkState, setCheckState] = useState({valid: false, invalid: false});
-    
+    const [fieldsInvalid, setFieldsInvalid] = useState({name: false, pass: false, check: false});
+    const [invalidMsg, setInvalidMsg] = useState("");
+
     const changeName = e => setName(e.target.value);
     const changePass = e => setPassword(e.target.value);
     const changeConfirmPass = e => setPasswordCheck(e.target.value);
 
     const history = useHistory();
 
+    const areInputsValid = () => {
+        if(name.length < NAME_MIN_LENGTH) {
+            setInvalidMsg(`Username should have ${NAME_MIN_LENGTH} or more characters`);
+            setFieldsInvalid({name: true, pass: false, check: false});
+            return false;
+        } else if(password.length < PASSWORD_MIN_LENGTH) {
+            setInvalidMsg(`Password should have ${PASSWORD_MIN_LENGTH} or more characters`);
+            setFieldsInvalid({name: false, pass: true, check: false});
+            return false
+        } else if(password !== passwordCheck) {
+            setInvalidMsg("Password fields doesn't match with each other");
+            setFieldsInvalid({name: false, pass: true, check: true});
+            return false;
+        } 
+
+        return true;
+    }
+
     const register = e => {
         e.preventDefault();
-         
-        const newUser = {name, password, isAdmin: false};
 
-        axios.post("/api/users/register", newUser)
-            .then(registerRes => {
-                axios.post("/api/auth", {name, password})
-                    .then(loginRes => {
-                        setUserData({
-                            token: loginRes.data.token,
-                            user: loginRes.data.user
+        if(areInputsValid()) {
+            const newUser = {name, password, isAdmin: false};
+    
+            axios.post("/api/users/register", newUser)
+                .then(registerRes => {
+                    console.log("register result:");
+                    console.log(registerRes);
+
+                    axios.post("/api/auth", {name, password})
+                        .then(loginRes => {
+                            setUserData({
+                                token: loginRes.data.token,
+                                user: loginRes.data.user
+                            });
+                            localStorage.setItem("auth-token", loginRes.data.token);
+                            history.push("/");
                         });
-                        localStorage.setItem("auth-token", loginRes.data.token);
-                        history.push("/");
-                    });
-            });
+                })
+                .catch(err => {
+                    setInvalidMsg(err.response.data.msg);
+                    setFieldsInvalid({name: true, pass: false, check: false});
+                })
+        }
+    
     }
+
+    const loginLink = <a href={"/login"}>Login here</a>
 
     return (
         <Container id="register-container">
             <Form id="register-form" onSubmit={register}>
-                <FormGroup>
-                    <h2>Register</h2>
-                </FormGroup>
+                <h2>Register</h2>
                 <FormGroup>
                     <Label>Name</Label>
                     <Input id="register-input-name" 
                         onChange={changeName}
-                        valid={nameState.valid ? true : false} 
-                        invalid={nameState.invalid ? true : false}/>
-                    <FormFeedback invalid="true">Name already exists.</FormFeedback>
+                        invalid={fieldsInvalid.name ? true : false}/>
+                    <FormFeedback invalid="true">{invalidMsg}</FormFeedback>
                 </FormGroup>
                 <FormGroup>
                     <Label>Password</Label>
                     <Input id="register-input-pass" 
                         type="password"
                         onChange={changePass}
-                        valid={passState.valid ? true : false} 
-                        invalid={passState.invalid ? true : false}/>
-                    <FormFeedback invalid="true">Password is not secure enough</FormFeedback>
+                        invalid={fieldsInvalid.pass ? true : false}/>
+                    <FormFeedback invalid="true">{invalidMsg}</FormFeedback>
                 </FormGroup>
                 <FormGroup>
                     <Label>Confirm password</Label>
                     <Input id="register-input-confirmPass"
                         type="password"
                         onInput={changeConfirmPass}
-                        valid={checkState.valid ? true : false} 
-                        invalid={checkState.invalid ? true : false}/>
-                    <FormFeedback invalid="true">Doesn't match with the above password</FormFeedback>
+                        invalid={fieldsInvalid.check ? true : false}/>
                 </FormGroup>
+                <div>Already have an account? {loginLink}</div>
                 <Button type="submit">Register</Button>
             </Form>
         </Container>
