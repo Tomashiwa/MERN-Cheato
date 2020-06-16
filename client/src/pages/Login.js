@@ -14,8 +14,10 @@ function Login() {
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
 
-    const [nameState, setNameState] = useState({valid: false, invalid: false});
-    const [passState, setPassState] = useState({valid: false, invalid: false});
+    const [fieldsInvalid, setFieldsInvalid] = useState({name: false, pass: false});
+    const [invalidMsg, setInvalidMsg] = useState("");
+    // const [nameState, setNameState] = useState({valid: false, invalid: false});
+    // const [passState, setPassState] = useState({valid: false, invalid: false});
 
     const changeName = e => setName(e.target.value);
     const changePass = e => setPassword(e.target.value);
@@ -38,6 +40,8 @@ function Login() {
             })
     }
 
+    const registerLink = <a href={"/register"}>Register here</a>
+
     return (
         <Container id="login-container">
             <Form id="login-form" onSubmit={login}>
@@ -48,19 +52,17 @@ function Login() {
                     <Label>Name</Label>
                     <Input id="login-input-name" 
                         onChange={changeName}
-                        valid={nameState.valid ? true : false} 
-                        invalid={nameState.invalid ? true : false}/>
-                    <FormFeedback invalid="true">Name already exists.</FormFeedback>
+                        invalid={fieldsInvalid.name ? true : false}/>
+                    <FormFeedback invalid="true">{invalidMsg}.</FormFeedback>
                 </FormGroup>
                 <FormGroup>
                     <Label>Password</Label>
                     <Input id="login-input-pass" 
                         type="password"
                         onChange={changePass}
-                        valid={passState.valid ? true : false} 
-                        invalid={passState.invalid ? true : false}/>
-                    <FormFeedback invalid="true">Password is not secure enough</FormFeedback>
+                        invalid={fieldsInvalid.pass ? true : false}/>
                 </FormGroup>
+                <div>Don't have an account? {registerLink}</div>
                 <Button type="submit">Login</Button>
             </Form>
             

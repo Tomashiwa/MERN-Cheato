@@ -26,7 +26,7 @@ router.post("/register", (req, res) => {
     const {name, password, isAdmin} = req.body;
 
     if(!name || !password) {
-        return res.status(400).json({msg: "Please provide both name and password"});
+        return res.status(400).json({msg: "Please provide both name and password."});
     }
 
     //Check if there's an existing user with that name before creating it

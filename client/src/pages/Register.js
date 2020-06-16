@@ -27,7 +27,12 @@ function Register() {
     const history = useHistory();
 
     const areInputsValid = () => {
-        if(name.length < NAME_MIN_LENGTH) {
+        if(name.length === 0 || password.length === 0) {
+            setInvalidMsg("Please provide both name and password");
+            setFieldsInvalid({name: true, pass: true, check: true});
+            return false;
+        } 
+        else if(name.length < NAME_MIN_LENGTH) {
             setInvalidMsg(`Username should have ${NAME_MIN_LENGTH} or more characters`);
             setFieldsInvalid({name: true, pass: false, check: false});
             return false;
@@ -52,9 +57,6 @@ function Register() {
     
             axios.post("/api/users/register", newUser)
                 .then(registerRes => {
-                    console.log("register result:");
-                    console.log(registerRes);
-
                     axios.post("/api/auth", {name, password})
                         .then(loginRes => {
                             setUserData({
