@@ -3,7 +3,7 @@ const router = express.Router();
 
 //Cheatsheet model
 const Cheatsheet = require("../../models/Cheatsheet");
-
+const ObjectId = require('mongoose').Types.ObjectId;
 // @route GET api/cheatsheets
 // @descr Get all cheatsheets
 // @access Public
@@ -15,10 +15,33 @@ router.get("/", (req, res) => {
         .then(cheatsheets => res.json(cheatsheets));
 });
 
+// @route POST api/cheatsheets/
+// @descr Get cheatsheets viewable by the user
+// @access Public
+router.post("/", (req, res) => {
+    if(!req.body.id) {
+        Cheatsheet.find({isPublic: true})
+            .sort({datetime: -1})
+            .then(cheatsheets => res.json(cheatsheets));
+    } else {
+        const {id, isAdmin} = req.body
+    
+        if(isAdmin) {
+            Cheatsheet.find()
+                .sort({datetime: -1})
+                .then(cheatsheets => res.json(cheatsheets));
+        } else {
+            Cheatsheet.find({$or: [{user: new ObjectId(id)}, {isPublic: true}]})
+                .sort({datetime: -1})
+                .then(cheatsheets => res.json(cheatsheets));
+        }
+    }
+})
+
 // @route POST api/cheatsheets
 // @descr Create a cheatsheet
 // @access Public
-router.post("/", (req, res) => {
+router.post("/add", (req, res) => {
     const newCheatsheet = new Cheatsheet({
         file: req.body.file,
         user: req.body.user,
@@ -30,9 +53,6 @@ router.post("/", (req, res) => {
         rating: req.body.rating,
         comments: req.body.comments,
         isPublic: req.body.isPublic
-
-        // name: req.body.name
-        //Date left out, as it has default value of Date.now()
     });
 
     //Save to database
@@ -55,10 +75,7 @@ router.delete("/:id", (req, res) => {
 router.get("/search/:searchTerm/:limit", (req,res) => {
     Cheatsheet
         .find({$or: [
-            {name: {$regex: req.params.searchTerm, $options: "i"}},
-            // {school: {$regex: req.params.searchTerm, $options: "i"}},
-            // {module: {$regex: req.params.searchTerm, $options: "i"}},
-            // {description: {$regex: req.params.searchTerm, $options: "i"}},
+            {name: {$regex: req.params.searchTerm, $options: "i"}}
         ]})
         .limit(parseInt(req.params.limit))
         .sort({name: -1})

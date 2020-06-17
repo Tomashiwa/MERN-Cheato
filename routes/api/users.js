@@ -28,7 +28,7 @@ router.post("/register", (req, res) => {
     if(!name || !password) {
         return res.status(400).json({msg: "Please provide both name and password."});
     }
-
+    
     //Check if there's an existing user with that name before creating it
     User.findOne({name})
         .then(user => {
@@ -37,10 +37,10 @@ router.post("/register", (req, res) => {
             }
             
             const newUser = new User({
-                name,
-                password,
+                name: req.body.name,
+                password: req.body.password,
                 bookmarks: [],
-                isAdmin
+                isAdmin: false//req.body.isAdmin
             });
             
             //Hashes password and save the user to backend

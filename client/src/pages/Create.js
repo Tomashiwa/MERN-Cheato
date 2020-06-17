@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 
 import ImageCanvas from "../components/ImageCanvas";
 import CreateForm from '../components/CreateForm';
@@ -14,6 +14,7 @@ import mongoose from "mongoose";
 import Stepper from 'react-stepper-horizontal';
 
 import {CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "../components/ImageCanvas"
+import UserContext from '../context/UserContext';
 
 export const CREATE_STEP_IMPORT = 1;
 export const CREATE_STEP_FORM = 2;
@@ -23,6 +24,8 @@ export const ImagesContext = React.createContext(null);
 export const ConfigContext = React.createContext(null);
 
 function Create() {
+    const {userData} = useContext(UserContext);
+
     const [images, setImages] = useState([]);
     const [config, setConfig] = useState({
         arrangement: "generated",
@@ -51,14 +54,10 @@ function Create() {
         const saveToDb = url => {
             const newCheatsheet = {
                 file: url,
-                user: mongoose.Types.ObjectId("5ed3517b37916dd3a876582d"),
-                // user: mongoose.Types.ObjectId(form.user._id),
-                // user: 0,
+                user: mongoose.Types.ObjectId(userData.user.id),
                 name: form.name,
                 school: mongoose.Types.ObjectId(form.school._id),
-                // school: form.school,
                 module: mongoose.Types.ObjectId(form.module._id),
-                // module: form.module,
                 description: form.description,
                 datetime: Date.now(),
                 rating: 0,
@@ -66,7 +65,7 @@ function Create() {
                 isPublic: form.isPublic
             }
 
-            axios.post("/api/cheatsheets", newCheatsheet)
+            axios.post("/api/cheatsheets/add", newCheatsheet)
                 .catch(err => console.log(err));
         }
         
@@ -116,7 +115,7 @@ function Create() {
                 nextBtn.removeEventListener("click", next);
             }
         }
-    }, [formStep, form])
+    }, [formStep, form, userData.user.id])
 
     // Verify if user can proceed to next step and toggle the Next button
     useEffect(() => {

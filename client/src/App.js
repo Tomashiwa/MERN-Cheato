@@ -24,13 +24,9 @@ function App() {
 	useEffect(() => {
 		// Check if there's any token in local storage and use it to retrieve user information
 		const checkLoggedIn = async() => {
-			console.log("Checking whether user had logged in...");
-
 			let token = localStorage.getItem("auth-token");
 
 			if(!token) {
-				console.log("No token found, creating a blank token");
-
 				localStorage.setItem("auth-token", "");
 				token = "";
 			}
@@ -39,7 +35,6 @@ function App() {
 
 			if(tokenRes.data.isValid) {
 				setUserData({token, user: tokenRes.data.user, isLoaded: true});
-				console.log("Token verified, updated user data based on that token");
 			} else {
 				setUserData({token: undefined, user: undefined, isLoaded: true});
 			}

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef, useContext} from 'react'
 import {Input, Button} from "reactstrap";
 import axios from "axios";
 import Fuse from "fuse.js";
@@ -8,8 +8,11 @@ import "./css/FuseSearchbar.css"
 import sheetIcon from "../icons/icon-sheet.svg";
 import schoolIcon from "../icons/icon-school.svg";
 import moduleIcon from "../icons/icon-module.svg";
+import UserContext from '../context/UserContext';
 
 function FuseSearchbar() {
+    const {userData} = useContext(UserContext);
+
     const [term, setTerm] = useState("");
     const [list, setList] = useState([]);
     const [results, setResults] = useState([]);
@@ -54,9 +57,13 @@ function FuseSearchbar() {
 
     // Fetch data from backend
     useEffect(() => {
-        const searchSheets = axios.get(`/api/cheatsheets/`);
-        const searchSchools = axios.get(`/api/schools/`);
-        const searchModules = axios.get(`/api/modules/`);
+        const postConfig = {headers: {"Content-Type": "application/json"}};
+
+        const searchSheets = userData.user === undefined
+            ? axios.post("/api/cheatsheets", null, postConfig)
+            : axios.post("/api/cheatsheets", userData.user, postConfig); 
+        const searchSchools = axios.get("/api/schools/");
+        const searchModules = axios.get("/api/modules/");
 
         Promise
             .all([searchSheets, searchSchools, searchModules])
@@ -87,7 +94,7 @@ function FuseSearchbar() {
 
                 setList(sheets.concat(schools, modules));
             })
-    }, [])
+    }, [userData.user])
 
     // Determine results when user provide a search term
     useEffect(() => {
@@ -109,14 +116,15 @@ function FuseSearchbar() {
             if(e.key === "Enter" && term.length > 0) {
                 const fuse = new Fuse(list, optionsRef.current);
                 const results = fuse.search(term).map(result => result.item);
-                
+
+                console.log("Search results:");
+                console.log(results);
+
                 setIsFocused(false);
                 setResults([]);
                 document.querySelector("#searchbar-input").value = "";
                 
                 history.push(`/search/${term}`);
-                console.log(`Going to search page with ${term} and results of...`); 
-                console.log(results);
             }
         }
 
