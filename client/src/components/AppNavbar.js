@@ -8,38 +8,18 @@ import {
     NavItem,
     NavLink,
     Container,
-    Button
 } from "reactstrap";
-import { useHistory } from 'react-router-dom';
 
 import FuseSearchbar from './FuseSearchbar';
 import UserContext from '../context/UserContext';
 
 import "./css/AppNavbar.css"
+import UserDropdown from './UserDropdown';
 
 function AppNavbar() {
-    const {userData, setUserData} = useContext(UserContext);
+    const {userData} = useContext(UserContext);
     
     const [isOpen, setIsOpen] = useState(false);
-
-    const history = useHistory();
-
-    const register = () => {
-        history.push("/register");
-    }
-
-    const login = () => {
-        history.push("/login");
-    }
-
-    const logout = () => {
-        setUserData({...userData, ...{token: undefined, user: undefined}});
-        localStorage.setItem("auth-token", "");
-    }
-
-    useEffect(() => {
-        console.log("userData updated, navbar re-render");
-    })
 
     useEffect(() => {
         const toggler = document.querySelector(".navbar-toggler");
@@ -75,21 +55,20 @@ function AppNavbar() {
                                             Upload
                                         </NavLink>
                                     </NavItem>
-                                    <NavItem>
-                                        <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
-                                            Github
-                                        </NavLink>
-                                    </NavItem>
-                                    <NavItem>
-                                        {
-                                            userData.user 
-                                            ? <Button onClick={logout}>Logout</Button>
-                                            : <div>
-                                                <Button onClick={register}>Register</Button>
-                                                <Button onClick={login}>Login</Button>
-                                            </div> 
-                                        }
-                                    </NavItem>
+                                    {
+                                        userData.user
+                                            ? <NavItem>
+                                                <UserDropdown />
+                                            </NavItem>
+                                            : <>
+                                                <NavItem>
+                                                    <NavLink href="/register">Register</NavLink>
+                                                </NavItem>
+                                                <NavItem>
+                                                    <NavLink href="/login">Login</NavLink>
+                                                </NavItem>
+                                            </>
+                                    }
                                 </div>  
                                 </Nav>
                             </Collapse> 
