@@ -16,8 +16,6 @@ function Login() {
 
     const [fieldsInvalid, setFieldsInvalid] = useState({name: false, pass: false});
     const [invalidMsg, setInvalidMsg] = useState("");
-    // const [nameState, setNameState] = useState({valid: false, invalid: false});
-    // const [passState, setPassState] = useState({valid: false, invalid: false});
 
     const changeName = e => setName(e.target.value);
     const changePass = e => setPassword(e.target.value);
@@ -37,6 +35,10 @@ function Login() {
                 })
                 localStorage.setItem("auth-token", loginRes.data.token);
                 history.push("/");
+            })
+            .catch(err => {
+                setInvalidMsg(err.response.data.msg);
+                setFieldsInvalid({name: true, pass: true});
             })
     }
 
