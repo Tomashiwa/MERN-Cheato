@@ -2,3 +2,4 @@ node_modules
 notes.txt
 Samples
 config/s3.env.js
+config/keys.js

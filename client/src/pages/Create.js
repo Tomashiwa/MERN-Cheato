@@ -115,7 +115,7 @@ function Create() {
                 nextBtn.removeEventListener("click", next);
             }
         }
-    }, [formStep, form, userData.user.id])
+    }, [formStep, form, userData])
 
     // Verify if user can proceed to next step and toggle the Next button
     useEffect(() => {

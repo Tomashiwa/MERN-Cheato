@@ -14,7 +14,10 @@ app.use(express.json());
 
 //Connect to URI of mongoDB's cluster
 const mongoose = require('mongoose');
-const db = require("./config/keys").mongoURI;
+const db = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+    ? require("./config/keys").mongoURI
+    : process.env.MONGO_URI;
+
 mongoose.connect(
     db,
     {useNewUrlParser: true, useUnifiedTopology: true},
