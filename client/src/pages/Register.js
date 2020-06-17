@@ -11,7 +11,7 @@ export const NAME_MIN_LENGTH = 6;
 export const PASSWORD_MIN_LENGTH = 8;
 
 function Register() {
-    const { setUserData } = useContext(UserContext);
+    const { userData, setUserData } = useContext(UserContext);
 
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
@@ -59,10 +59,7 @@ function Register() {
                 .then(registerRes => {
                     axios.post("/api/auth", {name, password})
                         .then(loginRes => {
-                            setUserData({
-                                token: loginRes.data.token,
-                                user: loginRes.data.user
-                            });
+                            setUserData({...userData, ...{token: loginRes.data.token, user: loginRes.data.user}});
                             localStorage.setItem("auth-token", loginRes.data.token);
                             history.push("/");
                         });

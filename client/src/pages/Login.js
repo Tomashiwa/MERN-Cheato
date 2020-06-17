@@ -9,7 +9,7 @@ import UserContext from '../context/UserContext'
 import "./css/Login.css"
 
 function Login() {
-    const { setUserData } = useContext(UserContext);
+    const { userData, setUserData } = useContext(UserContext);
 
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
@@ -29,10 +29,7 @@ function Login() {
 
         axios.post("/api/auth", user)
             .then(loginRes => {
-                setUserData({
-                    token: loginRes.data.token,
-                    user: loginRes.data.user
-                })
+                setUserData({...userData, ...{token: loginRes.data.token, user: loginRes.data.user}})
                 localStorage.setItem("auth-token", loginRes.data.token);
                 history.push("/");
             })

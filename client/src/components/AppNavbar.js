@@ -33,9 +33,13 @@ function AppNavbar() {
     }
 
     const logout = () => {
-        setUserData({token: undefined, user: undefined});
+        setUserData({...userData, ...{token: undefined, user: undefined}});
         localStorage.setItem("auth-token", "");
     }
+
+    useEffect(() => {
+        console.log("userData updated, navbar re-render");
+    })
 
     useEffect(() => {
         const toggler = document.querySelector(".navbar-toggler");
@@ -52,40 +56,44 @@ function AppNavbar() {
                         Cheato
                     </NavbarBrand>
                     <NavbarToggler />
-                    <Collapse isOpen={isOpen} navbar>
-                        <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <FuseSearchbar />
-                             </NavItem>
-                        <div className="d-flex align-items-center">
-                            <NavItem>
-                                <NavLink href="/create">
-                                    Create
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink href="/upload">
-                                    Upload
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
-                                    Github
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                {
-                                    userData.user 
-                                        ? <Button onClick={logout}>Logout</Button>
-                                        : <div>
-                                            <Button onClick={register}>Register</Button>
-                                            <Button onClick={login}>Login</Button>
-                                        </div> 
-                                }
-                            </NavItem>
-                          </div>  
-                        </Nav>
-                    </Collapse> 
+                    {
+                        !userData.isLoaded
+                            ? <div></div>
+                            : <Collapse isOpen={isOpen} navbar>
+                                <Nav className="ml-auto" navbar>
+                                    <NavItem>
+                                        <FuseSearchbar />
+                                    </NavItem>
+                                <div className="d-flex align-items-center">
+                                    <NavItem>
+                                        <NavLink href="/create">
+                                            Create
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink href="/upload">
+                                            Upload
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink href="https://github.com/Tomashiwa/MERN-Rectangle-List">
+                                            Github
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        {
+                                            userData.user 
+                                            ? <Button onClick={logout}>Logout</Button>
+                                            : <div>
+                                                <Button onClick={register}>Register</Button>
+                                                <Button onClick={login}>Login</Button>
+                                            </div> 
+                                        }
+                                    </NavItem>
+                                </div>  
+                                </Nav>
+                            </Collapse> 
+                    }
                 </Container>
             </Navbar>
         </div>    
