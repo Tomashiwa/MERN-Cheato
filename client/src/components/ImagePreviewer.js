@@ -32,28 +32,36 @@ function ImagePreviewer({imageURL}) {
 
     //Load display image to previewer
     useEffect(() => {
-        var img = new Image();
-        img.onload = () => {
-            var image = new Konva.Image({
-                x: 0,
-                y: 0,
-                image: img
+        if(displayImage !== null) {
+            var img = new Image();
+            img.onload = () => {
+                displayImage.setImage(img);
+
+                zoomFactorRef.current = 1.0;
+                stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+                stageRef.current.position({x: 0.0, y: 0.0});
+                layerRef.current.draw();
+            }
+
+            img.crossOrigin = "anonymous";
+            img.src = imageURL;
+        } else {
+            Konva.Image.fromURL(imageURL, image => {
+                image.transformsEnabled("none");
+                image.setAbsolutePosition({x: 0, y: 0});
+                
+                layerRef.current.add(image);
+    
+                zoomFactorRef.current = 1.0;
+                stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+                stageRef.current.position({x: 0.0, y: 0.0});
+                layerRef.current.draw();
+    
+                setHasLoaded(true);
+                setDisplayImage(image);
             });
-            image.transformsEnabled("none");
-
-            layerRef.current.add(image);
-
-            zoomFactorRef.current = 1.0;
-            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
-            stageRef.current.position({x: 0.0, y: 0.0});
-            layerRef.current.draw();
-
-            setDisplayImage(image);
-            setHasLoaded(true);
         }
-        img.crossOrigin="anonymous";
-        img.src = imageURL;
-    }, [imageURL]);
+    }, [imageURL, displayImage]);
 
     //Zooming
     useEffect(() => {
