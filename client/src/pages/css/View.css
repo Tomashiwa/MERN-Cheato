@@ -1,0 +1,28 @@
+#view-header {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 10px;
+}
+
+#view-header #view-description {
+    flex-grow: 1.0;
+}
+
+#view-header #view-feedback {
+    align-self: center;
+}
+
+#view-header #view-feedback * {
+    margin-right: 10px;
+}
+
+#view-footer {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+}
+
+#view-footer #view-comments {
+    flex-grow: 1.0;
+}
+
