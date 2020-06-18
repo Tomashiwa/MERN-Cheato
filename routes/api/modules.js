@@ -15,6 +15,14 @@ router.get("/", (req, res) => {
         .then(modules => res.json(modules));
 });
 
+// @route GET api/modules/:id
+// @descr Get a specific module
+// @access Public
+router.get("/:id", (req, res) => {
+    Module.findById(req.params.id)
+        .then(module => res.json(module));
+});
+
 // @route POST api/modules
 // @descr Create a module
 // @access Public
@@ -23,11 +31,6 @@ router.post("/", (req, res) => {
         school: req.body.school,
         code: req.body.code,
         name: req.body.name
-        // code: req.body.code,
-        // title: req.body.title
-
-        // name: req.body.name
-        //Date left out, as it has default value of Date.now()
     });
 
     //Save to database

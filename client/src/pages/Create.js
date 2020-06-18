@@ -5,7 +5,7 @@ import CreateForm from '../components/CreateForm';
 import ImagePreviewer from '../components/ImagePreviewer';
 
 import {Container, Button} from 'reactstrap';
-import {Link} from "react-router-dom"
+import {useHistory} from "react-router-dom"
 import "./css/Create.css"
 
 import axios from 'axios';
@@ -45,7 +45,10 @@ function Create() {
     });
     const [nextEnabled, setNextEnabled] = useState(false);
 
+    const [sheetId, setSheetId] = useState(undefined);
+    
     const blobRef = useRef(null);
+    const history = useHistory();
 
     const setBlob = blob => blobRef.current = blob;
 
@@ -56,8 +59,8 @@ function Create() {
                 file: url,
                 user: mongoose.Types.ObjectId(userData.user.id),
                 name: form.name,
-                school: mongoose.Types.ObjectId(form.school._id),
-                module: mongoose.Types.ObjectId(form.module._id),
+                school: mongoose.Types.ObjectId(form.school),
+                module: mongoose.Types.ObjectId(form.module),
                 description: form.description,
                 datetime: Date.now(),
                 rating: 0,
@@ -66,6 +69,10 @@ function Create() {
             }
 
             axios.post("/api/cheatsheets/add", newCheatsheet)
+                .then(sheet => {
+                    console.log(`sheet data id: ${sheet.data._id}`);
+                    setSheetId(sheet.data._id);
+                })
                 .catch(err => console.log(err));
         }
         
@@ -136,6 +143,27 @@ function Create() {
         }
     }, [formStep, form.name, form.school, form.module, images, nextEnabled]);
 
+    useEffect(() => {
+        const finishButton = document.querySelector("#create-btn-finish");
+        
+        const viewSheet = () => {
+            if(sheetId !== undefined) {
+                history.push(`/view/${sheetId}`);
+            }
+        }
+
+        if(formStep === CREATE_STEP_PREVIEW) {    
+            finishButton.addEventListener("click", viewSheet);
+        }
+
+        return () => {
+            if(formStep === CREATE_STEP_PREVIEW) {
+                finishButton.removeEventListener("click", viewSheet);
+            }
+        }
+    }, [formStep, sheetId, history])
+
+
     return (    
         <div>
             <Container id="create-container">
@@ -162,11 +190,9 @@ function Create() {
                             }
                             {
                                 formStep === CREATE_STEP_PREVIEW
-                                    ? <Link to="/">
-                                        <Button id="create-btn-finish" outline color="light">
-                                            Finish
-                                        </Button>
-                                      </Link>
+                                    ? <Button id="create-btn-finish" disabled={!(sheetId !== undefined)} outline color="light">
+                                        Finish
+                                    </Button>
                                     : <Button id="create-btn-next" disabled={!nextEnabled} outline color="light">
                                         Next
                                       </Button>

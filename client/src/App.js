@@ -13,6 +13,7 @@ import Login from "./pages/Login"
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
 import AppNavbar from './components/AppNavbar';
+import View from './pages/View';
 
 function App() {
 	const [userData, setUserData] = useState({
@@ -51,6 +52,7 @@ function App() {
 					<Switch>
 						<Route path="/create" component={Create} />
 						<Route path="/upload" component={Upload} />
+						<Route path="/view/:id" component={View} />
 						<Route path="/register" component={Register}/>
 						<Route path="/login" component={Login}/>
 						<Route path="/" component={Home} />

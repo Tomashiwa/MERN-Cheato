@@ -15,6 +15,14 @@ router.get("/", (req, res) => {
         .then(schools => res.json(schools));
 });
 
+// @route GET api/schools/:id
+// @descr Get a specific school
+// @access Public
+router.get("/:id", (req, res) => {
+    School.findById(req.params.id)
+        .then(school => res.json(school));
+});
+
 // @route POST api/schools
 // @descr Create a school
 // @access Public

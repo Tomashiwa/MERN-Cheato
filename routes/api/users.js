@@ -43,7 +43,7 @@ router.post("/register", (req, res) => {
                 name: req.body.name,
                 password: req.body.password,
                 bookmarks: [],
-                isAdmin: false//req.body.isAdmin
+                isAdmin: req.body.isAdmin
             });
             
             //Hashes password and save the user to backend
