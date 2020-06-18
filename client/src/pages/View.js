@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
-import {Container, Button   } from "reactstrap";
+import {Container, Button, Card, CardHeader, CardBody, CardText} from "reactstrap";
 import ImagePreviewer from '../components/ImagePreviewer';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import axios from "axios";
 import UserContext from '../context/UserContext';
 
@@ -13,25 +13,15 @@ function View() {
     const [school, setSchool] = useState(null);;
     const [module, setModule] = useState(null);
 
-    // useEffect(() => {
-    //     console.log("UserData changed !!");
-    //     console.log(userData);
-    // }, [userData]);
+    const [errorMsg, setErrorMsg] = useState("");
 
-    // useEffect(() => {
-    //     console.log("id changed !!");
-    //     console.log(id);
-    // }, [id]);
-
-    // useEffect(() => {
-    //     console.log("sheet changed !!");
-    //     console.log(sheet);
-    // }, [sheet]);
+    const history = useHistory();
 
     useEffect(() => {
         if(userData.isLoaded) {
             axios.post(`/api/cheatsheets/${id}`, userData.user)
-                .then(cheatsheet => setSheet(cheatsheet.data));
+                .then(cheatsheet => setSheet(cheatsheet.data))
+                .catch(err => setErrorMsg(err.response.data.msg));
         }
     }, [id, userData]);
 
@@ -45,11 +35,17 @@ function View() {
         }
     }, [sheet])
 
+    const goHome = () => {
+        history.push("/");
+    }
+
+    const loginLink = <a href={"/login"}>here</a>
+
     return (
         <div>
             {
                 sheet && school && module
-                    ? <Container>
+                    ?   <Container>
                             <div>
                                 <h2>{sheet.name}</h2>
                                 <h3>{`${school.name} - ${module.name}`}</h3>
@@ -68,7 +64,29 @@ function View() {
                                 Similar cheatsheets
                             </div>
                         </Container>
-                    : <div>Sheet not found</div>
+                    :   errorMsg
+                        ?   <Container>
+                                <Card>
+                                    <CardHeader tag="h3">{errorMsg}</CardHeader>
+                                    <CardBody>
+                                        {
+                                            errorMsg === "No cheatsheet found."
+                                                ?   <CardText>
+                                                        The cheatsheet you trying to acccess does not exist. You may try to find it in the search bar above.
+                                                    </CardText> 
+                                                : userData.user === undefined 
+                                                    ?   <CardText>
+                                                            If you are the owner of this sheet, please try again after logging in {loginLink}.
+                                                        </CardText> 
+                                                    :   <CardText>
+                                                            This account do not have access to this cheatsheet. You can only view it after the owner enable public access.
+                                                        </CardText> 
+                                        }
+                                        <Button onClick={goHome}>Back to Home</Button>
+                                    </CardBody>
+                                </Card>
+                            </Container> 
+                        :   <div></div>
             }
         </div>
     )

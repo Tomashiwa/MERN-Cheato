@@ -79,27 +79,27 @@ router.post("/:id", (req, res) => {
                 if(cheatsheet.isPublic) {
                     res.json(cheatsheet);
                 } else {
-                    res.status(404).json({msg: `Cheatsheet is not avaliable for public`});
+                    res.status(404).json({msg: `This cheatsheet is private`});
                 }
             })
-            .catch(err => res.status(404).json({msg: `No cheatsheet found.`}));
+            .catch(err => res.status(404).json({msg: `No cheatsheet found`}));
     } else {
         const {id, isAdmin} = req.body;
 
         if(isAdmin) {
             Cheatsheet.findById(req.params.id)
                 .then(cheatsheet => res.json(cheatsheet))
-                .catch(err => res.status(404).json({msg: `No cheatsheet found.`}));
+                .catch(err => res.status(404).json({msg: `No cheatsheet found`}));
         } else {
             Cheatsheet.findById(req.params.id)
                 .then(cheatsheet => {
                     if(cheatsheet.user === id || cheatsheet.isPublic) {
                         res.json(cheatsheet);
                     } else {
-                        res.status(404).json({msg: `Cheatsheet is not accessible by this user`});
+                        res.status(404).json({msg: `This cheatsheet is private`});
                     }
                 })
-                .catch(err => res.status(404).json({msg: `No cheatsheet found.`}));
+                .catch(err => res.status(404).json({msg: `No cheatsheet found`}));
         }
     }
 })

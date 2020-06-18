@@ -70,7 +70,6 @@ function Create() {
 
             axios.post("/api/cheatsheets/add", newCheatsheet)
                 .then(sheet => {
-                    console.log(`sheet data id: ${sheet.data._id}`);
                     setSheetId(sheet.data._id);
                 })
                 .catch(err => console.log(err));
