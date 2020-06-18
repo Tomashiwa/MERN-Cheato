@@ -70,7 +70,7 @@ function View() {
                                     <CardHeader tag="h3">{errorMsg}</CardHeader>
                                     <CardBody>
                                         {
-                                            errorMsg === "No cheatsheet found."
+                                            errorMsg === "No cheatsheet found"
                                                 ?   <CardText>
                                                         The cheatsheet you trying to acccess does not exist. You may try to find it in the search bar above.
                                                     </CardText> 

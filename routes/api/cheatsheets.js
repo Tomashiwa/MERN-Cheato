@@ -74,6 +74,8 @@ router.post("/:id", (req, res) => {
     //      User w/ admin right -> Retrieve the given sheet
     //      User w/o admin right -> Retrieve the given sheet if the user id matches or it is public
     if(!req.body.id) {
+        console.log("No user detected");
+
         Cheatsheet.findById(req.params.id)
             .then(cheatsheet => {
                 if(cheatsheet.isPublic) {
@@ -85,15 +87,15 @@ router.post("/:id", (req, res) => {
             .catch(err => res.status(404).json({msg: `No cheatsheet found`}));
     } else {
         const {id, isAdmin} = req.body;
-
+        
         if(isAdmin) {
             Cheatsheet.findById(req.params.id)
-                .then(cheatsheet => res.json(cheatsheet))
-                .catch(err => res.status(404).json({msg: `No cheatsheet found`}));
+            .then(cheatsheet => res.json(cheatsheet))
+            .catch(err => res.status(404).json({msg: `No cheatsheet found`}));
         } else {
             Cheatsheet.findById(req.params.id)
                 .then(cheatsheet => {
-                    if(cheatsheet.user === id || cheatsheet.isPublic) {
+                    if(cheatsheet.user.toString() === id || cheatsheet.isPublic) {
                         res.json(cheatsheet);
                     } else {
                         res.status(404).json({msg: `This cheatsheet is private`});

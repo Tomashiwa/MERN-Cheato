@@ -32,7 +32,7 @@ function App() {
 				token = "";
 			}
 
-			const tokenRes = await axios.post("/api/users/tokenIsValid", null, {headers: {"x-auth-token": token}});
+			const tokenRes = await axios.post("/api/users/tokenIsValid", null, {headers: {"Content-Type": "application/json", "x-auth-token": token}});
 
 			if(tokenRes.data.isValid) {
 				setUserData({token, user: tokenRes.data.user, isLoaded: true});
