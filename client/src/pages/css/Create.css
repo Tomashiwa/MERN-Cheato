@@ -3,6 +3,7 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
+    padding-bottom: 25px;
 }
 
 #create-container #form-create {
