@@ -133,7 +133,7 @@ function View() {
                                                     ?   <CardText>
                                                             If you are the owner of this sheet, please try again after logging in {loginLink}.
                                                         </CardText> 
-                                                    :   <CardText>
+                                                       :   <CardText>
                                                             This account do not have access to this cheatsheet. You can only view it after the owner enable public access.
                                                         </CardText> 
                                         }

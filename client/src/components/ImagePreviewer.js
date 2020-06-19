@@ -24,11 +24,40 @@ function ImagePreviewer({imageURL}) {
     const heightRef = useRef(PREVIEWER_BASE_HEIGHT);
     const scaleRatioRef = useRef({x: PREVIEWER_VIEW_WIDTH/widthRef.current, y: PREVIEWER_VIEW_HEIGHT/heightRef.current});
 
-    // Set true resolution of canvases
+    useEffect(() => {
+        const previewer = document.querySelector("#previewer");
+        
+        console.log("previewer:");
+        console.log(previewer);
+
+        console.log(`previewer's width: ${previewer.clientWidth}`);
+        console.log(`parent's width: ${previewer.parentElement.clientWidth}`);
+
+        console.log(`stage width: ${stageRef.current.getWidth()}`);
+
+    })
+
+    // Set dimension and resolution of canvases
     useEffect(()=> {
+        const previewer = document.querySelector("#previewer");
+        stageRef.current.setWidth(previewer.clientWidth);
+        stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * (previewer.clientWidth / PREVIEWER_VIEW_WIDTH));
+
         const sceneCanvas = layerRef.current.getCanvas();
         sceneCanvas.setPixelRatio(PREVIEWER_BASE_WIDTH / PREVIEWER_VIEW_WIDTH);
     }, []);
+
+    // Change stage's dimension on window resize event 
+    useEffect(() => {
+        const resize = e => {
+            const previewer = document.querySelector("#previewer");
+            stageRef.current.setWidth(previewer.clientWidth);
+            stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * (previewer.clientWidth / PREVIEWER_VIEW_WIDTH));
+        }
+
+        window.addEventListener("resize", resize);
+        return () => window.removeEventListener("resize", resize);
+    })
 
     //Load display image to previewer
     useEffect(() => {
@@ -169,7 +198,14 @@ function ImagePreviewer({imageURL}) {
 
     return (
         <div id="previewer">
-            <Stage ref={stageRef} width={PREVIEWER_VIEW_WIDTH} height={PREVIEWER_VIEW_HEIGHT} draggable>
+            <Stage 
+                ref={stageRef} 
+                // width={document.querySelector("#previewer").clientWidth}
+                // height={PREVIEWER_VIEW_HEIGHT * (document.querySelector("#previewer").clientWidth / PREVIEWER_VIEW_WIDTH)}
+                // width={PREVIEWER_VIEW_WIDTH} 
+                // height={PREVIEWER_VIEW_HEIGHT} 
+                draggable
+            >
                 <Layer ref={layerRef}></Layer>
             </Stage>
 
