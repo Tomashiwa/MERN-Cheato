@@ -15,6 +15,7 @@ function ImagePreviewer({imageURL}) {
     const stageRef = useRef(null);
     const layerRef = useRef(null);
     const zoomFactorRef = useRef(1.0);
+    const resizeFactorRef = useRef(1.0);
     
     const [displayImage, setDisplayImage] = useState(null);
     const [hasLoaded, setHasLoaded] = useState(false);
@@ -34,14 +35,20 @@ function ImagePreviewer({imageURL}) {
         console.log(`parent's width: ${previewer.parentElement.clientWidth}`);
 
         console.log(`stage width: ${stageRef.current.getWidth()}`);
-
     })
 
     // Set dimension and resolution of canvases
     useEffect(()=> {
         const previewer = document.querySelector("#previewer");
+        resizeFactorRef.current = previewer.clientWidth / PREVIEWER_VIEW_WIDTH;
+
         stageRef.current.setWidth(previewer.clientWidth);
         stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * (previewer.clientWidth / PREVIEWER_VIEW_WIDTH));
+        stageRef.current.scale({
+            x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+            y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+        });
+        stageRef.current.batchDraw();
 
         const sceneCanvas = layerRef.current.getCanvas();
         sceneCanvas.setPixelRatio(PREVIEWER_BASE_WIDTH / PREVIEWER_VIEW_WIDTH);
@@ -51,8 +58,16 @@ function ImagePreviewer({imageURL}) {
     useEffect(() => {
         const resize = e => {
             const previewer = document.querySelector("#previewer");
+            resizeFactorRef.current = previewer.clientWidth / PREVIEWER_VIEW_WIDTH;
+            console.log(`new resize factor: ${resizeFactorRef.current}`);
+            
             stageRef.current.setWidth(previewer.clientWidth);
-            stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * (previewer.clientWidth / PREVIEWER_VIEW_WIDTH));
+            stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * resizeFactorRef.current);
+            stageRef.current.scale({
+                x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+            });
+            stageRef.current.batchDraw();
         }
 
         window.addEventListener("resize", resize);
@@ -67,7 +82,10 @@ function ImagePreviewer({imageURL}) {
                 displayImage.setImage(img);
 
                 zoomFactorRef.current = 1.0;
-                stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+                stageRef.current.scale({
+                    x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+                });
                 stageRef.current.position({x: 0.0, y: 0.0});
                 layerRef.current.draw();
             }
@@ -82,7 +100,10 @@ function ImagePreviewer({imageURL}) {
                 layerRef.current.add(image);
     
                 zoomFactorRef.current = 1.0;
-                stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+                stageRef.current.scale({
+                    x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+                });
                 stageRef.current.position({x: 0.0, y: 0.0});
                 layerRef.current.draw();
     
@@ -112,7 +133,10 @@ function ImagePreviewer({imageURL}) {
             if(isCtrlDownRef.current && scrollValue !== 0) {
                 e.evt.preventDefault();
 
-                const oldScale = {x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y}
+                const oldScale = {
+                    x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+                };
                 const pointer = stageRef.current.getPointerPosition();
 
                 const pointerRelativePos = {
@@ -131,8 +155,8 @@ function ImagePreviewer({imageURL}) {
                 }
 
                 const newScale = {
-                    x: zoomFactorRef.current * scaleRatioRef.current.x, 
-                    y: zoomFactorRef.current * scaleRatioRef.current.y
+                    x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
                 };
                 const newPos = {
                     x: pointer.x - pointerRelativePos.x * newScale.x,
@@ -169,10 +193,17 @@ function ImagePreviewer({imageURL}) {
     useEffect(() => {
         const resetBtn = document.querySelector("#previewer-btn-reset");
         const downloadBtn = document.querySelector("#previewer-btn-download");
+        const previewer = document.querySelector("#previewer");
 
         const reset = e => {
             zoomFactorRef.current = 1.0;
-            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+            resizeFactorRef.current = previewer.clientWidth / PREVIEWER_VIEW_WIDTH;
+            stageRef.current.setWidth(previewer.clientWidth);
+            stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * (previewer.clientWidth / PREVIEWER_VIEW_WIDTH));
+            stageRef.current.scale({
+                x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+            });
             stageRef.current.position({x: 0.0, y: 0.0});
             layerRef.current.draw();
         }
