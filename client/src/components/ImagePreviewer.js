@@ -47,7 +47,6 @@ function ImagePreviewer({imageURL}) {
         const resize = e => {
             const previewer = document.querySelector("#previewer");
             resizeFactorRef.current = previewer.clientWidth / PREVIEWER_VIEW_WIDTH;
-            console.log(`new resize factor: ${resizeFactorRef.current}`);
             
             stageRef.current.setWidth(previewer.clientWidth);
             stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * resizeFactorRef.current);
