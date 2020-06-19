@@ -1,0 +1,27 @@
+#upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    padding-bottom: 25px;
+}
+
+#upload-container #form-upload {
+    align-self: center;
+}
+
+#upload-container div div div div a,  #upload-container div div div div span{
+    line-height: 35px !important;
+}
+
+#upload-title-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#upload-title-nav h2 {
+    color: white
+}
