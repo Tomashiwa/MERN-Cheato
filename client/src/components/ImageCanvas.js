@@ -38,6 +38,7 @@ function ImageCanvas({setBlob}) {
     const scaleRatioRef = useRef({x: CANVAS_VIEW_WIDTH/widthRef.current, y: CANVAS_VIEW_HEIGHT/heightRef.current});
 
     const zoomFactorRef = useRef(1.0);
+    const resizeFactorRef = useRef(1.0);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -55,8 +56,38 @@ function ImageCanvas({setBlob}) {
 
         stillSceneCanvas.setPixelRatio(CANVAS_BASE_WIDTH / CANVAS_VIEW_WIDTH);
         dragSceneCanvas.setPixelRatio(1.0);
+
+        const canvasParent = document.querySelector("#canvas").parentElement;
+        resizeFactorRef.current = canvasParent.clientWidth / CANVAS_VIEW_WIDTH;
+
+        stageRef.current.setWidth(canvasParent.clientWidth);
+        stageRef.current.setHeight(CANVAS_VIEW_HEIGHT * (canvasParent.clientWidth / CANVAS_VIEW_WIDTH));
+        stageRef.current.scale({
+            x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+            y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+        });
+        stageRef.current.batchDraw();
     }, []);
 
+    // Change stage's dimension on window resize event 
+    useEffect(() => {
+        const resize = e => {
+            const canvasParent = document.querySelector("#canvas").parentElement;
+            resizeFactorRef.current = canvasParent.clientWidth / CANVAS_VIEW_WIDTH;
+
+            stageRef.current.setWidth(canvasParent.clientWidth);
+            stageRef.current.setHeight(CANVAS_VIEW_HEIGHT * resizeFactorRef.current);
+            stageRef.current.scale({
+                x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+            });
+            stageRef.current.batchDraw();
+        }
+
+        window.addEventListener("resize", resize);
+        return () => window.removeEventListener("resize", resize);
+    })
+    
     // Shift an image to its appropriate layer before and after a mouseDrag event
     useEffect(() => {
         var draggedImage = null;
@@ -137,7 +168,10 @@ function ImageCanvas({setBlob}) {
             if(isCtrlDownRef.current && scrollValue !== 0) {
                 e.evt.preventDefault();
 
-                const oldScale = {x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y}
+                const oldScale = {
+                    x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+                };
                 const pointer = stageRef.current.getPointerPosition();
 
                 const pointerRelativePos = {
@@ -156,8 +190,8 @@ function ImageCanvas({setBlob}) {
                 }
 
                 const newScale = {
-                    x: zoomFactorRef.current * scaleRatioRef.current.x, 
-                    y: zoomFactorRef.current * scaleRatioRef.current.y
+                    x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
                 };
                 const newPos = {
                     x: pointer.x - pointerRelativePos.x * newScale.x,
@@ -345,7 +379,10 @@ function ImageCanvas({setBlob}) {
                 heightRef.current = sortedResult.height;
                 scaleRatioRef.current = {x: CANVAS_VIEW_WIDTH/widthRef.current, y: CANVAS_VIEW_HEIGHT/heightRef.current};
 
-                stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+                stageRef.current.scale({
+                    x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+                });
                 stageRef.current.draw();
 
                 setIsLoading(false);
@@ -406,7 +443,10 @@ function ImageCanvas({setBlob}) {
             heightRef.current = sortedResult.height;
             scaleRatioRef.current = {x: CANVAS_VIEW_WIDTH/widthRef.current, y: CANVAS_VIEW_HEIGHT/heightRef.current};
             
-            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+            stageRef.current.scale({
+                x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+            });
             stageRef.current.draw();
         }
 
@@ -454,7 +494,10 @@ function ImageCanvas({setBlob}) {
 
         const reset = e => {
             zoomFactorRef.current = 1.0;
-            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+            stageRef.current.scale({
+                x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+            });
             stageRef.current.position({x: 0.0, y: 0.0});
             stageRef.current.batchDraw();
         }
@@ -466,7 +509,10 @@ function ImageCanvas({setBlob}) {
 
         const resetZoom = e => {
             zoomFactorRef.current = 1.0;
-            stageRef.current.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
+            stageRef.current.scale({
+                x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+            });
             stageRef.current.batchDraw();
         }
 
@@ -495,8 +541,11 @@ function ImageCanvas({setBlob}) {
             if(drawnImages.length > 0) {
                 zoomFactorRef.current = 1.0;
                 stage.position({x: 0.0, y: 0.0});
-                stage.scale({x: zoomFactorRef.current * scaleRatioRef.current.x, y: zoomFactorRef.current * scaleRatioRef.current.y});
-
+                stage.scale({
+                    x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                    y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+                });
+    
                 stage.draw();
     
                 canvas.toBlob(blob => {
@@ -517,7 +566,12 @@ function ImageCanvas({setBlob}) {
             </span>
 
             <div id="canvas-stage-div">
-                <Stage ref={stageRef} width={CANVAS_VIEW_WIDTH} height={CANVAS_VIEW_HEIGHT} draggable>
+                <Stage 
+                    ref={stageRef} 
+                    // width={CANVAS_VIEW_WIDTH} 
+                    // height={CANVAS_VIEW_HEIGHT} 
+                    draggable
+                >
                     <Layer ref={stillLayerRef}></Layer>
                     <Layer ref={dragLayerRef}></Layer>
                 </Stage>

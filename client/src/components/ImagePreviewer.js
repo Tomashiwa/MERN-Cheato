@@ -25,18 +25,6 @@ function ImagePreviewer({imageURL}) {
     const heightRef = useRef(PREVIEWER_BASE_HEIGHT);
     const scaleRatioRef = useRef({x: PREVIEWER_VIEW_WIDTH/widthRef.current, y: PREVIEWER_VIEW_HEIGHT/heightRef.current});
 
-    useEffect(() => {
-        const previewer = document.querySelector("#previewer");
-        
-        console.log("previewer:");
-        console.log(previewer);
-
-        console.log(`previewer's width: ${previewer.clientWidth}`);
-        console.log(`parent's width: ${previewer.parentElement.clientWidth}`);
-
-        console.log(`stage width: ${stageRef.current.getWidth()}`);
-    })
-
     // Set dimension and resolution of canvases
     useEffect(()=> {
         const previewer = document.querySelector("#previewer");
@@ -229,14 +217,7 @@ function ImagePreviewer({imageURL}) {
 
     return (
         <div id="previewer">
-            <Stage 
-                ref={stageRef} 
-                // width={document.querySelector("#previewer").clientWidth}
-                // height={PREVIEWER_VIEW_HEIGHT * (document.querySelector("#previewer").clientWidth / PREVIEWER_VIEW_WIDTH)}
-                // width={PREVIEWER_VIEW_WIDTH} 
-                // height={PREVIEWER_VIEW_HEIGHT} 
-                draggable
-            >
+            <Stage ref={stageRef} draggable>
                 <Layer ref={layerRef}></Layer>
             </Stage>
 
