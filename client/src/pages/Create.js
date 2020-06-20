@@ -148,6 +148,7 @@ function Create() {
         const viewSheet = () => {
             if(sheetId !== undefined) {
                 history.push(`/view/${sheetId}`);
+                window.location.reload(); 
             }
         }
 
