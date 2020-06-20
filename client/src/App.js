@@ -14,6 +14,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
 import AppNavbar from './components/AppNavbar';
 import View from './pages/View';
+import { Redirect } from 'react-router-dom';
+import NotFound from './pages/NotFound';
 
 function App() {
 	const [userData, setUserData] = useState({
@@ -49,14 +51,19 @@ function App() {
 			<UserContext.Provider value={{userData, setUserData}}>
 				<AppNavbar />
 				<div>
-					<Switch>
-						<Route path="/create" component={Create} />
-						<Route path="/upload" component={Upload} />
-						<Route path="/view/:id" component={View} />
-						<Route path="/register" component={Register}/>
-						<Route path="/login" component={Login}/>
-						<Route path="/" component={Home} />
-					</Switch>
+					{
+						userData.isLoaded
+							?	<Switch>
+									<Route exact path="/create" component={Create} />
+									<Route exact path="/upload" component={Upload} />
+									<Route exact path="/view/:id" component={View} />
+									{ userData.token === undefined && <Route exact path="/register" component={Register}/>}
+									{ userData.token === undefined && <Route exact path="/login" component={Login}/>}
+									<Route exact path="/" component={Home} />
+									<Route exact path="*" component={NotFound} />
+								</Switch>
+							: 	<div></div>
+					}
 				</div>
 			</UserContext.Provider>
 		</BrowserRouter>
