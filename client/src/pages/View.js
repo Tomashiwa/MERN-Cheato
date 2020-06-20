@@ -16,6 +16,7 @@ function View() {
     const [sheet, setSheet] = useState(null);
     const [school, setSchool] = useState(null);;
     const [module, setModule] = useState(null);
+    const [owner, setOwner] = useState(null);
 
     const [errorMsg, setErrorMsg] = useState("");
 
@@ -38,6 +39,13 @@ function View() {
     
             axios.get(`/api/modules/${sheet.module}`)
                 .then(module => setModule(module.data));
+            
+            axios.get(`/api/users/${sheet.user}`)
+                .then(user => {
+                    console.log(`owner of sheet ${sheet.name}:`);
+                    console.log(user.data);
+                    setOwner(user.data);
+                });
         }
     }, [sheet])
 
@@ -91,13 +99,13 @@ function View() {
     return (
         <div>
             {
-                sheet && school && module
+                sheet && school && module && owner
                     ?   <Container id="view-container">
                             <div id="view-header">
                                 <div id="view-description">
                                     <h2>{sheet.name}</h2>
                                     <h3>{`${school.name} - ${module.name}`}</h3>
-                                    <h4>{`Uploaded by: ${userData.user.name}`}</h4>
+                                    <h4>{`Uploaded by: ${owner.name}`}</h4>
                                 </div>
 
                                 <div id="view-feedback">

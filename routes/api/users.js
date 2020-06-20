@@ -93,6 +93,12 @@ router.post("/tokenIsValid", (req, res) => {
         });
 });
 
+router.get("/:id", (req, res) => {
+    User.findById(req.params.id)
+        .then(user => res.json(user))
+        .catch(err => res.status(404).json({msg: `User with ${req.params.id} cannot be found`}));
+})
+
 // @route DELETE api/users
 // @descr Delete a user
 // @access Public
