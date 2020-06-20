@@ -79,9 +79,32 @@ function CreateForm({form, setForm}) {
     useEffect(() => {
         const nameInput = document.querySelector("#createform-input-name");
 
-        const checkName = e => {
-            const isValid = e.target.value.length && !hasInvalidSymbols(e.target.value);
-            const isInvalid = e.target.value.length && hasInvalidSymbols(e.target.value);
+        // const checkName = e => {
+        //     const name = e.target.value;
+
+        //     console.log(`Checking name (${name})...`);
+
+        //     if(name.length <= 0) {
+        //         console.log(`${name} has a length of 0, neither valid nor invalid`);
+        //         setNameState({valid: false, invalid: false});
+        //     } else if(hasInvalidSymbols(name)) {
+        //         console.log(`${name} has invalid symbols, so it's invalid`);
+        //         setNameState({valid: false, invalid: true});
+        //     } else {
+        //         axios.post("/api/users/nameAvaliable", {name: name})
+        //             .then(result => {
+        //                 console.log("result");
+        //                 console.log(result.data);
+        //                 console.log(`Is ${name} avaliable? ${result.data.isAvaliable}`);
+        //                 setNameState({valid: result.data.isAvaliable, invalid: !result.data.isAvaliable});
+        //             })
+        //             .catch(err => console.log(err));
+        //     }
+        // }
+
+        const checkName = async(e) => {
+            const isValid = await e.target.value.length && !hasInvalidSymbols(e.target.value);
+            const isInvalid = await e.target.value.length && hasInvalidSymbols(e.target.value);
 
             if(nameState.valid !== isValid || nameState.invalid !== isInvalid) {
                 setNameState({valid: isValid, invalid: isInvalid});

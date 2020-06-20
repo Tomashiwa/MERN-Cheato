@@ -14,7 +14,6 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
 import AppNavbar from './components/AppNavbar';
 import View from './pages/View';
-import { Redirect } from 'react-router-dom';
 import NotFound from './pages/NotFound';
 
 function App() {

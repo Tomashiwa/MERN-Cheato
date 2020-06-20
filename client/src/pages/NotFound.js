@@ -3,7 +3,6 @@ import { Container, Button, Card, CardHeader, CardBody, CardText } from "reactst
 import { useHistory } from 'react-router-dom';
 
 function NotFound() {
-
     const history = useHistory();
 
     const goHome = () => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
 import axios from 'axios';
 import { Form, FormGroup, Label, Input, FormFeedback, FormText } from "reactstrap";
@@ -6,7 +6,6 @@ import CreatableSelect from "react-select/creatable";
 import "./css/UploadForm.css"
 
 function UploadForm({form, setForm, setBlob}) {
-    const [file, setFile] = useState(null);
     const [schools, setSchools] = useState([]);
     const [modules, setModules] = useState([]);
 

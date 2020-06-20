@@ -68,6 +68,27 @@ router.post("/register", (req, res) => {
         })
 });
 
+router.post("/nameAvaliable", (req, res) => {
+    const { name } = req.body;
+
+    if(!name) {
+        return res.status(400).json({isAvaliable: false, msg: "Please provide a name to verify."});
+    }
+    
+    console.log(`Name to find: ${name}`);
+
+    User.findOne({name})
+        .then(user => {
+            console.log(`result: ${user}`);
+
+            if(user) {
+                return res.status(400).json({isAvaliable: false, msg: "Name has being taken."});
+            } else {
+                res.json({isAvaliable: true, msg: ""});
+            }
+        })
+})
+
 router.post("/tokenIsValid", (req, res) => {
     const token = req.header("x-auth-token");
     if(!token) {
