@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Spinner } from "reactstrap";
 
-import axios from "axios";
 import Konva from "konva";
 import { Stage, Layer } from "react-konva";
 
@@ -62,12 +61,26 @@ function ImagePreviewer({imageURL}) {
         return () => window.removeEventListener("resize", resize);
     })
 
-    //Load display image to previewer
+    //Load image onto previewer and adjust previewer's scaling to fit the image's dimension
     useEffect(() => {
         if(displayImage !== null) {
             var img = new Image();
             img.onload = () => {
                 displayImage.setImage(img);
+
+                const width = displayImage.attrs.image.width;
+                const height = displayImage.attrs.image.height;
+
+                if(height > width) {
+                    heightRef.current = displayImage.attrs.image.height;
+                    widthRef.current = displayImage.attrs.image.height * (PREVIEWER_BASE_WIDTH / PREVIEWER_BASE_HEIGHT);
+    
+                } else {
+                    widthRef.current = displayImage.attrs.image.width;
+                    heightRef.current = displayImage.attrs.image.width * (PREVIEWER_BASE_HEIGHT / PREVIEWER_BASE_WIDTH);
+                }
+
+                scaleRatioRef.current = {x: PREVIEWER_VIEW_WIDTH/widthRef.current, y: PREVIEWER_VIEW_HEIGHT/heightRef.current};
 
                 zoomFactorRef.current = 1.0;
                 stageRef.current.scale({
@@ -86,7 +99,21 @@ function ImagePreviewer({imageURL}) {
                 image.setAbsolutePosition({x: 0, y: 0});
                 
                 layerRef.current.add(image);
+
+                const width = image.attrs.image.width;
+                const height = image.attrs.image.height;
+
+                if(height > width) {
+                    heightRef.current = image.attrs.image.height;
+                    widthRef.current = image.attrs.image.height * (PREVIEWER_BASE_WIDTH / PREVIEWER_BASE_HEIGHT);
     
+                } else {
+                    widthRef.current = image.attrs.image.width;
+                    heightRef.current = image.attrs.image.width * (PREVIEWER_BASE_HEIGHT / PREVIEWER_BASE_WIDTH);
+                }
+
+                scaleRatioRef.current = {x: PREVIEWER_VIEW_WIDTH/widthRef.current, y: PREVIEWER_VIEW_HEIGHT/heightRef.current};
+
                 zoomFactorRef.current = 1.0;
                 stageRef.current.scale({
                     x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
