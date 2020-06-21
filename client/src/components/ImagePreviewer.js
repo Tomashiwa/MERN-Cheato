@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Spinner } from "reactstrap";
 
+import axios from "axios";
 import Konva from "konva";
 import { Stage, Layer } from "react-konva";
 
@@ -196,13 +197,24 @@ function ImagePreviewer({imageURL}) {
         }
 
         const download = e => {
-            resetBtn.click();
-            const a = document.createElement("a");
-            document.body.appendChild(a);
-            a.href = layerRef.current.getCanvas()._canvas.toDataURL("image/png", 1.0);
-            a.download = "cheatsheet.png";
-            a.click();
-            document.body.removeChild(a);
+            fetch(imageURL)
+                .then(response => {
+                    console.log("response:");
+                    console.log(response);
+                    return response.blob();
+                })
+                .then(blob => {
+                    console.log("blob:");
+                    console.log(blob);
+
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = "Cheatsheet.png";
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                })
         }
 
         resetBtn.addEventListener("click", reset);
@@ -212,7 +224,7 @@ function ImagePreviewer({imageURL}) {
             resetBtn.removeEventListener("click", reset);
             downloadBtn.removeEventListener("click", download);
         }
-    }, [scaleRatioRef])
+    }, [scaleRatioRef, imageURL])
 
     return (
         <div id="previewer">
