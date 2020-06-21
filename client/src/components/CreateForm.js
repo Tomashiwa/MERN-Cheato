@@ -7,7 +7,7 @@ import "./css/CreateForm.css"
 import axios from "axios";
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
 
-function CreateForm({form, setForm}) {
+function CreateForm({form, setForm, isAnonymous}) {
     const [schools, setSchools] = useState([]);
     const [modules, setModules] = useState([]);
 
@@ -72,8 +72,11 @@ function CreateForm({form, setForm}) {
 
         nameInput.value = form.name;
         descInput.value = form.description;
-        isPublicInput.checked = form.isPublic;
-    }, [form]);
+
+        if(!isAnonymous) {
+            isPublicInput.checked = form.isPublic;
+        }
+    }, [form, isAnonymous]);
 
     // Verify the name and save it to the form
     useEffect(() => {
@@ -135,12 +138,23 @@ function CreateForm({form, setForm}) {
     // Saving the isPublic to the form
     useEffect(() => {
         const isPublicInput = document.querySelector("#createform-input-public");
-        const changeIsPublic = e => setForm({...form, ...{isPublic: e.target.checked}});
-
-        isPublicInput.addEventListener("change", changeIsPublic);
-
-        return () => isPublicInput.removeEventListener("change", changeIsPublic);
-    }, [form, setForm, nameState]);
+        if(!isAnonymous) {
+            const changeIsPublic = e => {
+                console.log(`set isPublic to ${e.target.checked}`);
+                setForm({...form, ...{isPublic: e.target.checked}});
+            }
+            
+            isPublicInput.addEventListener("change", changeIsPublic);
+    
+            return () => {
+                isPublicInput.removeEventListener("change", changeIsPublic);
+            }
+        } else if(isAnonymous && !form.isPublic) {
+            isPublicInput.setAttribute("checked", isAnonymous);
+            isPublicInput.setAttribute("disabled", isAnonymous);
+            setForm({...form, ...{isPublic: true}});
+        }
+    }, [form, setForm, isAnonymous]);
 
     // Save a selected school to the form
     const saveSchool = option => {

@@ -42,8 +42,6 @@ function View() {
             
             axios.get(`/api/users/${sheet.user}`)
                 .then(user => {
-                    console.log(`owner of sheet ${sheet.name}:`);
-                    console.log(user.data);
                     setOwner(user.data);
                 });
         }
@@ -99,13 +97,17 @@ function View() {
     return (
         <div>
             {
-                sheet && school && module && owner
+                sheet && school && module && (owner || sheet.isAnonymous)
                     ?   <Container id="view-container">
                             <div id="view-header">
                                 <div id="view-description">
                                     <h2>{sheet.name}</h2>
                                     <h3>{`${school.name} - ${module.name}`}</h3>
-                                    <h4>{`Uploaded by: ${owner.name}`}</h4>
+                                    <h4>
+                                        {
+                                            `Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`
+                                        }
+                                    </h4>
                                 </div>
 
                                 <div id="view-feedback">

@@ -5,7 +5,7 @@ import { Form, FormGroup, Label, Input, FormFeedback, FormText } from "reactstra
 import CreatableSelect from "react-select/creatable";
 import "./css/UploadForm.css"
 
-function UploadForm({form, setForm, setBlob}) {
+function UploadForm({form, setForm, setBlob, isAnonymous}) {
     const [schools, setSchools] = useState([]);
     const [modules, setModules] = useState([]);
 
@@ -100,12 +100,18 @@ function UploadForm({form, setForm, setBlob}) {
     // Saving the isPublic to the form
     useEffect(() => {
         const isPublicInput = document.querySelector("#uploadform-input-public");
-        const changeIsPublic = e => setForm({...form, ...{isPublic: e.target.checked}});
+        if(!isAnonymous) {
+            const changeIsPublic = e => setForm({...form, ...{isPublic: e.target.checked}});
+    
+            isPublicInput.addEventListener("change", changeIsPublic);
+            return () => isPublicInput.removeEventListener("change", changeIsPublic);
+        } else if(isAnonymous && !form.isPublic) {
+            isPublicInput.setAttribute("checked", isAnonymous);
+            isPublicInput.setAttribute("disabled", isAnonymous);
+            setForm({...form, ...{isPublic: true}});
+        }
 
-        isPublicInput.addEventListener("change", changeIsPublic);
-
-        return () => isPublicInput.removeEventListener("change", changeIsPublic);
-    }, [form, setForm, nameState]);
+    }, [form, setForm, isAnonymous]);
 
     // Save image input as blob
     useEffect(() => {

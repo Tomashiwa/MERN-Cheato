@@ -12,7 +12,8 @@ const CheatsheetSchema = new Schema({
     datetime: {type: Date, required: true},
     rating: {type: Number, required: true},
     comments: {type: Array, required: true},
-    isPublic: {type:Boolean, required:true}
+    isPublic: {type: Boolean, required: true},
+    isAnonymous: {type: Boolean, required: true}
 });
 
 module.exports = Cheatsheet = mongoose.model("cheatsheet", CheatsheetSchema);

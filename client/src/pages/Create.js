@@ -57,7 +57,9 @@ function Create() {
         const saveToDb = url => {
             const newCheatsheet = {
                 file: url,
-                user: mongoose.Types.ObjectId(userData.user.id),
+                user: userData.isLoaded && userData.token === undefined
+                    ? mongoose.Types.ObjectId(-1)
+                    : mongoose.Types.ObjectId(userData.user.id),
                 name: form.name,
                 school: mongoose.Types.ObjectId(form.school),
                 module: mongoose.Types.ObjectId(form.module),
@@ -65,7 +67,8 @@ function Create() {
                 datetime: Date.now(),
                 rating: 0,
                 comments: [],
-                isPublic: form.isPublic
+                isPublic: form.isPublic,
+                isAnonymous: userData.isLoaded && userData.token === undefined
             }
 
             axios.post("/api/cheatsheets/add", newCheatsheet)
@@ -202,7 +205,7 @@ function Create() {
                             formStep === CREATE_STEP_IMPORT
                                 ? <ImageCanvas form={form} setBlob={setBlob} />
                             : formStep === CREATE_STEP_FORM
-                                ? <CreateForm form={form} setForm={setForm} />
+                                ? <CreateForm form={form} setForm={setForm} isAnonymous={userData.isLoaded && userData.token === undefined}/>
                             : formStep === CREATE_STEP_PREVIEW
                                 ? <ImagePreviewer imageURL={form.url} />
                             : <div></div>

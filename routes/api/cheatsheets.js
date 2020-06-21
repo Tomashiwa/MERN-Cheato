@@ -52,7 +52,8 @@ router.post("/add", (req, res) => {
         datetime: req.body.datetime,
         rating: req.body.rating,
         comments: req.body.comments,
-        isPublic: req.body.isPublic
+        isPublic: req.body.isPublic,
+        isAnonymous: req.body.isAnonymous
     });
 
     //Save to database
