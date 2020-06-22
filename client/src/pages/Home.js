@@ -29,17 +29,15 @@ function Home() {
         fetchImages();
     }, []);
     
-    console.log(cheatsheets);
+    
     
 return (
         <div>
-            <AppNavbar />
             <div className = "gallery">
             {cheatsheets.map(cs => (
                 <CheatsheetCard sheet = {cs} /> 
            ))}
            </div>
-           <CommentCard />
         </div>
    
     )

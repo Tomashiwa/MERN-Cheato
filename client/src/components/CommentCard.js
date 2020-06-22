@@ -5,7 +5,7 @@ import "./css/CommentCard.css"
 import axios from 'axios';
 
 function CommentCard({form, setForm}) {
-  useEffect(() => {
+ /* useEffect(() => {
     const commentInput = document.querySelector("pb-cmnt-textarea");
     const setComment = e => setForm({...form, ...{comment: e.target.value}});
     
@@ -25,7 +25,7 @@ function CommentCard({form, setForm}) {
     return () => commentBtn.removeEventListener("click", sendComment);
   }, [form, setForm]);
 
-
+*/
   
 
   
