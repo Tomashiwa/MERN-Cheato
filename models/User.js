@@ -5,6 +5,7 @@ const UserSchema = new Schema({
     name: {type: String, required: true},
     password: {type: String, required: true},
     bookmarks: {type: Array,  required: true},
+    isAdmin: {type: Boolean, required: true},
     rated: {type:Array,required: true}
 });
 

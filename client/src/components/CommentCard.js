@@ -2,7 +2,7 @@ import React, { useEffect,useRef } from 'react'
 import CreatableSelect from "react-select/creatable";
 
 import "./css/CommentCard.css"
-import Axios from 'axios';
+import axios from 'axios';
 
 function CommentCard({form, setForm}) {
   useEffect(() => {
@@ -22,7 +22,7 @@ function CommentCard({form, setForm}) {
 
     commentBtn.addEventListener("change", sendComment);
 
-    return () => commentInput.removeEventListener("click", sendComment);
+    return () => commentBtn.removeEventListener("click", sendComment);
   }, [form, setForm]);
 
 
