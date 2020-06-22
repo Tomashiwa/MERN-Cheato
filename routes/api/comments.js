@@ -43,11 +43,11 @@ router.delete("/:id", (req, res) => {
         .catch(err => res.status(404).json({success: false}));
 });
 
-router.put("/:id", function(req, res, next) {
-    Comment.findByIdAndUpdate(req.params.id, req.body, function(err, comment) {
-     if (err) return next(err);
-     res.json(comment);
+router.put("/:id", function(req, res, next){
+    Comment.findByIdAndUpdate(req.params.id,req.body,{new:true})
+       .then(function(comments){
+            res.send(comments);
     });
-   });
+});
 //So other files can read what's in this file
 module.exports = router;

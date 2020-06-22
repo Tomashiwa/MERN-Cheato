@@ -129,5 +129,12 @@ router.delete("/:id", (req, res) => {
         .catch(err => res.status(404).json({success: false}));
 });
 
+router.put("/:id", function(req, res, next){
+    User.findByIdAndUpdate(req.params.id,req.body,{new:true})
+       .then(function(user){
+            res.send(user);
+    });
+});
+
 //So other files can read what's in this file
 module.exports = router;

@@ -128,5 +128,11 @@ router.get("/search/:searchTerm/:limit", (req,res) => {
         .catch(err => res.status(404).json({success: false}));
 })
 
+router.put("/:id", function(req, res, next){
+    Cheatsheet.findByIdAndUpdate(req.params.id,req.body,{new:true})
+       .then(function(cheatsheet){
+            res.send(cheatsheet);
+    });
+});
 //So other files can read what's in this file
 module.exports = router;
