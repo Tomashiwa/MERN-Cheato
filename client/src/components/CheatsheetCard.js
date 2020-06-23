@@ -7,6 +7,7 @@ import "./css/CheatsheetCard.css"
 import axios from 'axios';
 
 function CheatsheetCard({ sheet }) {
+    
     var [vote, setVote] = useState(sheet.rating);
     const [user, setUser] = useState(null);
     const [loaded, setLoaded] = useState(false);
@@ -21,7 +22,7 @@ function CheatsheetCard({ sheet }) {
                 setLoaded(true);
             })
             .catch(err => {
-                console.log(`Fail to fetch user: ${err}`);
+                //console.log(`Fail to fetch user: ${err}`);
             });
     }, [userData]);
 
@@ -30,11 +31,9 @@ function CheatsheetCard({ sheet }) {
 
         console.log(user)
 
-        const bookmarkBtn = document.querySelector("#bookmarkBtn");
-        console.log(bookmarkBtn)
+        const newBookmarkBtn = document.querySelector("#bookmarkBtn");
 
         const bookmarkClicked = () => {
-            console.log(1)
             if (user && userData.isLoaded && userData.token !== undefined) {
                 axios.get(`/api/users/${userID}`)
                     .then(res => {
@@ -55,27 +54,29 @@ function CheatsheetCard({ sheet }) {
 
             }
         }
-        bookmarkBtn.addEventListener("click", bookmarkClicked);
+        newBookmarkBtn.addEventListener("click", bookmarkClicked);
 
         return () => {
-            bookmarkBtn.removeEventListener("click", bookmarkClicked);
+            newBookmarkBtn.removeEventListener("click", bookmarkClicked);
         }
 
 
     }, [user, sheet._id, userData]);
 
     useEffect(() => {
-        const upvoteBtn = document.querySelector(".upvote");
-        const downvoteBtn = document.querySelector(".downvote");
+        const newUpvoteBtn = document.querySelector("#upvoteBtn");
+        const newDownvoteBtn = document.querySelector("#downvoteBtn");
         const newUpvote = (vote + 1);
         const newDownvote = (vote - 1);
 
         const upvoteClicked = () => {
+            console.log(sheet._id)
             axios.put(`/api/cheatsheets/${sheet._id}`, {
                 rating: newUpvote
             })
                 .then(res => {
                     setVote(newUpvote)
+                    console.log(sheet._id)
                 })
                 .catch(err => {
                     console.log(`Fail to upvote: ${err}`);
@@ -87,19 +88,19 @@ function CheatsheetCard({ sheet }) {
                 rating: newDownvote
             })
                 .then(res => {
-                    setVote(newUpvote)
+                    setVote(newDownvote)
                 })
                 .catch(err => {
                     console.log(`Fail to downvote: ${err}`);
                 });
         }
 
-        upvoteBtn.addEventListener("click", upvoteClicked);
-        downvoteBtn.addEventListener("click", downvoteClicked);
+        newUpvoteBtn.addEventListener("click", upvoteClicked);
+        newDownvoteBtn.addEventListener("click", downvoteClicked);
 
         return () => {
-            upvoteBtn.removeEventListener("click", upvoteClicked);
-            downvoteBtn.removeEventListener("click", downvoteClicked);
+            newUpvoteBtn.removeEventListener("click", upvoteClicked);
+            newDownvoteBtn.removeEventListener("click", downvoteClicked);
         };
     }, [vote, sheet._id]);
 
@@ -112,7 +113,7 @@ function CheatsheetCard({ sheet }) {
                         <p>{sheet.name}</p>
                     </div>
                     <div class="cheatsheet-rating">
-                        <p>Vote:{sheet.rating}</p>
+                        <p>Vote:{vote}</p>
                     </div>
                     <div class="bookmark">
                         <button type="button" id ="bookmarkBtn" class="btn btn-outline-dark">
@@ -146,7 +147,7 @@ function CheatsheetCard({ sheet }) {
                         </button>
                     </div>
                     <div class="upvote">
-                        <button type="button" class="btn btn-outline-dark">
+                        <button type="button" id ="upvoteBtn" class="btn btn-outline-dark">
                             <svg class="bi bi-arrow-up-short" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
                                 <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8 5.707 5.354 8.354a.5.5 0 1 1-.708-.708l3-3z" />
@@ -154,7 +155,7 @@ function CheatsheetCard({ sheet }) {
                         </button>
                     </div>
                     <div class="downvote">
-                        <button type="button" class="btn btn-outline-dark">
+                        <button type="button" id ="downvoteBtn" class="btn btn-outline-dark">
                             <svg class="bi bi-arrow-down-short" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M4.646 7.646a.5.5 0 0 1 .708 0L8 10.293l2.646-2.647a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z" />
                                 <path fill-rule="evenodd" d="M8 4.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5z" />

@@ -28,6 +28,8 @@ function Home() {
 
         fetchImages();
     }, []);
+
+    console.log(cheatsheets);
     
     
     
