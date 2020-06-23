@@ -3,21 +3,7 @@ import mount from "enzyme/build/mount";
 import Register from "./Register";
 import UserContext from "../context/UserContext";
 
-import { rest } from "msw";
-import { setupServer } from "msw/node";
-
-const server = setupServer(
-	rest.post("/api/users/register", (req, res, ctx) => {
-		return res(ctx.status(200), ctx.json({ msg: "Register successful" }));
-	}),
-	rest.post("/api/auth", (req, res, ctx) => {
-		return res(ctx.status(200), ctx.json({msg: "Auto-login successful"}));
-	})
-);
-
-beforeAll(() => server.listen());
-afterAll(() => server.close());
-afterEach(() => server.resetHandlers());
+import { server, rest } from "../mockServer";
 
 const userData = { token: undefined, user: undefined, isLoaded: false };
 const setUserData = (newToken, newUser, newIsLoaded) => ({
@@ -59,6 +45,19 @@ jest.mock("react", () => ({
 const setState = jest.fn();
 useStateMock.mockImplementation((init) => [init, setState]);
 
+beforeEach(() => {
+	const div = document.createElement("div");
+	div.setAttribute("id", "mockContainer");
+	document.body.appendChild(div);
+});
+
+afterEach(() => {
+	const div = document.getElementById("mockContainer");
+	if (div) {
+		document.body.removeChild(div);
+	}
+});
+
 test("Register successfully", async () => {
 	const account = { username: "user123", password: "password" };
 
@@ -66,37 +65,21 @@ test("Register successfully", async () => {
 		<UserContext.Provider value={{ userData, setUserData }}>
 			<Register />
 		</UserContext.Provider>,
-		{ attachTo: document.body }
+		{ attachTo: document.getElementById('mockContainer') }
 	);
 
-	const nameInput = wrapper
-		.find("#register-input-name")
-		.hostNodes()
-		.getDOMNode();
-	const passInput = wrapper
-		.find("#register-input-pass")
-		.hostNodes()
-		.getDOMNode();
-	const confirmInput = wrapper
-		.find("#register-input-confirmPass")
-		.hostNodes()
-		.getDOMNode();
+	const nameInput = wrapper.find("#register-input-name").hostNodes().getDOMNode();
+	const passInput = wrapper.find("#register-input-pass").hostNodes().getDOMNode();
+	const confirmInput = wrapper.find("#register-input-confirmPass").hostNodes().getDOMNode();
 	const form = wrapper.find("#register-form").hostNodes();
 
 	nameInput.value = account.username;
 	passInput.value = account.password;
 	confirmInput.value = account.password;
 
-	console.log(
-		`name: ${nameInput.value}, pass: ${passInput.value}, confirm: ${confirmInput.value}`
-	);
-	console.log("Start submit");
-
 	return form
 		.prop("onSubmit")({ preventDefault: jest.fn() })
 		.then((res) => {
-			console.log("Finish Submit");
-			console.log(res);
 			expect(mockHistoryPush).toHaveBeenCalledWith("/");
 		})
 		.catch((err) => {

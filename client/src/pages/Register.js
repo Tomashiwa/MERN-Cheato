@@ -26,7 +26,6 @@ function Register() {
 		pass: false,
 		check: false,
 	});
-
 	const [invalidMsg, setInvalidMsg] = useState("");
 	const history = useHistory();
 
