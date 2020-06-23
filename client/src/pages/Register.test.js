@@ -5,6 +5,7 @@ import UserContext from "../context/UserContext";
 
 import { server, rest } from "../mockServer";
 
+// Mock UserContext
 const userData = { token: undefined, user: undefined, isLoaded: false };
 const setUserData = (newToken, newUser, newIsLoaded) => ({
 	token: newToken,
@@ -12,24 +13,8 @@ const setUserData = (newToken, newUser, newIsLoaded) => ({
 	isLoaded: newIsLoaded,
 });
 
-// Login here link
-test("Link to login page", () => {
-	const wrapper = mount(
-		<UserContext.Provider value={{ userData, setUserData }}>
-			<Register />
-		</UserContext.Provider>
-	);
-
-	const link = wrapper.find("a");
-	expect(link.length).toBe(1);
-	expect(link.prop("href")).toBe("/login");
-});
-
-// Successful registration
-
 // Mocking history.push
 const mockHistoryPush = jest.fn();
-
 jest.mock(`react-router-dom`, () => ({
 	...jest.requireActual("react-router-dom"),
 	useHistory: () => ({
@@ -58,7 +43,19 @@ afterEach(() => {
 	}
 });
 
-test("Register successfully", async () => {
+test("Redirecting to login page", () => {
+	const wrapper = mount(
+		<UserContext.Provider value={{ userData, setUserData }}>
+			<Register />
+		</UserContext.Provider>
+	);
+
+	const link = wrapper.find("a");
+	expect(link.length).toBe(1);
+	expect(link.prop("href")).toBe("/login");
+});
+
+test("Successful register", async () => {
 	const account = { username: "user123", password: "password" };
 
 	const wrapper = mount(
