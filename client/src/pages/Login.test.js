@@ -1,7 +1,7 @@
-import React, { useState as useStateMock } from "react";
+import React from "react";
 import mount from "enzyme/build/mount";
-import Register from "./Register";
 import UserContext from "../context/UserContext";
+import Login from "./Login";
 
 import { server, rest } from "../mockServer";
 
@@ -12,23 +12,6 @@ const setUserData = (newToken, newUser, newIsLoaded) => ({
 	user: newUser,
 	isLoaded: newIsLoaded,
 });
-
-// Mocking history.push
-const mockHistoryPush = jest.fn();
-jest.mock(`react-router-dom`, () => ({
-	...jest.requireActual("react-router-dom"),
-	useHistory: () => ({
-		push: mockHistoryPush,
-	}),
-}));
-
-// Mock setState
-jest.mock("react", () => ({
-	...jest.requireActual("react"),
-	useState: jest.fn(),
-}));
-const setState = jest.fn();
-useStateMock.mockImplementation((init) => [init, setState]);
 
 // Mock container
 beforeEach(() => {
@@ -44,36 +27,43 @@ afterEach(() => {
 	}
 });
 
-test("Redirecting to login page", () => {
+// Mocking history.push
+const mockHistoryPush = jest.fn();
+jest.mock(`react-router-dom`, () => ({
+	...jest.requireActual("react-router-dom"),
+	useHistory: () => ({
+		push: mockHistoryPush,
+	}),
+}));
+
+test("Redirecting to register page", () => {
 	const wrapper = mount(
 		<UserContext.Provider value={{ userData, setUserData }}>
-			<Register />
+			<Login />
 		</UserContext.Provider>
 	);
 
 	const link = wrapper.find("a");
 	expect(link.length).toBe(1);
-	expect(link.prop("href")).toBe("/login");
+	expect(link.prop("href")).toBe("/register");
 });
 
-test("Successful register", async () => {
+test("Successful login", async () => {
 	const account = { username: "user123", password: "password" };
 
 	const wrapper = mount(
 		<UserContext.Provider value={{ userData, setUserData }}>
-			<Register />
+			<Login />
 		</UserContext.Provider>,
-		{ attachTo: document.getElementById('mockContainer') }
+		{ attachTo: document.getElementById("mockContainer") }
 	);
 
-	const nameInput = wrapper.find("#register-input-name").hostNodes().getDOMNode();
-	const passInput = wrapper.find("#register-input-pass").hostNodes().getDOMNode();
-	const confirmInput = wrapper.find("#register-input-confirmPass").hostNodes().getDOMNode();
-	const form = wrapper.find("#register-form").hostNodes();
+	const nameInput = wrapper.find("#login-input-name").hostNodes().getDOMNode();
+	const passInput = wrapper.find("#login-input-pass").hostNodes().getDOMNode();
+	const form = wrapper.find("#login-form").hostNodes();
 
 	nameInput.value = account.username;
 	passInput.value = account.password;
-	confirmInput.value = account.password;
 
 	return form
 		.prop("onSubmit")({ preventDefault: jest.fn() })

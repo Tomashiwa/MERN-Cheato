@@ -6,7 +6,7 @@ const server = setupServer(
 		return res(ctx.status(200), ctx.json({ msg: "Register successful" }));
 	}),
 	rest.post("/api/auth", (req, res, ctx) => {
-		return res(ctx.status(200), ctx.json({ msg: "Auto-login successful" }));
+		return res(ctx.status(200), ctx.json({ msg: "Authentication successful" }));
 	}),
 
 	rest.get("*", (req, res, ctx) => {

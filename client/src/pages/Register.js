@@ -1,13 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-	Form,
-	FormGroup,
-	Label,
-	Input,
-	FormFeedback,
-	Button,
-	Container,
-} from "reactstrap";
+import { Form, FormGroup, Label, Input, FormFeedback, Button, Container } from "reactstrap";
 
 import axios from "axios";
 
@@ -39,15 +31,11 @@ function Register() {
 			setFieldsInvalid({ name: true, pass: true, check: true });
 			return false;
 		} else if (name.length < NAME_MIN_LENGTH) {
-			setInvalidMsg(
-				`Username should have ${NAME_MIN_LENGTH} or more characters`
-			);
+			setInvalidMsg(`Username should have ${NAME_MIN_LENGTH} or more characters`);
 			setFieldsInvalid({ name: true, pass: false, check: false });
 			return false;
 		} else if (password.length < PASSWORD_MIN_LENGTH) {
-			setInvalidMsg(
-				`Password should have ${PASSWORD_MIN_LENGTH} or more characters`
-			);
+			setInvalidMsg(`Password should have ${PASSWORD_MIN_LENGTH} or more characters`);
 			setFieldsInvalid({ name: false, pass: true, check: false });
 			return false;
 		} else if (password !== passwordCheck) {
@@ -59,8 +47,8 @@ function Register() {
 		return true;
 	};
 
-	const register = async(e) => {
-        e.preventDefault();
+	const register = async (e) => {
+		e.preventDefault();
 
 		const name = document.querySelector("#register-input-name").value;
 		const password = document.querySelector("#register-input-pass").value;
@@ -71,22 +59,17 @@ function Register() {
 			return axios
 				.post("/api/users/register", newUser)
 				.then((registerRes) => {
-					return axios
-						.post("/api/auth", { name, password })
-						.then((loginRes) => {
-							setUserData({
-								...userData,
-								...{
-									token: loginRes.data.token,
-									user: loginRes.data.user,
-								},
-							});
-							localStorage.setItem(
-								"auth-token",
-								loginRes.data.token
-							);
-							history.push("/");
+					return axios.post("/api/auth", { name, password }).then((loginRes) => {
+						setUserData({
+							...userData,
+							...{
+								token: loginRes.data.token,
+								user: loginRes.data.user,
+							},
 						});
+						localStorage.setItem("auth-token", loginRes.data.token);
+						history.push("/");
+					});
 				})
 				.catch((err) => {
 					setInvalidMsg(err.response.data.msg);
@@ -103,10 +86,7 @@ function Register() {
 				<h2>Register</h2>
 				<FormGroup>
 					<Label>Name</Label>
-					<Input
-						id="register-input-name"
-						invalid={fieldsInvalid.name ? true : false}
-					/>
+					<Input id="register-input-name" invalid={fieldsInvalid.name ? true : false} />
 					<FormFeedback invalid="true">{invalidMsg}</FormFeedback>
 				</FormGroup>
 				<FormGroup>
