@@ -28,10 +28,6 @@ function Home() {
 
         fetchImages();
     }, []);
-
-    console.log(cheatsheets);
-    
-    
     
 return (
         <div>

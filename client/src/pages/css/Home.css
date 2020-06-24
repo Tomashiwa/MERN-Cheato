@@ -56,7 +56,7 @@
     opacity:1;
 }
 
-.download {
+.view {
     position:absolute;
     top:212px;
     right:0px;
@@ -70,7 +70,7 @@
     opacity:0;
 }
 
-.preview {
+.similar {
     position:absolute;
     top:212px;
     left:126px;
@@ -98,7 +98,7 @@
     opacity:0;
 }
 
-.cheatsheet:hover .download{
+.cheatsheet:hover .view{
     opacity:1;
 } 
 
@@ -110,7 +110,7 @@
     opacity:1;
 } 
 
-.cheatsheet:hover .preview{
+.cheatsheet:hover .similar{
     opacity:1;
 } 
 
