@@ -1,41 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import AppNavbar from "../components/AppNavbar";
-import CheatsheetCard from "../components/CheatsheetCard";
-import CommentCard from "../components/CommentCard";
+import Gallery from "../components/Gallery";
+import HomeDropdown from "../components/HomeDropdown";
 
-import axios from "axios";
 import "./css/Home.css";
 
-
-
 function Home() {
-   
-    const [cheatsheets, setCheatsheets] = useState([]);
-    const [loaded, setLoaded] = useState(false);
-    
-    useEffect(() => {
-        const fetchImages = () => {
-            axios.get("/api/cheatsheets")
-                .then(res => {
-                    setCheatsheets(res.data);
-                    setLoaded(true);
-                })
-                .catch(err => {
-                    console.log(`Fail to fetch cheatsheets: ${err}`);
-                });
-        }
-
-        fetchImages();
-    }, []);
     
 return (
         <div>
-            <div className = "gallery">
-            {cheatsheets.map(cs => (
-                <CheatsheetCard sheet = {cs} /> 
-           ))}
-           </div>
+            <Gallery/>
+            <div id = "dropdownMenu">
+            </div>
         </div>
    
     )

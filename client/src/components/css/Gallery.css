@@ -1,0 +1,15 @@
+.gallery{
+    display:flex;
+    width: 100%;
+    height:100%;
+    flex-direction: row;
+    flex-wrap:wrap;
+    justify-content:space-around;
+}
+
+.dropdownMenu {
+    display:flex;
+    position:relative;
+    top:0px;
+    left:-100px;
+}
