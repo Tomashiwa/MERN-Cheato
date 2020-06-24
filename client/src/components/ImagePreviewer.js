@@ -92,9 +92,9 @@ function ImagePreviewer({imageURL}) {
             }
 
             img.crossOrigin = "anonymous";
-            img.src = imageURL;
+            img.src = imageURL + "?noCache=" + Math.random().toString();
         } else {
-            Konva.Image.fromURL(imageURL, image => {
+            Konva.Image.fromURL(imageURL + "?noCache=" + Math.random().toString(), image => {
                 image.transformsEnabled("none");
                 image.setAbsolutePosition({x: 0, y: 0});
                 
@@ -224,16 +224,11 @@ function ImagePreviewer({imageURL}) {
         }
 
         const download = e => {
-            fetch(imageURL)
+            fetch(imageURL + "?noCache=" + Math.random().toString())
                 .then(response => {
-                    console.log("response:");
-                    console.log(response);
                     return response.blob();
                 })
                 .then(blob => {
-                    console.log("blob:");
-                    console.log(blob);
-
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = url;
@@ -241,6 +236,9 @@ function ImagePreviewer({imageURL}) {
                     document.body.appendChild(link);
                     link.click();
                     link.remove();
+                })
+                .catch(err => {
+                    console.log(err);
                 })
         }
 
