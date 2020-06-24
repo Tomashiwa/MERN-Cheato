@@ -28,18 +28,21 @@ function ImagePreviewer({imageURL}) {
     // Set dimension and resolution of canvases
     useEffect(()=> {
         const previewer = document.querySelector("#previewer");
-        resizeFactorRef.current = previewer.clientWidth / PREVIEWER_VIEW_WIDTH;
 
-        stageRef.current.setWidth(previewer.clientWidth);
-        stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * (previewer.clientWidth / PREVIEWER_VIEW_WIDTH));
-        stageRef.current.scale({
-            x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
-            y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
-        });
-        stageRef.current.batchDraw();
-
-        const sceneCanvas = layerRef.current.getCanvas();
-        sceneCanvas.setPixelRatio(PREVIEWER_BASE_WIDTH / PREVIEWER_VIEW_WIDTH);
+        if(previewer) {
+            resizeFactorRef.current = previewer.clientWidth / PREVIEWER_VIEW_WIDTH;
+    
+            stageRef.current.setWidth(previewer.clientWidth);
+            stageRef.current.setHeight(PREVIEWER_VIEW_HEIGHT * (previewer.clientWidth / PREVIEWER_VIEW_WIDTH));
+            stageRef.current.scale({
+                x: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.x, 
+                y: zoomFactorRef.current * resizeFactorRef.current * scaleRatioRef.current.y
+            });
+            stageRef.current.batchDraw();
+    
+            const sceneCanvas = layerRef.current.getCanvas();
+            sceneCanvas.setPixelRatio(PREVIEWER_BASE_WIDTH / PREVIEWER_VIEW_WIDTH);
+        }
     }, []);
 
     // Change stage's dimension on window resize event 
@@ -226,14 +229,9 @@ function ImagePreviewer({imageURL}) {
         const download = e => {
             fetch(imageURL)
                 .then(response => {
-                    console.log("response:");
-                    console.log(response);
                     return response.blob();
                 })
                 .then(blob => {
-                    console.log("blob:");
-                    console.log(blob);
-
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = url;
@@ -244,8 +242,11 @@ function ImagePreviewer({imageURL}) {
                 })
         }
 
-        resetBtn.addEventListener("click", reset);
-        downloadBtn.addEventListener("click", download);
+        if(downloadBtn && resetBtn) {
+            resetBtn.addEventListener("click", reset);
+            downloadBtn.addEventListener("click", download);
+
+        }
 
         return () => {
             resetBtn.removeEventListener("click", reset);
