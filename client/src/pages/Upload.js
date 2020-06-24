@@ -1,4 +1,4 @@
-import React, {useState, useContext, useRef, useEffect} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import Stepper from 'react-stepper-horizontal'
 import {useHistory} from "react-router-dom"
 import UploadForm from "../components/UploadForm"
@@ -27,16 +27,15 @@ function Upload() {
     });
     const [nextEnabled, setNextEnabled] = useState(false);
     const [sheetId, setSheetId] = useState(undefined);
-    const blobRef = useRef(null);
+    const [blob, setBlob] = useState(undefined);
 
     const history = useHistory();
-    const setBlob = blob => blobRef.current = blob;
 
     // Navigation events that happened when Next button is pressed
     useEffect(() => {
         const upload = () => {
             const formData = new FormData();
-            formData.append("file", blobRef.current, `${form.name}-${uuid.v4()}.png`);
+            formData.append("file", blob, `${form.name}-${uuid.v4()}.png`);
             
             axios.post("/upload", formData)
                 .then(res => {
@@ -110,21 +109,21 @@ function Upload() {
                 nextBtn.removeEventListener("click", next);
             }
         }
-    }, [formStep, form, userData])
+    }, [formStep, form, userData, blob])
 
 
     // Verify if user can proceed to next step and toggle the Next button
     useEffect(() => {
         if(formStep === UPLOAD_STEP_FORM) {
-            if(!nextEnabled && blobRef !== null && form.name.length > 0 && form.school.length > 0 && form.module.length > 0) {
+            if(!nextEnabled && blob !== undefined && form.name.length > 0 && form.school.length > 0 && form.module.length > 0) {
                 setNextEnabled(true);
-            } else if(nextEnabled && (blobRef === null || form.name.length === 0 || form.school.length === 0 || form.module.length === 0)) {
+            } else if(nextEnabled && (blob === undefined || form.name.length === 0 || form.school.length === 0 || form.module.length === 0)) {
                 setNextEnabled(false);
             }
         } else if (formStep === UPLOAD_STEP_PREVIEW) {
             setNextEnabled(false);
         }
-    }, [form.module, form.name, form.school, form.url, formStep, nextEnabled]);
+    }, [form.module, form.name, form.school, form.url, formStep, nextEnabled, blob]);
     
     // Attach view sheet event on Finish button
     useEffect(() => {
