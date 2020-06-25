@@ -53,78 +53,59 @@ function Create() {
     const setBlob = blob => blobRef.current = blob;
 
     // Navigation events that happened when Next button is pressed
-    useEffect(() => {
-        const saveToDb = url => {
-            const newCheatsheet = {
-                file: url,
-                user: userData.isLoaded && userData.token === undefined
-                    ? mongoose.Types.ObjectId(-1)
-                    : mongoose.Types.ObjectId(userData.user.id),
-                name: form.name,
-                school: mongoose.Types.ObjectId(form.school),
-                module: mongoose.Types.ObjectId(form.module),
-                description: form.description,
-                datetime: Date.now(),
-                rating: 0,
-                comments: [],
-                isPublic: form.isPublic,
-                isAnonymous: userData.isLoaded && userData.token === undefined
-            }
-
-            axios.post("/api/cheatsheets/add", newCheatsheet)
-                .then(sheet => {
-                    setSheetId(sheet.data._id);
-                })
-                .catch(err => console.log(err));
+    const saveToDb = url => {
+        const newCheatsheet = {
+            file: url,
+            user: userData.isLoaded && userData.token === undefined
+                ? mongoose.Types.ObjectId(-1)
+                : mongoose.Types.ObjectId(userData.user.id),
+            name: form.name,
+            school: mongoose.Types.ObjectId(form.school),
+            module: mongoose.Types.ObjectId(form.module),
+            description: form.description,
+            datetime: Date.now(),
+            rating: 0,
+            comments: [],
+            isPublic: form.isPublic,
+            isAnonymous: userData.isLoaded && userData.token === undefined
         }
+
+        axios.post("/api/cheatsheets/add", newCheatsheet)
+            .then(sheet => {
+                setSheetId(sheet.data._id);
+            })
+            .catch(err => console.log(err));
+    }
+    
+    const upload = () => {
+        const formData = new FormData();
+        formData.append("file", blobRef.current, `${form.name}-${uuid.v4()}.png`);
         
-        const upload = () => {
-            const formData = new FormData();
-            formData.append("file", blobRef.current, `${form.name}-${uuid.v4()}.png`);
-            
-            axios.post("/upload", formData)
-                .then(res => {
-                    saveToDb(res.data.data.Location);
-                    setForm({...form, ...{url: res.data.data.Location}});
-                })
-                .catch(err => console.log(err));
-        };
+        axios.post("/upload", formData)
+            .then(res => {
+                saveToDb(res.data.data.Location);
+                setForm({...form, ...{url: res.data.data.Location}});
+            })
+            .catch(err => console.log(err));
+    };
 
-        const hasStepCompleted = () => {
-            return true;
+    const endStep = () => {
+        if(formStep === CREATE_STEP_FORM) {
+            upload();
         }
+    }
 
-        const endStep = () => {
-            if(formStep === CREATE_STEP_FORM) {
-                upload();
-            }
-        }
+    const nextStep = () => {
+        const nextStep = formStep + 1 < 3
+            ? formStep + 1
+            : CREATE_STEP_PREVIEW;
+        setFormStep(nextStep);
+    }
 
-        const nextStep = () => {
-            const nextStep = formStep + 1 < 3
-                ? formStep + 1
-                : CREATE_STEP_PREVIEW;
-            setFormStep(nextStep);
-        }
-
-        const next = e => {
-            if(hasStepCompleted()) {
-                endStep();
-                nextStep();
-            }
-        };
-
-        const nextBtn = document.querySelector("#create-btn-next");
-        if(nextBtn) {
-            nextBtn.addEventListener("click", next);
-        }
-
-        return () => {
-            if(nextBtn) {
-                nextBtn.removeEventListener("click", next);
-            }
-        }
-    }, [formStep, form, userData])
+    const next = e => {
+        endStep();
+        nextStep();
+    };
 
     // Verify if user can proceed to next step and toggle the Next button
     useEffect(() => {
@@ -145,27 +126,12 @@ function Create() {
         }
     }, [formStep, form.name, form.school, form.module, images, nextEnabled]);
 
-    useEffect(() => {
-        const finishButton = document.querySelector("#create-btn-finish");
-        
-        const viewSheet = () => {
-            if(sheetId !== undefined) {
-                history.push(`/view/${sheetId}`);
-                window.location.reload(); 
-            }
+    const viewSheet = () => {
+        if(sheetId !== undefined) {
+            history.push(`/view/${sheetId}`);
+            window.location.reload(); 
         }
-
-        if(formStep === CREATE_STEP_PREVIEW) {    
-            finishButton.addEventListener("click", viewSheet);
-        }
-
-        return () => {
-            if(formStep === CREATE_STEP_PREVIEW) {
-                finishButton.removeEventListener("click", viewSheet);
-            }
-        }
-    }, [formStep, sheetId, history])
-
+    }
 
     return (    
         <div>
@@ -193,10 +159,10 @@ function Create() {
                             }
                             {
                                 formStep === CREATE_STEP_PREVIEW
-                                    ? <Button id="create-btn-finish" disabled={!(sheetId !== undefined)} outline color="light">
+                                    ? <Button id="create-btn-finish" disabled={!(sheetId !== undefined)} outline color="light" onClick={viewSheet}>
                                         Finish
                                     </Button>
-                                    : <Button id="create-btn-next" disabled={!nextEnabled} outline color="light">
+                                    : <Button id="create-btn-next" disabled={!nextEnabled} outline color="light" onClick={next}>
                                         Next
                                       </Button>
                             }

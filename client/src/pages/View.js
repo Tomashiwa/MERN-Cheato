@@ -1,160 +1,146 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext } from "react";
 import { Container, Button, Card, CardHeader, CardBody, CardText } from "reactstrap";
-import { useParams, useHistory } from 'react-router-dom';
-
+import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 
-import UserContext from '../context/UserContext';
-import ImagePreviewer from '../components/ImagePreviewer';
+import UserContext from "../context/UserContext";
+import ImagePreviewer from "../components/ImagePreviewer";
 
-import "./css/View.css"
+import "./css/View.css";
 
 function View() {
-    const {userData} = useContext(UserContext);
-    const {id} = useParams();
+	const { userData } = useContext(UserContext);
+	const { id } = useParams();
 
-    const [sheet, setSheet] = useState(null);
-    const [school, setSchool] = useState(null);;
-    const [module, setModule] = useState(null);
-    const [owner, setOwner] = useState(null);
+	const [sheet, setSheet] = useState(null);
+	const [school, setSchool] = useState(null);
+	const [module, setModule] = useState(null);
+	const [owner, setOwner] = useState(null);
 
-    const [errorMsg, setErrorMsg] = useState("");
+	const [errorMsg, setErrorMsg] = useState("");
 
-    const history = useHistory();
+	const history = useHistory();
 
-    // Fetch cheatsheet to be viewed
-    useEffect(() => {
-        if(userData.isLoaded) {
-            axios.post(`/api/cheatsheets/${id}`, userData.user)
-                .then(cheatsheet => setSheet(cheatsheet.data))
-                .catch(err => setErrorMsg(err.response.data.msg));
-        }
-    }, [id, userData]);
+	// Fetch cheatsheet to be viewed
+	useEffect(() => {
+		const fetchSheet = async () => {
+			if (userData.isLoaded) {
+				try {
+					const response = await axios.post(`/api/cheatsheets/${id}`, userData.user);
+					setSheet(response.data);
+				} catch (err) {
+					setErrorMsg(err.response.data.msg);
+				}
+			}
+		};
 
-    // Fetch the respective school and module of the sheet
-    useEffect(() => {
-        if(sheet) {
-            axios.get(`/api/schools/${sheet.school}`)
-                .then(school => setSchool(school.data));
-    
-            axios.get(`/api/modules/${sheet.module}`)
-                .then(module => setModule(module.data));
-            
-            axios.get(`/api/users/${sheet.user}`)
-                .then(user => {
-                    setOwner(user.data);
-                });
-        }
-    }, [sheet])
+		fetchSheet();
+	}, [id, userData]);
 
-    // Bookmark event
-    useEffect(() => {
-        if(document.querySelector("#view-btn-bookmark")) {
-            const bookmarkBtn = document.querySelector("#view-btn-bookmark");
-            
-            const bookmark = () => {
-                console.log("Bookmarked !!");
-            };
-    
-            bookmarkBtn.addEventListener("click", bookmark);
+	// Fetch the respective school and module of the sheet
+	useEffect(() => {
+		const fetchDetails = async () => {
+            if(sheet) {
+                try {
+                    const schRes = await axios.get(`/api/schools/${sheet.school}`);
+                    const modRes = await axios.get(`/api/modules/${sheet.module}`);
+                    const ownerRes = await axios.get(`/api/users/${sheet.user}`);
 
-            return () => {
-                bookmarkBtn.removeEventListener("click", bookmark);
+                    setSchool(schRes.data);
+                    setModule(modRes.data);
+                    setOwner(ownerRes.data);
+                } catch(err) {
+                    console.log("error:");
+					console.log(err);
+                }
             }
-        }
-    })
+        };
 
-    // Upvote and downvote events
-    useEffect(() => {
-        if(document.querySelector("#view-btn-upvote") && document.querySelector("#view-btn-downvote")) {
-            const upvoteBtn = document.querySelector("#view-btn-upvote");
-            const downvoteBtn = document.querySelector("#view-btn-downvote");
-            
-            const upvote = () => {
-                console.log("Upvoted !!");
-            };
+        fetchDetails();
+	}, [sheet]);
 
-            const downvote = () => {
-                console.log("Downvoted !!");
-            };
-    
-            upvoteBtn.addEventListener("click", upvote);
-            downvoteBtn.addEventListener("click", downvote);
-            
-            return () => {
-                upvoteBtn.removeEventListener("click", upvote);
-                downvoteBtn.removeEventListener("click", downvote);
-            }
-        }
-    })
+	// Bookmark event
+	const bookmark = () => {
+		console.log("Bookmarked !!");
+	};
 
-    const goHome = () => {
-        history.push("/");
-    }
+	// Upvote and downvote events
+	const upvote = () => {
+		console.log("Upvoted !!");
+	};
 
-    const loginLink = <a href={"/login"}>here</a>
+	const downvote = () => {
+		console.log("Downvoted !!");
+	};
 
-    return (
-        <div>
-            {
-                sheet && school && module && (owner || sheet.isAnonymous)
-                    ?   <Container id="view-container">
-                            <div id="view-header">
-                                <div id="view-description">
-                                    <h2>{sheet.name}</h2>
-                                    <h3>{`${school.name} - ${module.name}`}</h3>
-                                    <h4>
-                                        {
-                                            `Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`
-                                        }
-                                    </h4>
-                                </div>
+	const goHome = () => {
+		history.push("/");
+	};
 
-                                <div id="view-feedback">
-                                    <Button id="view-btn-bookmark">Bookmark</Button>
-                                    <Button id="view-btn-upvote">Upvote</Button>
-                                    <Button id="view-btn-downvote">Downvote</Button>
-                                </div>
-                            </div>
-                            
-                            <ImagePreviewer imageURL={sheet.file}/>
+	const loginLink = <a href={"/login"}>here</a>;
 
-                            <div id="view-footer">
-                                <div id="view-comments">
-                                    <h5>Comments</h5>
-                                </div>
+	return (
+		<div>
+			{sheet && school && module && (owner || sheet.isAnonymous) ? (
+				<Container id="view-container">
+					<div id="view-header">
+						<div id="view-description">
+							<h2>{sheet.name}</h2>
+							<h3>{`${school.name} - ${module.name}`}</h3>
+							<h4>
+								{`Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`}
+							</h4>
+						</div>
 
-                                <div id="view-similars">
-                                    <h5>Similar cheatsheets</h5>
-                                </div>
-                            </div>
-                        </Container>
-                    :   errorMsg
-                        ?   <Container id="view-container-error">
-                                <Card>
-                                    <CardHeader tag="h3">{errorMsg}</CardHeader>
-                                    <CardBody>
-                                        {
-                                            errorMsg === "No cheatsheet found"
-                                                ?   <CardText>
-                                                        The cheatsheet you trying to acccess does not exist. You may try to find it in the search bar above.
-                                                    </CardText> 
-                                                : userData.user === undefined 
-                                                    ?   <CardText>
-                                                            If you are the owner of this sheet, please try again after logging in {loginLink}.
-                                                        </CardText> 
-                                                       :   <CardText>
-                                                            This account do not have access to this cheatsheet. You can only view it after the owner enable public access.
-                                                        </CardText> 
-                                        }
-                                        <Button onClick={goHome}>Back to Home</Button>
-                                    </CardBody>
-                                </Card>
-                            </Container> 
-                        :   <div></div>
-            }
-        </div>
-    )
+						<div id="view-feedback">
+							<Button id="view-btn-bookmark" onClick={bookmark}>Bookmark</Button>
+							<Button id="view-btn-upvote" onClick={upvote}>Upvote</Button>
+							<Button id="view-btn-downvote" onClick={downvote}>Downvote</Button>
+						</div>
+					</div>
+
+					<ImagePreviewer imageURL={sheet.file} />
+
+					<div id="view-footer">
+						<div id="view-comments">
+							<h5>Comments</h5>
+						</div>
+
+						<div id="view-similars">
+							<h5>Similar cheatsheets</h5>
+						</div>
+					</div>
+				</Container>
+			) : errorMsg ? (
+				<Container id="view-container-error">
+					<Card>
+						<CardHeader tag="h3">{errorMsg}</CardHeader>
+						<CardBody>
+							{errorMsg === "No cheatsheet found" ? (
+								<CardText>
+									The cheatsheet you trying to acccess does not exist. You may try
+									to find it in the search bar above.
+								</CardText>
+							) : userData.user === undefined ? (
+								<CardText>
+									If you are the owner of this sheet, please try again after
+									logging in {loginLink}.
+								</CardText>
+							) : (
+								<CardText>
+									This account do not have access to this cheatsheet. You can only
+									view it after the owner enable public access.
+								</CardText>
+							)}
+							<Button onClick={goHome}>Back to Home</Button>
+						</CardBody>
+					</Card>
+				</Container>
+			) : (
+				<div id="view-container-empty"></div>
+			)}
+		</div>
+	);
 }
 
-export default View
+export default View;
