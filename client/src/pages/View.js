@@ -60,48 +60,18 @@ function View() {
 	}, [sheet]);
 
 	// Bookmark event
-	useEffect(() => {
-		if (document.querySelector("#view-btn-bookmark")) {
-			const bookmarkBtn = document.querySelector("#view-btn-bookmark");
-
-			const bookmark = () => {
-				console.log("Bookmarked !!");
-			};
-
-			bookmarkBtn.addEventListener("click", bookmark);
-
-			return () => {
-				bookmarkBtn.removeEventListener("click", bookmark);
-			};
-		}
-	});
+	const bookmark = () => {
+		console.log("Bookmarked !!");
+	};
 
 	// Upvote and downvote events
-	useEffect(() => {
-		if (
-			document.querySelector("#view-btn-upvote") &&
-			document.querySelector("#view-btn-downvote")
-		) {
-			const upvoteBtn = document.querySelector("#view-btn-upvote");
-			const downvoteBtn = document.querySelector("#view-btn-downvote");
+	const upvote = () => {
+		console.log("Upvoted !!");
+	};
 
-			const upvote = () => {
-				console.log("Upvoted !!");
-			};
-
-			const downvote = () => {
-				console.log("Downvoted !!");
-			};
-
-			upvoteBtn.addEventListener("click", upvote);
-			downvoteBtn.addEventListener("click", downvote);
-
-			return () => {
-				upvoteBtn.removeEventListener("click", upvote);
-				downvoteBtn.removeEventListener("click", downvote);
-			};
-		}
-	});
+	const downvote = () => {
+		console.log("Downvoted !!");
+	};
 
 	const goHome = () => {
 		history.push("/");
@@ -123,9 +93,9 @@ function View() {
 						</div>
 
 						<div id="view-feedback">
-							<Button id="view-btn-bookmark">Bookmark</Button>
-							<Button id="view-btn-upvote">Upvote</Button>
-							<Button id="view-btn-downvote">Downvote</Button>
+							<Button id="view-btn-bookmark" onClick={bookmark}>Bookmark</Button>
+							<Button id="view-btn-upvote" onClick={upvote}>Upvote</Button>
+							<Button id="view-btn-downvote" onClick={downvote}>Downvote</Button>
 						</div>
 					</div>
 

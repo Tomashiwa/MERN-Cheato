@@ -87,16 +87,16 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 	}, [schools, modules, schState.selected]);
 
 	// Verify the name and save it to the form
-    const saveName = (e) => setForm({ ...form, ...{ name: e.target.value } });
-
 	const checkName = (e) => {
 		const isValid = e.target.value.length && !hasInvalidSymbols(e.target.value);
 		const isInvalid = e.target.value.length && hasInvalidSymbols(e.target.value);
-
+		
 		if (nameState.valid !== isValid || nameState.invalid !== isInvalid) {
 			setNameState({ valid: isValid, invalid: isInvalid });
 		}
 	};
+	
+	const saveName = (e) => setForm({ ...form, ...{ name: e.target.value } });
 
 	// Saving the description to the form
     const saveDesc = (e) => setForm({ ...form, ...{ description: e.target.value } });
@@ -244,7 +244,7 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 			</FormGroup>
 			<FormGroup check>
 				<Label check>
-					<Input id="uploadform-input-public" type="checkbox" onChange={saveIsPublic}/> Share with public
+					<Input id="uploadform-input-public" type="checkbox" onChange={!isAnonymous ? saveIsPublic : ()=>{}}/> Share with public
 				</Label>
 			</FormGroup>
 		</Form>
