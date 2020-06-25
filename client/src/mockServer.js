@@ -6,6 +6,23 @@ const server = setupServer(
 		return res(ctx.status(200), ctx.json({ msg: `User ${req.params.id} retrieved sheet ${req.body.id} successfully`}));
 	}),
 
+	rest.get("/api/schools", (req, res, ctx) => {
+		return res(ctx.status(200), ctx.json({
+			data: [
+				{name: "SCHOOL_1"},
+				{name: "SCHOOL_2"},
+				{name: "SCHOOL_3"},
+			]
+		}))}),
+	rest.get("/api/modules", (req, res, ctx) => {
+		return res(ctx.status(200), ctx.json({
+			data: [
+				{name: "MODULE_1"},
+				{name: "MODULE_2"},
+				{name: "MODULE_3"},
+			]
+		}));
+	}),
 
 	// User authentication
 	rest.post("/api/users/register", (req, res, ctx) => {
