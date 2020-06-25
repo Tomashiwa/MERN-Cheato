@@ -79,77 +79,28 @@ function CreateForm({form, setForm, isAnonymous}) {
     }, [form, isAnonymous]);
 
     // Verify the name and save it to the form
-    useEffect(() => {
-        const nameInput = document.querySelector("#createform-input-name");
+    const checkName = (e) => {
+        const isValid = e.target.value.length && !hasInvalidSymbols(e.target.value);
+        const isInvalid = e.target.value.length && hasInvalidSymbols(e.target.value);
 
-        // const checkName = e => {
-        //     const name = e.target.value;
-
-        //     console.log(`Checking name (${name})...`);
-
-        //     if(name.length <= 0) {
-        //         console.log(`${name} has a length of 0, neither valid nor invalid`);
-        //         setNameState({valid: false, invalid: false});
-        //     } else if(hasInvalidSymbols(name)) {
-        //         console.log(`${name} has invalid symbols, so it's invalid`);
-        //         setNameState({valid: false, invalid: true});
-        //     } else {
-        //         axios.post("/api/users/nameAvaliable", {name: name})
-        //             .then(result => {
-        //                 console.log("result");
-        //                 console.log(result.data);
-        //                 console.log(`Is ${name} avaliable? ${result.data.isAvaliable}`);
-        //                 setNameState({valid: result.data.isAvaliable, invalid: !result.data.isAvaliable});
-        //             })
-        //             .catch(err => console.log(err));
-        //     }
-        // }
-
-        const checkName = async(e) => {
-            const isValid = await e.target.value.length && !hasInvalidSymbols(e.target.value);
-            const isInvalid = await e.target.value.length && hasInvalidSymbols(e.target.value);
-
-            if(nameState.valid !== isValid || nameState.invalid !== isInvalid) {
-                setNameState({valid: isValid, invalid: isInvalid});
-            }
+        if(nameState.valid !== isValid || nameState.invalid !== isInvalid) {
+            setNameState({valid: isValid, invalid: isInvalid});
         }
+    }
 
-        const changeName = e => setForm({...form, ...{name: e.target.value}});
-
-        nameInput.addEventListener("input", checkName);
-        nameInput.addEventListener("change", changeName);
-
-        return () => {
-            nameInput.removeEventListener("input", checkName);
-            nameInput.removeEventListener("change", changeName);
-        };
-    }, [form, nameState, setForm])
+    const saveName = e => setForm({...form, ...{name: e.target.value}});
 
     // Saving the description to the form
-    useEffect(() => {
-        const descInput = document.querySelector("#createform-input-desc");
-        const changeDesc = e => setForm({...form, ...{description: e.target.value}});
-        
-        descInput.addEventListener("change", changeDesc);
-
-        return () => descInput.removeEventListener("change", changeDesc);
-    }, [form, setForm, nameState]);
+    const saveDesc = e => setForm({...form, ...{description: e.target.value}});
 
     // Saving the isPublic to the form
+    const saveIsPublic = e => {
+        console.log(`set isPublic to ${e.target.checked}`);
+        setForm({...form, ...{isPublic: e.target.checked}});
+    }
     useEffect(() => {
         const isPublicInput = document.querySelector("#createform-input-public");
-        if(!isAnonymous) {
-            const changeIsPublic = e => {
-                console.log(`set isPublic to ${e.target.checked}`);
-                setForm({...form, ...{isPublic: e.target.checked}});
-            }
-            
-            isPublicInput.addEventListener("change", changeIsPublic);
-    
-            return () => {
-                isPublicInput.removeEventListener("change", changeIsPublic);
-            }
-        } else if(isAnonymous && !form.isPublic) {
+        if(isAnonymous && !form.isPublic) {
             isPublicInput.setAttribute("checked", isAnonymous);
             isPublicInput.setAttribute("disabled", isAnonymous);
             setForm({...form, ...{isPublic: true}});
@@ -210,6 +161,8 @@ function CreateForm({form, setForm, isAnonymous}) {
             <FormGroup>
                 <Label>Name</Label>
                 <Input id="createform-input-name" 
+                    onInput={checkName}
+                    onChange={saveName}
                     valid={nameState.valid ? true : false} 
                     invalid={nameState.invalid ? true : false}/>
                 <FormFeedback invalid="true">Name cannot contains an invalid symbol.</FormFeedback>
@@ -243,12 +196,12 @@ function CreateForm({form, setForm, isAnonymous}) {
             </FormGroup>
             <FormGroup>
                 <Label>Description</Label>
-                <Input id="createform-input-desc" type="textarea"/>
+                <Input id="createform-input-desc" type="textarea" onChange={saveDesc}/>
                 <FormText>Information that may help readers understand your cheatsheet.</FormText>
             </FormGroup>
             <FormGroup check>
                 <Label check>
-                    <Input id="createform-input-public" type="checkbox"/> Share with public
+                    <Input id="createform-input-public" type="checkbox" onChange={!isAnonymous ? saveIsPublic : ()=>{}}/> Share with public
                 </Label>
             </FormGroup>
         </Form>
