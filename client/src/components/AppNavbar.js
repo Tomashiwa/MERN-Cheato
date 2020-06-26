@@ -35,7 +35,7 @@ function AppNavbar() {
                         ?   <>
                                 <NavbarToggler onClick={toggle}/>
                                 <Collapse isOpen={isOpen} navbar>
-                                    <div class="ml-auto mr-auto">
+                                    <div class="mr-auto">
                                         <FuseSearchbar />
                                     </div>
                                     <ul class="nav navbar-nav navbar-right">

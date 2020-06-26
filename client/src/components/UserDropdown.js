@@ -23,7 +23,7 @@ function UserDropdown() {
     }
 
     return (
-        <ButtonDropdown isOpen={isOpen} toggle={toggle}>
+        <ButtonDropdown isOpen={isOpen} toggle={toggle} id="userdropdown">
             <DropdownToggle caret>
                 <img
                     id="userdropdown-icon"

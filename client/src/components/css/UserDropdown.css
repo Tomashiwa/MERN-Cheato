@@ -1,3 +1,16 @@
+#userdropdown > button {
+    color: #fff;
+    background-color: #ccaa44;
+    border-color: #555555;
+}
+
+#userdropdown > button:hover {
+    color: #555555;
+    background-color: #ffdd66;
+    border-color: #555555;
+}
+
+
 #userdropdown-icon {
     margin-right: 5px;
 }
