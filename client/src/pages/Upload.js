@@ -14,6 +14,8 @@ import "./css/Upload.css";
 export const UPLOAD_STEP_FORM = 1;
 export const UPLOAD_STEP_PREVIEW = 2;
 
+export const STEP_CIRCLE_SIZE = 40;
+
 function Upload() {
     const {userData} = useContext(UserContext);
     const [formStep, setFormStep] = useState(UPLOAD_STEP_FORM);
@@ -111,29 +113,36 @@ function Upload() {
         <div>
             <Container id="upload-container">
                 <Stepper
-                    size={40}   
-                    activeColor="#505050"
-                    completeColor="#505050"
-                    activeTitleColor="#FFF"
-                    completeTitleColor="#FFF"
+                    size={STEP_CIRCLE_SIZE}   
+                    defaultColor="#555555"
+                    activeColor="#ffdd66"
+                    completeColor="#ccaa44"
+                    activeTitleColor="#555555"
+                    completeTitleColor="#555555"
+                    defaultBarColor="#555555"
+                    completeBarColor="#ccaa44"
+                    circleFontColor="#555555"
                     steps={[{title: "Upload"}, {title: "Preview"}]}
                     activeStep={formStep - 1}
                 />
 
                 <div id="upload-title-nav">
-                    {
-                        formStep === UPLOAD_STEP_FORM
-                            ? <h2>Upload your cheatsheet</h2>
-                        : formStep === UPLOAD_STEP_PREVIEW
-                            ? <h2>Preview</h2>
-                        : <div></div>
-                    }
+                    <h2 id="upload-title-text">
+                        {
+                            formStep === UPLOAD_STEP_FORM
+                                ? "Upload your cheatsheet"
+                            : formStep === UPLOAD_STEP_PREVIEW
+                                ? "Preview"
+                            : ""
+                        }
+                    </h2>
+
                     {
                         formStep === UPLOAD_STEP_PREVIEW
-                            ? <Button id="upload-btn-finish" disabled={!(sheetId !== undefined)} outline color="light" onClick={viewSheet}>
+                            ? <Button id="upload-btn-finish" disabled={!(sheetId !== undefined)} color="warning" onClick={viewSheet}>
                                 Finish
                             </Button>
-                            : <Button id="upload-btn-next" disabled={!nextEnabled} outline color="light" onClick={finishForm}>
+                            : <Button id="upload-btn-next" disabled={!nextEnabled} color="warning" onClick={finishForm}>
                                 Next
                               </Button>
                     }

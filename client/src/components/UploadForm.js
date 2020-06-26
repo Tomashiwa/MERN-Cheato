@@ -4,6 +4,7 @@ import axios from "axios";
 import { Form, FormGroup, Label, Input, FormFeedback, FormText } from "reactstrap";
 import CreatableSelect from "react-select/creatable";
 import "./css/UploadForm.css";
+import Col from "reactstrap/lib/Col";
 
 function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 	const [schools, setSchools] = useState([]);
@@ -187,63 +188,73 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 
 	return (
 		<Form id="form-upload">
-			<FormGroup>
-				<Label>File</Label>
-				<Input
-					id="uploadform-input-file"
-					type="file"
-					accept="image/*"
-					onChange={saveFileAsBlob}
-				/>
-				<FormText>Choose an image file to be uploaded.</FormText>
+			<FormGroup row>
+				<Label sm={2}>File</Label>
+				<Col sm={10}>
+					<Input
+						id="uploadform-input-file"
+						type="file"
+						accept="image/*"
+						onChange={saveFileAsBlob}
+					/>
+					<FormText>Choose an image file to be uploaded.</FormText>
+				</Col>
 			</FormGroup>
-			<FormGroup>
-				<Label>Name</Label>
-				<Input
-					id="uploadform-input-name"
-					onInput={checkName}
-					onChange={saveName}
-					valid={nameState.valid ? true : false}
-					invalid={nameState.invalid ? true : false}
-				/>
-				<FormFeedback invalid="true">Name cannot contains an invalid symbol.</FormFeedback>
-				<FormText>Enter the name of your cheatsheet.</FormText>
+			<FormGroup row>
+				<Label sm={2}>Name</Label>
+				<Col sm={10}>
+					<Input
+						id="uploadform-input-name"
+						onInput={checkName}
+						onChange={saveName}
+						valid={nameState.valid ? true : false}
+						invalid={nameState.invalid ? true : false}
+					/>
+					<FormFeedback invalid="true">Name cannot contains an invalid symbol.</FormFeedback>
+					<FormText>Enter the name of your cheatsheet.</FormText>
+				</Col>
 			</FormGroup>
-			<FormGroup>
-				<Label>School</Label>
-				<CreatableSelect
-					id="uploadform-input-school"
-					isClearable
-					isDisabled={schState.isDisabled}
-					isLoading={schState.isLoading}
-					onChange={saveSchool}
-					onCreateOption={addSchool}
-					options={schoolOptions}
-					value={schState.selected}
-				/>
-				<FormText>School that your cheatsheet is for.</FormText>
+			<FormGroup row>
+				<Label sm={2}>School</Label>
+				<Col sm={10}>
+					<CreatableSelect
+						id="uploadform-input-school"
+						isClearable
+						isDisabled={schState.isDisabled}
+						isLoading={schState.isLoading}
+						onChange={saveSchool}
+						onCreateOption={addSchool}
+						options={schoolOptions}
+						value={schState.selected}
+					/>
+					<FormText>School that your cheatsheet is for.</FormText>
+				</Col>
 			</FormGroup>
-			<FormGroup>
-				<Label>Module</Label>
-				<CreatableSelect
-					id="uploadform-input-module"
-					isClearable
-					isDisabled={modState.isDisabled || schState.selected === null}
-					isLoading={modState.isLoading}
-					onChange={saveModule}
-					onCreateOption={addModule}
-					options={moduleOptions}
-					value={modState.selected}
-				/>
-				<FormText>Module that your cheatsheet is for.</FormText>
+			<FormGroup row>
+				<Label sm={2}>Module</Label>
+				<Col sm={10}>
+					<CreatableSelect
+						id="uploadform-input-module"
+						isClearable
+						isDisabled={modState.isDisabled || schState.selected === null}
+						isLoading={modState.isLoading}
+						onChange={saveModule}
+						onCreateOption={addModule}
+						options={moduleOptions}
+						value={modState.selected}
+					/>
+					<FormText>Module that your cheatsheet is for.</FormText>
+				</Col>
 			</FormGroup>
-			<FormGroup>
-				<Label>Description</Label>
-				<Input id="uploadform-input-desc" type="textarea" onChange={saveDesc} />
-				<FormText>Information that may help readers understand your cheatsheet.</FormText>
+			<FormGroup row>
+				<Label sm={2}>Description</Label>
+				<Col sm={10}>
+					<Input id="uploadform-input-desc" type="textarea" onChange={saveDesc} />
+					<FormText>Information that may help readers understand your cheatsheet.</FormText>
+				</Col>
 			</FormGroup>
-			<FormGroup check>
-				<Label check>
+			<FormGroup row check>
+				<Label sm={10} check>
 					<Input id="uploadform-input-public" type="checkbox" onChange={!isAnonymous ? saveIsPublic : ()=>{}}/> Share with public
 				</Label>
 			</FormGroup>

@@ -6,10 +6,6 @@
     padding-bottom: 25px;
 }
 
-#create-container #form-create {
-    align-self: center;
-}
-
 #create-container div div div div a,  #create-container div div div div span{
     line-height: 35px !important;
 }
@@ -22,6 +18,6 @@
     margin-bottom: 15px;
 }
 
-#create-title-nav h2 {
-    color: white
+#create-title-nav #create-title-text {
+    color: #555555
 }

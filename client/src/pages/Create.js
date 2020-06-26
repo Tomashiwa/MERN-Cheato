@@ -20,6 +20,8 @@ export const CREATE_STEP_IMPORT = 1;
 export const CREATE_STEP_FORM = 2;
 export const CREATE_STEP_PREVIEW = 3;
 
+export const STEP_CIRCLE_SIZE = 40;
+
 export const ImagesContext = React.createContext(null);
 export const ConfigContext = React.createContext(null);
 
@@ -139,32 +141,38 @@ function Create() {
                 <ImagesContext.Provider value={{images, setImages}}>
                     <ConfigContext.Provider value={{config, setConfig}}>
                         <Stepper
-                            size={40}
-                            activeColor="#505050"
-                            completeColor="#505050"
-                            activeTitleColor="#FFF"
-                            completeTitleColor="#FFF"
+                            size={STEP_CIRCLE_SIZE}
+                            defaultColor="#555555"
+                            activeColor="#ffdd66"
+                            completeColor="#ccaa44"
+                            activeTitleColor="#555555"
+                            completeTitleColor="#555555"
+                            defaultBarColor="#555555"
+                            completeBarColor="#ccaa44"
+                            circleFontColor="#555555"
                             steps={[{title: "Create"}, {title: "Details"}, {title: "Preview"}]}
                             activeStep={formStep - 1}
                         />
                         <div id="create-title-nav">
-                            {
-                                formStep === CREATE_STEP_IMPORT
-                                    ? <h2>Import your cheatsheets</h2>
-                                : formStep === CREATE_STEP_FORM
-                                    ? <h2>Fill in details</h2>
-                                : formStep === CREATE_STEP_PREVIEW
-                                    ? <h2>Preview</h2>
-                                : <div></div>
-                            }
+                            <h2 id="create-title-text">
+                                {
+                                    formStep === CREATE_STEP_IMPORT
+                                        ? "Import your cheatsheets"
+                                    : formStep === CREATE_STEP_FORM
+                                        ? "Fill in details"
+                                    : formStep === CREATE_STEP_PREVIEW
+                                        ? "Preview"
+                                    : ""
+                                }
+                            </h2>
                             {
                                 formStep === CREATE_STEP_PREVIEW
-                                    ? <Button id="create-btn-finish" disabled={!(sheetId !== undefined)} outline color="light" onClick={viewSheet}>
-                                        Finish
-                                    </Button>
-                                    : <Button id="create-btn-next" disabled={!nextEnabled} outline color="light" onClick={next}>
-                                        Next
-                                      </Button>
+                                    ?   <Button id="create-btn-finish" disabled={!(sheetId !== undefined)} color="warning" onClick={viewSheet}>
+                                            Finish
+                                        </Button>
+                                    :   <Button id="create-btn-next" disabled={!nextEnabled} color="warning" onClick={next}>
+                                            Next
+                                        </Button>
                             }
                         </div>
                         {

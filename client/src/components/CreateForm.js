@@ -6,6 +6,7 @@ import "./css/CreateForm.css"
 
 import axios from "axios";
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
+import Col from 'reactstrap/lib/Col';
 
 function CreateForm({form, setForm, isAnonymous}) {
     const [schools, setSchools] = useState([]);
@@ -158,49 +159,57 @@ function CreateForm({form, setForm, isAnonymous}) {
 
     return (
         <Form id="form-create">
-            <FormGroup>
-                <Label>Name</Label>
-                <Input id="createform-input-name" 
-                    onInput={checkName}
-                    onChange={saveName}
-                    valid={nameState.valid ? true : false} 
-                    invalid={nameState.invalid ? true : false}/>
-                <FormFeedback invalid="true">Name cannot contains an invalid symbol.</FormFeedback>
-                <FormText>Enter the name of your cheatsheet.</FormText>
+            <FormGroup row>
+                <Label sm={2}>Name</Label>
+                <Col sm={10}>
+                    <Input id="createform-input-name" 
+                        onInput={checkName}
+                        onChange={saveName}
+                        valid={nameState.valid ? true : false} 
+                        invalid={nameState.invalid ? true : false}/>
+                    <FormFeedback invalid="true">Name cannot contains an invalid symbol.</FormFeedback>
+                    <FormText>Enter the name of your cheatsheet.</FormText>
+                </Col>
             </FormGroup>
-            <FormGroup>
-                <Label>School</Label>
-                <CreatableSelect 
-                    isClearable
-                    isDisabled={schState.isDisabled}
-                    isLoading={schState.isLoading}
-                    onChange={saveSchool}
-                    onCreateOption={addSchool}
-                    options={schoolOptions}
-                    value={schState.selected}
-                />
-                <FormText>School that your cheatsheet is for.</FormText>
+            <FormGroup row>
+                <Label sm={2}>School</Label>
+                <Col sm={10}>
+                    <CreatableSelect 
+                        isClearable
+                        isDisabled={schState.isDisabled}
+                        isLoading={schState.isLoading}
+                        onChange={saveSchool}
+                        onCreateOption={addSchool}
+                        options={schoolOptions}
+                        value={schState.selected}
+                    />
+                    <FormText>School that your cheatsheet is for.</FormText>
+                </Col>
             </FormGroup>
-            <FormGroup>
-                <Label>Module</Label>
-                <CreatableSelect
-                    isClearable
-                    isDisabled={modState.isDisabled || schState.selected === null}
-                    isLoading={modState.isLoading}
-                    onChange={saveModule}
-                    onCreateOption={addModule}
-                    options={moduleOptions}
-                    value={modState.selected}
-                />
-                <FormText>Module that your cheatsheet is for.</FormText>
+            <FormGroup row>
+                <Label sm={2}>Module</Label>
+                <Col sm={10}>
+                    <CreatableSelect
+                        isClearable
+                        isDisabled={modState.isDisabled || schState.selected === null}
+                        isLoading={modState.isLoading}
+                        onChange={saveModule}
+                        onCreateOption={addModule}
+                        options={moduleOptions}
+                        value={modState.selected}
+                    />
+                    <FormText>Module that your cheatsheet is for.</FormText>
+                </Col>
             </FormGroup>
-            <FormGroup>
-                <Label>Description</Label>
-                <Input id="createform-input-desc" type="textarea" onChange={saveDesc}/>
-                <FormText>Information that may help readers understand your cheatsheet.</FormText>
+            <FormGroup row>
+                <Label sm={2}>Description</Label>
+                <Col sm={10}>
+                    <Input id="createform-input-desc" type="textarea" onChange={saveDesc}/>
+                    <FormText>Information that may help readers understand your cheatsheet.</FormText>
+                </Col>
             </FormGroup>
-            <FormGroup check>
-                <Label check>
+            <FormGroup row check>
+                <Label sm={10} check>
                     <Input id="createform-input-public" type="checkbox" onChange={!isAnonymous ? saveIsPublic : ()=>{}}/> Share with public
                 </Label>
             </FormGroup>
