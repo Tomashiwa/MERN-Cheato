@@ -227,7 +227,7 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 						options={schoolOptions}
 						value={schState.selected}
 					/>
-					<FormText>School that your cheatsheet is for.</FormText>
+					<FormText>Select a school that your cheatsheet is for. If none was found, you may enter your school name to create it.</FormText>
 				</Col>
 			</FormGroup>
 			<FormGroup row>
@@ -243,14 +243,14 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 						options={moduleOptions}
 						value={modState.selected}
 					/>
-					<FormText>Module that your cheatsheet is for.</FormText>
+					<FormText>Select a module that your cheatshet is for. If none was found, you may enter your module name to create it.</FormText>
 				</Col>
 			</FormGroup>
 			<FormGroup row>
 				<Label sm={2}>Description</Label>
 				<Col sm={10}>
 					<Input id="uploadform-input-desc" type="textarea" onChange={saveDesc} />
-					<FormText>Information that may help readers understand your cheatsheet.</FormText>
+					<FormText>Information that may help others understand your cheatsheet.</FormText>
 				</Col>
 			</FormGroup>
 			<FormGroup row check>

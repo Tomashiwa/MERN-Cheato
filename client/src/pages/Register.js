@@ -84,6 +84,7 @@ function Register() {
 		<Container id="register-container">
 			<Form id="register-form" onSubmit={register}>
 				<h2>Register</h2>
+				
 				<FormGroup>
 					<Label>Name</Label>
 					<Input id="register-input-name" invalid={fieldsInvalid.name ? true : false} />
@@ -106,8 +107,12 @@ function Register() {
 						invalid={fieldsInvalid.check ? true : false}
 					/>
 				</FormGroup>
+
 				<div>Already have an account? {link}</div>
-				<Button type="submit">Register</Button>
+				
+				<Button id="register-btn" type="submit" color="warning">
+					Register
+				</Button>
 			</Form>
 		</Container>
 	);

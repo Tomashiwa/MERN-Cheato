@@ -85,15 +85,14 @@ function View() {
 				<Container id="view-container">
 					<div id="view-header">
 						<div id="view-description">
-							<h2>{sheet.name}</h2>
-							<h3>{`${school.name} - ${module.name}`}</h3>
-							<h4>
+							<h2>{sheet.name}<h5>{`${school.name} - ${module.name}`}</h5></h2>
+							<h5>
 								{`Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`}
-							</h4>
+							</h5>
 						</div>
 
 						<div id="view-feedback">
-							<Button id="view-btn-bookmark" onClick={bookmark}>Bookmark</Button>
+							<Button id="view-btn-bookmark" color="warning" onClick={bookmark}>Bookmark</Button>
 							<Button id="view-btn-upvote" onClick={upvote}>Upvote</Button>
 							<Button id="view-btn-downvote" onClick={downvote}>Downvote</Button>
 						</div>

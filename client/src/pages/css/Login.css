@@ -1,6 +1,10 @@
 #login-form {
     padding: 1.5rem;
-    background-color: whitesmoke;
+    background-color: #fff;
     box-shadow: 0 0 0.1rem black;
     border-radius: 1rem;
+}
+
+#login-btn {
+    margin-top: 1rem;
 }

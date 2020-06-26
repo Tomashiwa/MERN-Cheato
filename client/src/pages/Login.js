@@ -45,9 +45,8 @@ function Login() {
 	return (
 		<Container id="login-container">
 			<Form id="login-form" onSubmit={login}>
-				<FormGroup>
-					<h2>Login</h2>
-				</FormGroup>
+				<h2>Login</h2>
+
 				<FormGroup>
 					<Label>Name</Label>
 					<Input id="login-input-name" invalid={fieldsInvalid.name ? true : false} />
@@ -61,8 +60,12 @@ function Login() {
 						invalid={fieldsInvalid.pass ? true : false}
 					/>
 				</FormGroup>
+
 				<div>Don't have an account? {registerLink}</div>
-				<Button type="submit">Login</Button>
+
+				<Button id="login-btn" type="submit" color="warning">
+					Login
+				</Button>
 			</Form>
 		</Container>
 	);
