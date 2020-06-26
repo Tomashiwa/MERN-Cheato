@@ -88,8 +88,8 @@ describe("Fetching sheets", () => {
 
 		expect(wrapper.html().includes('<div id="view-container" class="container">')).toBe(true);
 		expect(wrapper.html().includes("<h2>SHEET_NAME</h2>")).toBe(true);
-		expect(wrapper.html().includes("<h3>SCHOOL_NAME - MODULE_NAME</h3>")).toBe(true);
-		expect(wrapper.html().includes("<h4>Uploaded by: OWNER_NAME</h4>")).toBe(true);
+		expect(wrapper.html().includes("<h5>SCHOOL_NAME - MODULE_NAME</h5>")).toBe(true);
+		expect(wrapper.html().includes("<h5>Uploaded by: OWNER_NAME</h5>")).toBe(true);
 	});
 
 	test("Accessing private sheet w/ owner", async () => {
@@ -152,8 +152,8 @@ describe("Fetching sheets", () => {
 
 		expect(wrapper.html().includes('<div id="view-container" class="container">')).toBe(true);
 		expect(wrapper.html().includes("<h2>SHEET_NAME</h2>")).toBe(true);
-		expect(wrapper.html().includes("<h3>SCHOOL_NAME - MODULE_NAME</h3>")).toBe(true);
-		expect(wrapper.html().includes("<h4>Uploaded by: OWNER_NAME</h4>")).toBe(true);
+		expect(wrapper.html().includes("<h5>SCHOOL_NAME - MODULE_NAME</h5>")).toBe(true);
+		expect(wrapper.html().includes("<h5>Uploaded by: OWNER_NAME</h5>")).toBe(true);
 	});
 
 	test("Accessing private sheet w/ non-owner", async () => {
@@ -340,7 +340,7 @@ describe("Fetching sheets", () => {
 
 		expect(wrapper.html().includes('<div id="view-container" class="container">')).toBe(true);
 		expect(wrapper.html().includes("<h2>SHEET_NAME</h2>")).toBe(true);
-		expect(wrapper.html().includes("<h3>SCHOOL_NAME - MODULE_NAME</h3>")).toBe(true);
-		expect(wrapper.html().includes("<h4>Uploaded by: Anonymous</h4>")).toBe(true);
+		expect(wrapper.html().includes("<h5>SCHOOL_NAME - MODULE_NAME</h5>")).toBe(true);
+		expect(wrapper.html().includes("<h5>Uploaded by: Anonymous</h5>")).toBe(true);
 	});
 });

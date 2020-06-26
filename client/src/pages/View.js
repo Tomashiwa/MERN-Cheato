@@ -85,10 +85,9 @@ function View() {
 				<Container id="view-container">
 					<div id="view-header">
 						<div id="view-description">
-							<h2>{sheet.name}<h5>{`${school.name} - ${module.name}`}</h5></h2>
-							<h5>
-								{`Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`}
-							</h5>
+							<h2>{sheet.name}</h2>
+							<h5>{`${school.name} - ${module.name}`}</h5>
+							<h5>{`Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`}</h5>
 						</div>
 
 						<div id="view-feedback">
