@@ -27,7 +27,6 @@ function FuseSearchbar() {
         keys: [
             "id",
             "data.name",
-            "data.code",
             "data.description"
         ]
     });
@@ -37,9 +36,7 @@ function FuseSearchbar() {
     // Update searchTerm upon user's input
     useEffect(() => {
         const searchBar = document.querySelector("#searchbar-input");
-        
-        console.log(`Searhbar size: ${searchBar}`)
-        
+                
         const changeSearchTerm = e => setTerm(e.target.value);
         const focus = e => setIsFocused(true);
         const blur = e => {
@@ -118,11 +115,8 @@ function FuseSearchbar() {
         const searchBar = document.querySelector("#searchbar-input");
         const search = e => {
             if(e.key === "Enter" && term.length > 0) {
-                const fuse = new Fuse(list, optionsRef.current);
-                const results = fuse.search(term).map(result => result.item);
-
-                console.log("Search results:");
-                console.log(results);
+                // const fuse = new Fuse(list, optionsRef.current);
+                // const results = fuse.search(term).map(result => result.item);
 
                 setIsFocused(false);
                 setResults([]);
@@ -167,7 +161,7 @@ function FuseSearchbar() {
                 id="searchbar-input"
                 type="text"
                 placeholder="Search here..."
-                size={SEARCHBAR_MAX_CHARS}
+                size={`${SEARCHBAR_MAX_CHARS}`}
             />
 
             <div id="searchbar-list">

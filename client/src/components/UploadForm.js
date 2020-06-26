@@ -82,7 +82,7 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 						module.school === schState.selected.value
 				)
 				.map((module) => {
-					return { label: `${module.code} - ${module.name}`, value: module._id };
+					return { label: `${module.name}`, value: module._id };
 				})
 		);
 	}, [schools, modules, schState.selected]);
@@ -157,9 +157,9 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 					setSchState({
 						isDisabled: false,
 						isLoading: false,
-						selected: { label: value, value: value },
+						selected: { label: res.data.name, value: res.data._id },
 					});
-					setForm({ ...form, ...{ school: value } });
+					setForm({ ...form, ...{ school: res.data._id } });
 				});
 			})
 			.catch((err) => console.log(`Fail to add school: ${err}`));
@@ -167,7 +167,7 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 
 	// Add new module to the backend
 	const addModule = (value) => {
-		const newModule = { school: schState.selected.value, code: value, name: value };
+		const newModule = { school: schState.selected.value, name: value };
 
 		setModState({ ...modState, ...{ isDisabled: true, isLoading: true } });
 
@@ -178,9 +178,9 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 					setModState({
 						isDisabled: false,
 						isLoading: false,
-						selected: { label: value, value: value },
+						selected: { label: res.data.name, value: res.data._id },
 					});
-					setForm({ ...form, ...{ module: value } });
+					setForm({ ...form, ...{ module: res.data._id } });
 				});
 			})
 			.catch((err) => console.log(`Fail to add mod: ${err}`));

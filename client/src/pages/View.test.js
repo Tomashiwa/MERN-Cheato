@@ -53,7 +53,6 @@ describe("Fetching sheets", () => {
 			.mockResolvedValueOnce({
 				status: 200,
 				data: {
-					code: "MODULE_CODE",
 					name: "MODULE_NAME",
 					school: "123456789",
 					_id: "123456789",
@@ -122,7 +121,6 @@ describe("Fetching sheets", () => {
 			.mockResolvedValueOnce({
 				status: 200,
 				data: {
-					code: "MODULE_CODE",
 					name: "MODULE_NAME",
 					school: "123456789",
 					_id: "123456789",
@@ -175,7 +173,6 @@ describe("Fetching sheets", () => {
 			.mockResolvedValueOnce({
 				status: 200,
 				data: {
-					code: "MODULE_CODE",
 					name: "MODULE_NAME",
 					school: "123456789",
 					_id: "123456789",
@@ -237,7 +234,6 @@ describe("Fetching sheets", () => {
 			.mockResolvedValueOnce({
 				status: 200,
 				data: {
-					code: "MODULE_CODE",
 					name: "MODULE_NAME",
 					school: "123456789",
 					_id: "123456789",
@@ -310,7 +306,6 @@ describe("Fetching sheets", () => {
 			.mockResolvedValueOnce({
 				status: 200,
 				data: {
-					code: "MODULE_CODE",
 					name: "MODULE_NAME",
 					school: "123456789",
 					_id: "123456789",

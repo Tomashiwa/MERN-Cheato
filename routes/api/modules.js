@@ -11,7 +11,7 @@ const Module = require("../../models/Module");
 router.get("/", (req, res) => {
     // Mongo query
     Module.find()
-        .sort({code: -1})
+        .sort({name: -1})
         .then(modules => res.json(modules));
 });
 
@@ -29,7 +29,6 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
     const newModule = new Module({
         school: req.body.school,
-        code: req.body.code,
         name: req.body.name
     });
 
@@ -53,11 +52,10 @@ router.delete("/:id", (req, res) => {
 router.get("/search/:searchTerm/:limit", (req,res) => {
     Module
         .find({$or: [
-            {code: {$regex: req.params.searchTerm, $options: "i"}},
             {name: {$regex: req.params.searchTerm, $options: "i"}}
         ]})
         .limit(parseInt(req.params.limit))
-        .sort({code: -1})
+        .sort({name: -1})
         .then(modules => res.json(modules))
         .catch(err => res.status(404).json({success: false}));
 })

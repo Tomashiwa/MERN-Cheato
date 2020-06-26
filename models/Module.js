@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 const ModuleSchema = new Schema({
     school: {type: mongoose.ObjectId, required: true},
-    code:  {type: String, required: true},
     name:  {type: String, required: true}
 });
 

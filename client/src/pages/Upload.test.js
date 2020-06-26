@@ -43,9 +43,9 @@ test("Filling upload form and accessing previewer", async () => {
 		.mockResolvedValueOnce({
 			status: 200,
 			data: [
-				{ _id: "1", code: "MODULE_1", name: "MODULE_1", school: "1" },
-				{ _id: "2", code: "MODULE_2", name: "MODULE_2", school: "1" },
-				{ _id: "3", code: "MODULE_3", name: "MODULE_3", school: "1" },
+				{ _id: "1", name: "MODULE_1", school: "1" },
+				{ _id: "2", name: "MODULE_2", school: "1" },
+				{ _id: "3", name: "MODULE_3", school: "1" },
 			],
 		});
 
@@ -57,7 +57,7 @@ test("Filling upload form and accessing previewer", async () => {
 	const newSelectedModule = {
 		isDisabled: false,
 		isLoading: false,
-		selected: { label: "MODULE_1 - MODULE_1", value: "1" },
+		selected: { label: "MODULE_1", value: "1" },
 	};
 
 	const newSchoolOptions = [
@@ -66,9 +66,9 @@ test("Filling upload form and accessing previewer", async () => {
 		{ label: "SCHOOL_3", value: "3" },
 	];
 	const newModuleOptions = [
-		{ label: "MODULE_1 - MODULE_1", value: "1" },
-		{ label: "MODULE_2 - MODULE_2", value: "2" },
-		{ label: "MODULE_3 - MODULE_3", value: "3" },
+		{ label: "MODULE_1", value: "1" },
+		{ label: "MODULE_2", value: "2" },
+		{ label: "MODULE_3", value: "3" },
 	];
 
 	const stateSetter = jest.fn();
@@ -163,7 +163,7 @@ test("Filling upload form and accessing previewer", async () => {
 	expect(axiosGetSpy).toBeCalledWith("/api/modules");
 
 	expect(schoolSelector.html().includes("SCHOOL_1")).toBe(true);
-	expect(moduleSelector.html().includes("MODULE_1 - MODULE_1")).toBe(true);
+	expect(moduleSelector.html().includes("MODULE_1")).toBe(true);
 
 	expect(wrapper.find("#upload-btn-next").hostNodes().prop("disabled")).toBe(false);
 });

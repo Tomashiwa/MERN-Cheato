@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import {
     Collapse,
     Navbar,
     NavbarToggler,
     NavbarBrand,
-    Nav,
     NavItem,
     NavLink,
     Container,
@@ -35,10 +34,10 @@ function AppNavbar() {
                         ?   <>
                                 <NavbarToggler onClick={toggle}/>
                                 <Collapse isOpen={isOpen} navbar>
-                                    <div class="mr-auto">
+                                    <div className="mr-auto">
                                         <FuseSearchbar />
                                     </div>
-                                    <ul class="nav navbar-nav navbar-right">
+                                    <ul className="nav navbar-nav navbar-right">
                                         <NavItem>
                                             <NavLink href="/create">
                                                 Create

@@ -62,7 +62,7 @@ function CreateForm({form, setForm, isAnonymous}) {
         setSchoolOptions(schools.map(school => {return {label: school.name, value: school._id}}));
         setModuleOptions(modules
             .filter(module => module.school && schState.selected && module.school === schState.selected.value)
-            .map(module => {return {label: `${module.code} - ${module.name}`, value: module._id}}));
+            .map(module => {return {label: module.name, value: module._id}}));
     }, [schools, modules, schState.selected])
 
     // Load previous entires if avaliable
@@ -96,7 +96,6 @@ function CreateForm({form, setForm, isAnonymous}) {
 
     // Saving the isPublic to the form
     const saveIsPublic = e => {
-        console.log(`set isPublic to ${e.target.checked}`);
         setForm({...form, ...{isPublic: e.target.checked}});
     }
     useEffect(() => {
@@ -134,8 +133,8 @@ function CreateForm({form, setForm, isAnonymous}) {
         axios.post("/api/schools", newSchool)
             .then(res => {
                 fetchSchs(() => {
-                    setSchState({isDisabled: false, isLoading: false, selected: {label: value, value: value}});
-                    setForm({...form, ...{school: value}})
+                    setSchState({isDisabled: false, isLoading: false, selected: {label: res.data.name, value: res.data._id}});
+                    setForm({...form, ...{school: res.data._id}})
                 });
             })
             .catch(err => console.log(`Fail to add school: ${err}`));
@@ -143,15 +142,15 @@ function CreateForm({form, setForm, isAnonymous}) {
 
     // Add new module to the backend
     const addModule = value => {
-        const newModule = {school: schState.selected.value, code: value, name: value}
+        const newModule = {school: schState.selected.value, name: value}
 
         setModState({...modState, ...{isDisabled: true, isLoading: true}});
 
         axios.post("/api/modules", newModule)
             .then(res => {
                 fetchMods(() => {
-                    setModState({isDisabled: false, isLoading: false, selected: {label: value, value: value}});
-                    setForm({...form, ...{module: value}})
+                    setModState({isDisabled: false, isLoading: false, selected: {label: res.data.name, value: res.data._id}});
+                    setForm({...form, ...{module: res.data._id}});
                 });
             })
             .catch(err => console.log(`Fail to add mod: ${err}`));

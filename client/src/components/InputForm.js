@@ -52,7 +52,6 @@ function InputForm() {
             }));
         }))
         .then(imgs => {
-            console.log(`All img elements loaded`);
             const images = imgs.map(img => {
                 return {
                     element: img, 
