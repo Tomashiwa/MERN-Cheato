@@ -1,5 +1,9 @@
-.form-inline{
+/* .form-inline{
   position: relative;
   left: -200px;
   top: 0px;
+} */
+
+#searchbar {
+  text-align: center;
 }

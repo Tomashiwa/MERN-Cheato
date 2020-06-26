@@ -21,57 +21,52 @@ function AppNavbar() {
     
     const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
-        const toggler = document.querySelector(".navbar-toggler");
-        const toggle = () => setIsOpen(!isOpen);
-        toggler.addEventListener("click", toggle);
-        return () => toggler.removeEventListener("click", toggle);
-    }, [isOpen])
+    const toggle = () => setIsOpen(!isOpen);
 
     return (
         <div>
             <Navbar color="dark" dark expand="sm" className = "mb-5">
-                <Container>
+                <Container id="navbar-container">
                     <NavbarBrand href="/">
                         Cheato
                     </NavbarBrand>
-                    <NavbarToggler />
                     {
-                        !userData.isLoaded
-                            ? <div></div>
-                            : <Collapse isOpen={isOpen} navbar>
-                                <Nav className="ml-auto" navbar>
-                                    <NavItem>
+                        userData.isLoaded
+                        ?   <>
+                                <NavbarToggler onClick={toggle}/>
+                                <Collapse isOpen={isOpen} navbar>
+                                    <div class="ml-auto mr-auto">
                                         <FuseSearchbar />
-                                    </NavItem>
-                                <div className="d-flex align-items-center">
-                                    <NavItem>
-                                        <NavLink href="/create">
-                                            Create
-                                        </NavLink>
-                                    </NavItem>
-                                    <NavItem>
-                                        <NavLink href="/upload">
-                                            Upload
-                                        </NavLink>
-                                    </NavItem>
-                                    {
-                                        userData.user
-                                            ? <NavItem>
-                                                <UserDropdown />
-                                            </NavItem>
-                                            : <>
-                                                <NavItem>
-                                                    <NavLink href="/register">Register</NavLink>
+                                    </div>
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <NavItem>
+                                            <NavLink href="/create">
+                                                Create
+                                            </NavLink>
+                                        </NavItem>
+                                        <NavItem>
+                                            <NavLink href="/upload">
+                                                Upload
+                                            </NavLink>
+                                        </NavItem>
+                                        {
+                                            userData.user
+                                                ? <NavItem>
+                                                    <UserDropdown />
                                                 </NavItem>
-                                                <NavItem>
-                                                    <NavLink href="/login">Login</NavLink>
-                                                </NavItem>
-                                            </>
-                                    }
-                                </div>  
-                                </Nav>
-                            </Collapse> 
+                                                : <>
+                                                    <NavItem>
+                                                        <NavLink href="/register">Register</NavLink>
+                                                    </NavItem>
+                                                    <NavItem>
+                                                        <NavLink href="/login">Login</NavLink>
+                                                    </NavItem>
+                                                </>
+                                        }
+                                    </ul>
+                                </Collapse> 
+                            </> 
+                            : <div></div>
                     }
                 </Container>
             </Navbar>

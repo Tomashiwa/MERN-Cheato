@@ -10,6 +10,10 @@ import schoolIcon from "../icons/icon-school.svg";
 import moduleIcon from "../icons/icon-module.svg";
 import UserContext from '../context/UserContext';
 
+const SEARCHBAR_MAX_CHARS = 50;
+const SEARCHBAR_ICON_SIZE = 24;
+const SEARCHBAR_MAX_RESULTS = 5;
+
 function FuseSearchbar() {
     const {userData} = useContext(UserContext);
 
@@ -19,7 +23,6 @@ function FuseSearchbar() {
 
     const [isFocused, setIsFocused] = useState(false);
 
-    const limitRef = useRef(5);
     const optionsRef = useRef({
         keys: [
             "id",
@@ -28,13 +31,14 @@ function FuseSearchbar() {
             "data.description"
         ]
     });
-    const iconSizeRef = useRef(24);
 
     const history = useHistory();
 
     // Update searchTerm upon user's input
     useEffect(() => {
         const searchBar = document.querySelector("#searchbar-input");
+        
+        console.log(`Searhbar size: ${searchBar}`)
         
         const changeSearchTerm = e => setTerm(e.target.value);
         const focus = e => setIsFocused(true);
@@ -101,7 +105,7 @@ function FuseSearchbar() {
         if(term.length > 0) {
             const fuse = new Fuse(list, optionsRef.current);
             const results = fuse.search(term)
-                .slice(0, limitRef.current)
+                .slice(0, SEARCHBAR_MAX_RESULTS)
                 .map(result => result.item);
             setResults(results);
         } else {
@@ -163,6 +167,7 @@ function FuseSearchbar() {
                 id="searchbar-input"
                 type="text"
                 placeholder="Search here..."
+                size={SEARCHBAR_MAX_CHARS}
             />
 
             <div id="searchbar-list">
@@ -176,8 +181,8 @@ function FuseSearchbar() {
                                         :result.type === "school"
                                             ? schoolIcon 
                                         : moduleIcon} 
-                                    width={`${iconSizeRef.current}px`} 
-                                    height={`${iconSizeRef.current}px`} 
+                                    width={`${SEARCHBAR_ICON_SIZE}px`} 
+                                    height={`${SEARCHBAR_ICON_SIZE}px`} 
                                     alt=""
                                 />
                                 <div>
