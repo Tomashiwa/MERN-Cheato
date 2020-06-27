@@ -6,6 +6,8 @@ import axios from "axios";
 import UserContext from "../context/UserContext";
 import ImagePreviewer from "../components/ImagePreviewer";
 import BookmarkButton from "../components/BookmarkButton";
+import CommentGallery from "../components/CommentGallery";
+
 
 import "./css/View.css";
 import Rating from "../components/Rating";
@@ -42,22 +44,22 @@ function View() {
 	// Fetch the respective school and module of the sheet
 	useEffect(() => {
 		const fetchDetails = async () => {
-            if(sheet) {
-                try {
-                    const schRes = await axios.get(`/api/schools/${sheet.school}`);
-                    const modRes = await axios.get(`/api/modules/${sheet.module}`);
-                    const ownerRes = await axios.get(`/api/users/${sheet.user}`);
-                    setSchool(schRes.data);
-                    setModule(modRes.data);
-                    setOwner(ownerRes.data);
-                } catch(err) {
-                    console.log("error:");
+			if (sheet) {
+				try {
+					const schRes = await axios.get(`/api/schools/${sheet.school}`);
+					const modRes = await axios.get(`/api/modules/${sheet.module}`);
+					const ownerRes = await axios.get(`/api/users/${sheet.user}`);
+					setSchool(schRes.data);
+					setModule(modRes.data);
+					setOwner(ownerRes.data);
+				} catch (err) {
+					console.log("error:");
 					console.log(err);
-                }
-            }
-        };
+				}
+			}
+		};
 
-        fetchDetails();
+		fetchDetails();
 	}, [sheet]);
 
 	const goHome = () => {
@@ -78,7 +80,7 @@ function View() {
 						</div>
 
 						<div id="view-feedback">
-							<BookmarkButton sheet={sheet} size={"24px"}/>
+							<BookmarkButton sheet={sheet} size={"24px"} />
 							<Rating sheet={sheet} />
 						</div>
 					</div>
@@ -87,7 +89,7 @@ function View() {
 
 					<div id="view-footer">
 						<div id="view-comments">
-							<h5>Comments</h5>
+							<CommentGallery userID={userData.user.name} sheetID={id} />
 						</div>
 
 						<div id="view-similars">
@@ -111,18 +113,18 @@ function View() {
 									logging in {loginLink}.
 								</CardText>
 							) : (
-								<CardText>
-									This account do not have access to this cheatsheet. You can only
-									view it after the owner enable public access.
+										<CardText>
+											This account do not have access to this cheatsheet. You can only
+											view it after the owner enable public access.
 								</CardText>
-							)}
+									)}
 							<Button onClick={goHome}>Back to Home</Button>
 						</CardBody>
 					</Card>
 				</Container>
 			) : (
-				<div id="view-container-empty"></div>
-			)}
+						<div id="view-container-empty"></div>
+					)}
 		</div>
 	);
 }

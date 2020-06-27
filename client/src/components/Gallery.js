@@ -62,8 +62,8 @@ function Gallery() {
                 </ButtonDropdown>
             </div>
             <div className="gallery">
-                {cheatsheets.map(cs => (
-                    <CheatsheetCard sheet={cs} />
+                {cheatsheets.map((cs,index) => (
+                    <CheatsheetCard key = {index} sheet={cs} />
                 ))}
             </div>
         </div >

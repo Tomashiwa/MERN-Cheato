@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+var mongoose = require('mongoose')
+
 //Comment model
 const Comment = require("../../models/Comment");
 
@@ -14,6 +16,15 @@ router.get("/", (req, res) => {
         .sort({datetime: -1})
         .then(comments => res.json(comments));
 });
+
+router.get("/bySheet/:sheetID", (req, res) => {
+    Comment.find({cheatsheet:mongoose.Types.ObjectId(req.params.sheetID)})
+        .then(comment => res.json(comment))
+        .catch(err => res.status(404).json({msg: `Comment with ${req.params.id} cannot be found`}));
+})
+
+
+
 
 // @route POST api/comments
 // @descr Create a comment
