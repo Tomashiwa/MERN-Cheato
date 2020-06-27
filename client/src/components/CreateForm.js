@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Form, FormGroup, Label, Input, FormFeedback, FormText } from "reactstrap";
 import CreatableSelect from "react-select/creatable";
+import { createFilter } from "react-select"
+import {optimizeSelect} from "./OptimizedSelect";
+
 
 import "./css/CreateForm.css"
 
@@ -181,6 +184,8 @@ function CreateForm({form, setForm, isAnonymous}) {
                         onCreateOption={addSchool}
                         options={schoolOptions}
                         value={schState.selected}
+                        filterOption={createFilter({ignoreAccents: false})}
+						components={optimizeSelect.components}
                     />
                     <FormText>Select a school that your cheatshet is for. If none is found, you may enter your school name to create it.</FormText>
                 </Col>
@@ -196,6 +201,8 @@ function CreateForm({form, setForm, isAnonymous}) {
                         onCreateOption={addModule}
                         options={moduleOptions}
                         value={modState.selected}
+                        filterOption={createFilter({ignoreAccents: false})}
+						components={optimizeSelect.components}
                     />
                     <FormText>Select a module that your cheatshet is for. If none was found, you may enter your module name to create it.</FormText>
                 </Col>

@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
 import axios from "axios";
 import { Form, FormGroup, Label, Input, FormFeedback, FormText } from "reactstrap";
+import { createFilter } from "react-select"
 import CreatableSelect from "react-select/creatable";
 import "./css/UploadForm.css";
 import Col from "reactstrap/lib/Col";
+
+import {optimizeSelect} from "./OptimizedSelect";
 
 function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 	const [schools, setSchools] = useState([]);
@@ -226,6 +229,8 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 						onCreateOption={addSchool}
 						options={schoolOptions}
 						value={schState.selected}
+						filterOption={createFilter({ignoreAccents: false})}
+						components={optimizeSelect.components}
 					/>
 					<FormText>Select a school that your cheatsheet is for. If none was found, you may enter your school name to create it.</FormText>
 				</Col>
@@ -242,6 +247,8 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 						onCreateOption={addModule}
 						options={moduleOptions}
 						value={modState.selected}
+						filterOption={createFilter({ignoreAccents: false})}
+						components={optimizeSelect.components}
 					/>
 					<FormText>Select a module that your cheatshet is for. If none was found, you may enter your module name to create it.</FormText>
 				</Col>

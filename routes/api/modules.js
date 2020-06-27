@@ -11,7 +11,7 @@ const Module = require("../../models/Module");
 router.get("/", (req, res) => {
     // Mongo query
     Module.find()
-        .sort({name: -1})
+        .sort({name: 1})
         .then(modules => res.json(modules));
 });
 

@@ -9,8 +9,14 @@ const comments = require("./routes/api/comments");
 const uploads = require("./routes/upload.router");
 const auth = require("./routes/api/auth");
 
+const School = require("./models/School");
+const Module = require("./models/Module");
+
+var modUpdateJob = require("./APIScheduler");
+
 // Load body-parser middleware
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+// app.use(express.urlencoded({limit: '50mb'}));
 
 //Connect to URI of mongoDB's cluster
 const mongoose = require('mongoose');
@@ -34,6 +40,24 @@ app.use("/api/cheatsheets", cheatsheets);
 app.use("/api/comments", comments);
 app.use("/api/auth", auth);
 app.use("/upload", uploads);
+
+app.get("/backend/schools/:name", (req, res) => {
+    School.findOne({name: req.params.name})
+        .then(school => res.status(200).json(school));
+})
+
+app.get("/backend/modules", (req, res) => {
+    Module.find()
+        .sort({name: -1})
+        .then(modules => res.status(200).json(modules));
+})
+
+app.post("/backend/modules", (req, res) => {
+    const newMods = req.body;
+    Module.insertMany(newMods, (err, docs) => {
+        res.status(200).json({newMods});        
+    })
+})
 
 //Serve static assets (frontend stuff) if in production
 const path = require("path");
