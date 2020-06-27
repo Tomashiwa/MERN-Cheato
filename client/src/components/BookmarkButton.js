@@ -58,7 +58,7 @@ function BookmarkButton({ sheet, size }) {
 				setIsToggled(fetchedUser.bookmarks.includes(sheet._id));
 			})
 			.catch((err) => console.log(`Fail to toggle button: ${err}`));
-	}, []);
+	}, [sheet, userData]);
 
 	return (
 		<button id="bookmarkbtn" type="button" onClick={bookmark}>

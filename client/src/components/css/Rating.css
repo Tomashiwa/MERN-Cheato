@@ -1,0 +1,56 @@
+.rating-btn {
+	border-width: 0px;
+	padding: 0;
+}
+
+.rating-btn:focus {
+	outline: 0;
+}
+
+.rating-icon {
+	width: 24px;
+	height: 24px;
+	margin-top: 4px;
+	background-color: #555555;
+}
+.rating-icon:hover {
+	background-color: #ccaa44;
+}
+
+.rating-icon-toggled {
+	width: 24px;
+	height: 24px;
+	margin-top: 4px;
+	background-color: #ffcc00;
+}
+.rating-icon-toggled:hover {
+	background-color: #ffda47;
+}
+
+#rating-up {
+	mask: url(../../icons/icon-uparrow.svg) no-repeat center / contain;
+	-webkit-mask: url(../../icons/icon-uparrow.svg) no-repeat center / contain;
+}
+
+#rating-down {
+	mask: url(../../icons/icon-downarrow.svg) no-repeat center / contain;
+	-webkit-mask: url(../../icons/icon-downarrow.svg) no-repeat center / contain;
+}
+
+#rating-container {
+    display: flex;
+}
+
+#rating-btns {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+#rating-btns .rating-btn {
+    margin-right: 5px;
+}
+
+#rating-counter {
+    align-self: center;
+}

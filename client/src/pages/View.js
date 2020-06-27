@@ -8,6 +8,7 @@ import ImagePreviewer from "../components/ImagePreviewer";
 import BookmarkButton from "../components/BookmarkButton";
 
 import "./css/View.css";
+import Rating from "../components/Rating";
 
 function View() {
 	const { userData } = useContext(UserContext);
@@ -46,7 +47,6 @@ function View() {
                     const schRes = await axios.get(`/api/schools/${sheet.school}`);
                     const modRes = await axios.get(`/api/modules/${sheet.module}`);
                     const ownerRes = await axios.get(`/api/users/${sheet.user}`);
-
                     setSchool(schRes.data);
                     setModule(modRes.data);
                     setOwner(ownerRes.data);
@@ -59,15 +59,6 @@ function View() {
 
         fetchDetails();
 	}, [sheet]);
-
-	// Upvote and downvote events
-	const upvote = () => {
-		console.log("Upvoted !!");
-	};
-
-	const downvote = () => {
-		console.log("Downvoted !!");
-	};
 
 	const goHome = () => {
 		history.push("/");
@@ -87,9 +78,8 @@ function View() {
 						</div>
 
 						<div id="view-feedback">
-							<BookmarkButton id="view-btn-bookmark" sheet={sheet} size={"24px"}/>
-							<Button id="view-btn-upvote" onClick={upvote}>Upvote</Button>
-							<Button id="view-btn-downvote" onClick={downvote}>Downvote</Button>
+							<BookmarkButton sheet={sheet} size={"24px"}/>
+							<Rating sheet={sheet} />
 						</div>
 					</div>
 

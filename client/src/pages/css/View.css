@@ -10,11 +10,13 @@
 
 #view-header #view-feedback {
     align-self: center;
+
+    display: flex;
 }
 
-#view-header #view-feedback button {
+/* #view-header #view-feedback button {
     margin-right: 10px;
-}
+} */
 
 #view-footer {
     display: flex;
@@ -24,5 +26,9 @@
 
 #view-footer #view-comments {
     flex-grow: 1.0;
+}
+
+#view-feedback > #bookmarkbtn {
+    margin-right: 30px;
 }
 
