@@ -12,7 +12,7 @@
     align-self: center;
 }
 
-#view-header #view-feedback * {
+#view-header #view-feedback button {
     margin-right: 10px;
 }
 

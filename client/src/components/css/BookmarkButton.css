@@ -1,0 +1,32 @@
+#bookmarkbtn {
+    border-width: 0px;
+    padding: 0;
+}
+
+#bookmarkbtn:focus {outline:0;}
+
+#bookmarkbtn-icon {
+	width: 24px;
+	height: 24px;
+	margin-top: 4px;
+	background-color: #555555;
+	mask: url(../../icons/icon-bookmark.svg) no-repeat center / contain;
+	-webkit-mask: url(../../icons/icon-bookmark.svg) no-repeat center / contain;
+}
+
+#bookmarkbtn-icon:hover {
+    background-color: #ccaa44;
+}
+
+#bookmarkbtn-icon-toggled {
+	width: 24px;
+	height: 24px;
+	margin-top: 4px;
+	background-color: #ffcc00;
+	mask: url(../../icons/icon-bookmark.svg) no-repeat center / contain;
+	-webkit-mask: url(../../icons/icon-bookmark.svg) no-repeat center / contain;
+}
+
+#bookmarkbtn-icon-toggled:hover {
+    background-color: #ffda47;
+}

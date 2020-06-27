@@ -1,11 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom';
 
+import axios from 'axios';
 import UserContext from "../context/UserContext";
 
+// import similarIcon from "../icons/icon-similar.svg";
+// import authorIcon from "../icons/icon-author.svg";
+// import viewIcon from "../icons/icon-view.svg";
+// import upvoteIcon from "../icons/icon-upvote.svg";
+// import downvoteIcon from "../icons/icon-downvote.svg";
+// import bookmarkIcon from "../icons/icon-bookmark.svg";
 import "./css/CheatsheetCard.css"
-
-import axios from 'axios';
 
 function CheatsheetCard({ sheet }) {
     var [vote, setVote] = useState(sheet.rating);
@@ -225,7 +230,7 @@ function CheatsheetCard({ sheet }) {
                         </button>
                     </div>
                     <div class="view">
-                        <button type="button" id={`viewBtn-${sheet._id}`} onClick = {viewCheatsheet} class="btn btn-outline-dark">
+                        <button type="button" id={`viewBtn-${sheet._id}`} onClick = {viewCheatsheet} class="btn btn-outline-dark">                 
                             <svg class="bi bi-card-image" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
                                 <path d="M10.648 7.646a.5.5 0 0 1 .577-.093L15.002 9.5V13h-14v-1l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71z" />

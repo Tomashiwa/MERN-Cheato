@@ -5,6 +5,7 @@ import axios from "axios";
 
 import UserContext from "../context/UserContext";
 import ImagePreviewer from "../components/ImagePreviewer";
+import BookmarkButton from "../components/BookmarkButton";
 
 import "./css/View.css";
 
@@ -59,11 +60,6 @@ function View() {
         fetchDetails();
 	}, [sheet]);
 
-	// Bookmark event
-	const bookmark = () => {
-		console.log("Bookmarked !!");
-	};
-
 	// Upvote and downvote events
 	const upvote = () => {
 		console.log("Upvoted !!");
@@ -91,7 +87,7 @@ function View() {
 						</div>
 
 						<div id="view-feedback">
-							<Button id="view-btn-bookmark" color="warning" onClick={bookmark}>Bookmark</Button>
+							<BookmarkButton id="view-btn-bookmark" sheet={sheet} size={"24px"}/>
 							<Button id="view-btn-upvote" onClick={upvote}>Upvote</Button>
 							<Button id="view-btn-downvote" onClick={downvote}>Downvote</Button>
 						</div>

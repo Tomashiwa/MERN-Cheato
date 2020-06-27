@@ -16,7 +16,6 @@ var modUpdateJob = require("./APIScheduler");
 
 // Load body-parser middleware
 app.use(express.json({limit: '50mb'}));
-// app.use(express.urlencoded({limit: '50mb'}));
 
 //Connect to URI of mongoDB's cluster
 const mongoose = require('mongoose');
