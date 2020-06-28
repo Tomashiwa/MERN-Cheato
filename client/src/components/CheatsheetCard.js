@@ -15,7 +15,6 @@ import "./css/CheatsheetCard.css"
 function CheatsheetCard({ sheet }) {
     var [vote, setVote] = useState(sheet.rating);
     const [user, setUser] = useState(null);
-    const [loaded, setLoaded] = useState(false);
     const { userData } = useContext(UserContext);
     const isLoggedin = userData.isLoaded && userData.token !== undefined
 
@@ -35,7 +34,6 @@ function CheatsheetCard({ sheet }) {
             axios.get(`/api/users/${userID}`)
                 .then(res => {
                     setUser(res.data);
-                    setLoaded(true);
                 })
                 .catch(err => {
                     console.log(`Fail to fetch user: ${err}`);
@@ -95,20 +93,26 @@ function CheatsheetCard({ sheet }) {
 
             const upvoteClicked = () => {
                 const upvoteCheck = { id: sheet._id, type: "upvote" }
+                const downvoteCheck = { id: sheet._id, type: "downvote" }
 
                 axios.get(`/api/users/${userID}`)
                     .then(res => {
                         const fetchedUser = res.data;
                         const ratedArray = fetchedUser.rated.slice(0, fetchedUser.rated.length);
                         const filteredArray = ratedArray.filter(item => item.id !== upvoteCheck.id)
-                            .slice(0, ratedArray.filter(item => item.id !== upvoteCheck.id).length)
+                            .slice(0, ratedArray.filter(item => (item.id !== upvoteCheck.id).length))
+                        const ratedResult = fetchedUser.rated.find(ratedSheet => ratedSheet.id === sheet._id);
 
-                        if (filteredArray.length !== ratedArray.length) {
-                            var index = ratedArray.indexOf(upvoteCheck)
+                        console.log(ratedArray.indexOf(downvoteCheck))
+                        if (filteredArray.length !== ratedArray.length && ratedResult !== undefined && ratedResult.type === "upvote") {
+                            var index = ratedArray.indexOf(ratedResult)
                             ratedArray.splice(index, 1)
+                        } else if (filteredArray.length !== ratedArray.length && ratedResult !== undefined && ratedResult.type === "downvote") {
+                            var value = ratedArray.indexOf(downvoteCheck)
+                            ratedArray.splice(value, 1)
+                            ratedArray.push(upvoteCheck)
                         } else {
                             ratedArray.push(upvoteCheck)
-
                         }
 
                         if (ratedArray.length > fetchedUser.rated.length) {
@@ -117,6 +121,18 @@ function CheatsheetCard({ sheet }) {
                             })
                                 .then(res => {
                                     setVote(newUpvote)
+                                    axios.put(`/api/users/${userID}`, {
+                                        rated: ratedArray
+                                    }).catch(err => {
+                                        console.log(`Fail to upvote: ${err}`);
+                                    })
+                                });
+                        } else if (ratedArray.length === fetchedUser.rated.length) {
+                            axios.put(`/api/cheatsheets/${sheet._id}`, {
+                                rating: doubleUpvote
+                            })
+                                .then(res => {
+                                    setVote(doubleUpvote)
                                     axios.put(`/api/users/${userID}`, {
                                         rated: ratedArray
                                     }).catch(err => {
@@ -142,6 +158,7 @@ function CheatsheetCard({ sheet }) {
 
 
             const downvoteClicked = () => {
+                const upvoteCheck = { id: sheet._id, type: "upvote" }
                 const downvoteCheck = { id: sheet._id, type: "downvote" }
                 axios.get(`/api/users/${userID}`)
                     .then(res => {
@@ -149,10 +166,15 @@ function CheatsheetCard({ sheet }) {
                         const ratedArray = fetchedUser.rated.slice(0, fetchedUser.rated.length);
                         const filteredArray = ratedArray.filter(item => item.id !== downvoteCheck.id)
                             .slice(0, ratedArray.filter(item => item.id !== downvoteCheck.id).length)
+                        const ratedResult = fetchedUser.rated.find(ratedSheet => ratedSheet.id === sheet._id);
 
-                        if (filteredArray.length !== ratedArray.length) {
+                        if (filteredArray.length !== ratedArray.length && ratedResult !== undefined && ratedResult.type === "downvote") {
                             var index = ratedArray.indexOf(downvoteCheck)
                             ratedArray.splice(index, 1)
+                        } else if (filteredArray.length !== ratedArray.length && ratedResult !== undefined && ratedResult.type === "upvote") {
+                            var value = ratedArray.indexOf(upvoteCheck)
+                            ratedArray.splice(value, 1)
+                            ratedArray.push(downvoteCheck)
                         } else {
                             ratedArray.push(downvoteCheck)
                         }
@@ -163,6 +185,18 @@ function CheatsheetCard({ sheet }) {
                             })
                                 .then(res => {
                                     setVote(newDownvote)
+                                    axios.put(`/api/users/${userID}`, {
+                                        rated: ratedArray
+                                    }).catch(err => {
+                                        console.log(`Fail to upvote: ${err}`);
+                                    })
+                                });
+                        } else if (ratedArray.length === fetchedUser.rated.length) {
+                            axios.put(`/api/cheatsheets/${sheet._id}`, {
+                                rating: doubleDownvote
+                            })
+                                .then(res => {
+                                    setVote(doubleDownvote)
                                     axios.put(`/api/users/${userID}`, {
                                         rated: ratedArray
                                     }).catch(err => {
@@ -198,7 +232,7 @@ function CheatsheetCard({ sheet }) {
             };
         }
 
-    }, [vote, sheet._id]);
+    }, [vote, sheet._id,userData]);
 
     return (
         <div className="row">

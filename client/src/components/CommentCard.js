@@ -43,7 +43,7 @@ function CommentCard({ isStale, setIsStale, comment }) {
     if (isVisible) {
       document.querySelector("#OriginalText").value = comment.body;
     }
-  }, [isVisible])
+  }, [isVisible,comment.body])
 
   const saveBody = (e) => {
     setBody(e.target.value);
