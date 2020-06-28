@@ -16,7 +16,7 @@ import UserContext from "../context/UserContext";
 
 export const SORT_OPTIONS = [
 	{ label: "Date uploaded", value: "dateTime" },
-	{ label: "Popularity", value: "popularity" },
+	{ label: "Rating", value: "rating" },
 ];
 
 function Gallery() {
@@ -93,7 +93,7 @@ function Gallery() {
 			sortedSheets.sort((a, b) => {
 				return new Date(b.date) - new Date(a.date);
 			});
-		} else if (sortOrder === "popularity") {
+		} else if (sortOrder === "rating") {
 			sortedSheets.sort((a, b) => (a.rating < b.rating ? 1 : -1));
 		}
 
