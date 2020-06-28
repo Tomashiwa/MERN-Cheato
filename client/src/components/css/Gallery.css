@@ -7,6 +7,28 @@
     justify-content:space-around;
 }
 
+#gallery-toolbar {
+    display: flex;
+    flex-direction: row;
+    /* align-content: center; */
+    justify-content: space-between;
+}
+
+.gallery-tool-group > .gallery-tool-label {
+    padding-right: 5px;
+}
+
+#gallery-toolbar > .gallery-tool-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 30%;
+}
+
+.gallery-tool-group > .gallery-tool-select {
+    flex-grow: 1;
+}
+
 .dropdownMenu {
     display:flex;
     position:relative;

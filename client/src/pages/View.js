@@ -8,7 +8,6 @@ import ImagePreviewer from "../components/ImagePreviewer";
 import BookmarkButton from "../components/BookmarkButton";
 import CommentGallery from "../components/CommentGallery";
 
-
 import "./css/View.css";
 import Rating from "../components/Rating";
 
@@ -89,11 +88,11 @@ function View() {
 
 					<div id="view-footer">
 						<div id="view-comments">
-							<CommentGallery userID={userData.user.name} sheetID={id} />
+							<CommentGallery sheetID={id} />
 						</div>
 
 						<div id="view-similars">
-							<h5>Similar cheatsheets</h5>
+							{/* <h5>Similar cheatsheets</h5> */}
 						</div>
 					</div>
 				</Container>

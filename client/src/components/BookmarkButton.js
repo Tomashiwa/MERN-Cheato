@@ -51,17 +51,19 @@ function BookmarkButton({ sheet, size }) {
 	};
 
 	useEffect(() => {
-		axios
-			.get(`/api/users/${userData.user.id}`)
-			.then((res) => {
-				const fetchedUser = res.data;
-				setIsToggled(fetchedUser.bookmarks.includes(sheet._id));
-			})
-			.catch((err) => console.log(`Fail to toggle button: ${err}`));
+		if(userData.user !== undefined) {
+			axios
+				.get(`/api/users/${userData.user.id}`)
+				.then((res) => {
+					const fetchedUser = res.data;
+					setIsToggled(fetchedUser.bookmarks.includes(sheet._id));
+				})
+				.catch((err) => console.log(`Fail to toggle button: ${err}`));
+		}
 	}, [sheet, userData]);
 
 	return (
-		<button id="bookmarkbtn" type="button" onClick={bookmark}>
+		<button id="bookmarkbtn" type="button" onClick={bookmark} disabled={userData.user === undefined}>
             {
                 isToggled
                     ? <div id="bookmarkbtn-icon-toggled"></div>

@@ -3,6 +3,7 @@ const router = express.Router();
 
 //Module model
 const Module = require("../../models/Module");
+const mongoose = require("mongoose");
 
 // @route GET api/modules
 // @descr Get all modules
@@ -22,6 +23,17 @@ router.get("/:id", (req, res) => {
     Module.findById(req.params.id)
         .then(module => res.json(module));
 });
+
+router.get("/bySchool/:schoolId", (req, res) => {
+    Module.find({school: mongoose.Types.ObjectId(req.params.schoolId)})
+        .sort({name: 1})
+        .then(modules => res.json(modules))
+        .catch(err => {
+            console.log("error");
+            console.log(err);
+            res.status(404).json({msg: err});
+        })
+})
 
 // @route POST api/modules
 // @descr Create a module

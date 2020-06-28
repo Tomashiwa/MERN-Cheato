@@ -16,12 +16,14 @@ function Rating({ sheet }) {
 	useEffect(() => {
 		setVote(sheet.rating);
 
-		axios.get(`/api/users/${userData.user.id}`).then((res) => {
-			const fetchedUser = res.data;
-			const result = fetchedUser.rated.find((ratedSheet) => ratedSheet.id === sheet._id);
-			setIsUpToggled(result !== undefined && result.type === "upvote");
-			setIsDownToggled(result !== undefined && result.type === "downvote");
-		});
+        if(userData.user !== undefined) {
+            axios.get(`/api/users/${userData.user.id}`).then((res) => {
+                const fetchedUser = res.data;
+                const result = fetchedUser.rated.find((ratedSheet) => ratedSheet.id === sheet._id);
+                setIsUpToggled(result !== undefined && result.type === "upvote");
+                setIsDownToggled(result !== undefined && result.type === "downvote");
+            });
+        }
 	}, [sheet, userData]);
 
 	const upvote = () => {
@@ -205,14 +207,14 @@ function Rating({ sheet }) {
 	return (
 		<div id="rating-container">
 			<div id="rating-btns">
-				<button className="rating-btn" type="button" onClick={upvote} disabled={isLoading}>
+				<button className="rating-btn" type="button" onClick={upvote} disabled={isLoading || userData.user === undefined}>
 					{isUpToggled ? (
 						<div id="rating-up" className="rating-icon-toggled"></div>
 					) : (
 						<div id="rating-up" className="rating-icon"></div>
 					)}
 				</button>
-				<button className="rating-btn" type="button" onClick={downvote} disabled={isLoading}>
+				<button className="rating-btn" type="button" onClick={downvote} disabled={isLoading || userData.user === undefined}>
 					{isDownToggled ? (
 						<div id="rating-down" className="rating-icon-toggled"></div>
 					) : (
