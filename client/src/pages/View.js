@@ -92,7 +92,7 @@ function View() {
 						</div>
 
 						<div id="view-similars">
-							{/* <h5>Similar cheatsheets</h5> */}
+							<h5>Similar cheatsheets</h5>
 						</div>
 					</div>
 				</Container>
