@@ -34,6 +34,8 @@ function CommentGallery({ sheetID }) {
 		setBody(e.target.value);
 	};
 
+
+
 	const submitComment = () => {
 		const newComment = {
 			user: userData.user.name,
@@ -46,8 +48,11 @@ function CommentGallery({ sheetID }) {
 			.post("/api/comments", newComment)
 			.then((res) => {
 				setIsStale(!isStale);
+				document.querySelector("#CommentText").value = "";
 			})
 			.catch((err) => console.log`(Error: ${err})`);
+
+
 	};
 
 	return (
@@ -66,8 +71,8 @@ function CommentGallery({ sheetID }) {
 						/>
 					</Form>
 				) : (
-					<></>
-				)}
+						<></>
+					)}
 				<Comment.Group>
 					<Header as="h3" dividing>
 						Comments
@@ -82,8 +87,8 @@ function CommentGallery({ sheetID }) {
 							/>
 						))
 					) : (
-						<div></div>
-					)}
+							<div></div>
+						)}
 				</Comment.Group>
 			</div>
 		</div>
