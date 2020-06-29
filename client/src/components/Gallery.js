@@ -20,8 +20,8 @@ function Gallery() {
     const {userData} = useContext(UserContext);
 
 	const [sortOrder, setSortOrder] = useState("dateTime");
-	const [schFilter, setSchFilter] = useState("");
-	const [modFilter, setModfilter] = useState("");
+	const [schFilter, setSchFilter] = useState(null);
+	const [modFilter, setModfilter] = useState(null);
 
 	const [sheets, setSheets] = useState([]);
 	const [displaySheets, setDisplaySheets] = useState([]);
@@ -46,25 +46,23 @@ function Gallery() {
 				const options = schools.map((school) => {
 					return { label: school.name, value: school._id };
 				});
-				options.unshift({ label: "Select...", value: "" });
+				options.unshift({ label: "Select...", value: null });
 
 				setSchOpts(options);
 			})
 			.catch((err) => {
 				console.log(`Fail to fetch Schools: ${err}`);
 			});
-	}, []);
+	}, [userData.user]);
 
 	useEffect(() => {
-		console.log(`By school: ${schFilter}`);
-
-		if (schFilter.length > 0) {
-			axios.get(`/api/modules/bySchool/${schFilter}`).then((res) => {
+		if (schFilter && schFilter.value !== null) {
+			axios.get(`/api/modules/bySchool/${schFilter.value}`).then((res) => {
 				const modules = res.data;
 				const options = modules.map((module) => {
 					return { label: module.name, value: module._id };
 				});
-				options.unshift({ label: "Select...", value: "" });
+				options.unshift({ label: "Select...", value: null });
 				setModOpts(options);
 			});
 		} else {
@@ -83,12 +81,12 @@ function Gallery() {
 			sortedSheets.sort((a, b) => (a.rating < b.rating ? 1 : -1));
 		}
 
-		if (schFilter.length > 0) {
-			sortedSheets = sortedSheets.filter((sheet) => sheet.school === schFilter);
+		if (schFilter && schFilter.value) {
+			sortedSheets = sortedSheets.filter((sheet) => sheet.school === schFilter.value);
 		}
 
-		if (modFilter.length > 0) {
-			sortedSheets = sortedSheets.filter((sheet) => sheet.module === modFilter);
+		if (modFilter && modFilter.value) {
+			sortedSheets = sortedSheets.filter((sheet) => sheet.module === modFilter.value);
 		}
 
 		setDisplaySheets(sortedSheets);
@@ -99,12 +97,12 @@ function Gallery() {
 	};
 
 	const changeSch = (option) => {
-		setSchFilter(option.value);
-		setModfilter("");
+		setSchFilter(option);
+		setModfilter(null);
 	};
 
 	const changeMod = (option) => {
-		setModfilter(option.value);
+		setModfilter(option);
 	};
 
 	return (
@@ -122,6 +120,7 @@ function Gallery() {
 							isClearable={false}
 							isSearchable={false}
 							onChange={changeSch}
+							value={schFilter}
 							auto
 						/>
 					</div>
@@ -134,6 +133,7 @@ function Gallery() {
 							isDisabled={modOpts.length === 0}
 							isClearable={false}
 							isSearchable={true}
+							value={modFilter}
 							onChange={changeMod}
 							filterOption={createFilter({ ignoreAccents: false })}
 							components={optimizeSelect.components}
