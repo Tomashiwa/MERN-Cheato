@@ -19,7 +19,7 @@ function CommentCard({ isStale, setIsStale, comment }) {
   const [body, setBody] = useState("");
 
 
-  const isMatchingUser = (userData.user.name === comment.user)
+  const isMatchingUser = (userData.isLoaded && userData.user && userData.user.name === comment.user)
 
 
   function isCommentPresent() {
