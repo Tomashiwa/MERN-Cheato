@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import { Label } from "reactstrap";
 import Select from "react-select";
 import { optimizeSelect } from "./OptimizedSelect";
 import { createFilter } from "react-select";
@@ -9,8 +8,6 @@ import CheatsheetCard from "../components/CheatsheetCard";
 
 import axios from "axios";
 import "./css/Gallery.css";
-import Form from "reactstrap/lib/Form";
-import FormGroup from "reactstrap/lib/FormGroup";
 import Container from "reactstrap/lib/Container";
 import UserContext from "../context/UserContext";
 
@@ -28,13 +25,9 @@ function Gallery() {
 
 	const [sheets, setSheets] = useState([]);
 	const [displaySheets, setDisplaySheets] = useState([]);
-	const [loaded, setLoaded] = useState(false);
-	const [isOpen, setIsOpen] = useState(false);
 
 	const [schOpts, setSchOpts] = useState([]);
 	const [modOpts, setModOpts] = useState([]);
-
-	const toggle = () => setIsOpen(!isOpen);
 
 	useEffect(() => {
 		const postConfig = { headers: { "Content-Type": "application/json" } };
@@ -44,14 +37,7 @@ function Gallery() {
 		axios.post("/api/cheatsheets", userInfo, postConfig).then((res) => {
 			setSheets(res.data);
 			setDisplaySheets(res.data);
-			setLoaded(true);
 		});
-
-		// axios.get("/api/cheatsheets").then((res) => {
-		// 	setSheets(res.data);
-		// 	setDisplaySheets(res.data);
-		// 	setLoaded(true);
-		// });
 
 		axios
 			.get("/api/schools")
@@ -164,16 +150,6 @@ function Gallery() {
 							onChange={changeSort}
 						/>
 					</div>
-
-					{/* <div id="dropdownMenu">
-                        <ButtonDropdown isOpen={isOpen} toggle={toggle}>
-                            <DropdownToggle caret>Sort by:</DropdownToggle>
-                            <DropdownMenu>
-                                <DropdownItem onClick={byTime}>Date Uploaded</DropdownItem>
-                                <DropdownItem onClick={byRating}>Popularity</DropdownItem>
-                            </DropdownMenu>
-                        </ButtonDropdown>
-                    </div> */}
 				</div>
 
 				<div className="gallery">
