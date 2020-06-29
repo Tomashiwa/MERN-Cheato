@@ -16,8 +16,17 @@ export const SORT_OPTIONS = [
 	{ label: "Rating", value: "rating" },
 ];
 
+export const SELECT_STYLE = {
+	option: (provided, state) => ({
+		...provided,
+		whiteSpace: "nowrap",
+		textOverflow: "ellipsis",
+		overflow: "hidden",
+	}),
+};
+
 function Gallery() {
-    const {userData} = useContext(UserContext);
+	const { userData } = useContext(UserContext);
 
 	const [sortOrder, setSortOrder] = useState("dateTime");
 	const [schFilter, setSchFilter] = useState(null);
@@ -29,6 +38,9 @@ function Gallery() {
 	const [schOpts, setSchOpts] = useState([]);
 	const [modOpts, setModOpts] = useState([]);
 
+	const [schLoading, setSchLoading] = useState(false);
+	const [modLoading, setModLoading] = useState(false);
+
 	useEffect(() => {
 		const postConfig = { headers: { "Content-Type": "application/json" } };
 
@@ -38,6 +50,8 @@ function Gallery() {
 			setSheets(res.data);
 			setDisplaySheets(res.data);
 		});
+
+		setSchLoading(true);
 
 		axios
 			.get("/api/schools")
@@ -49,6 +63,7 @@ function Gallery() {
 				options.unshift({ label: "Select...", value: null });
 
 				setSchOpts(options);
+				setSchLoading(false);
 			})
 			.catch((err) => {
 				console.log(`Fail to fetch Schools: ${err}`);
@@ -57,6 +72,8 @@ function Gallery() {
 
 	useEffect(() => {
 		if (schFilter && schFilter.value !== null) {
+			setModLoading(true);
+
 			axios.get(`/api/modules/bySchool/${schFilter.value}`).then((res) => {
 				const modules = res.data;
 				const options = modules.map((module) => {
@@ -64,6 +81,7 @@ function Gallery() {
 				});
 				options.unshift({ label: "Select...", value: null });
 				setModOpts(options);
+				setModLoading(false);
 			});
 		} else {
 			setModOpts([]);
@@ -119,9 +137,12 @@ function Gallery() {
 							options={schOpts}
 							isClearable={false}
 							isSearchable={false}
+							isDisabled={schLoading}
+							isLoading={schLoading}
 							onChange={changeSch}
 							value={schFilter}
 							auto
+							styles={SELECT_STYLE}
 						/>
 					</div>
 					<div className="gallery-tool-group">
@@ -130,13 +151,15 @@ function Gallery() {
 							className="gallery-tool-select"
 							defaultValue={modOpts[0]}
 							options={modOpts}
-							isDisabled={modOpts.length === 0}
+							isDisabled={modOpts.length === 0 || modLoading}
 							isClearable={false}
 							isSearchable={true}
+							isLoading={modLoading}
 							value={modFilter}
 							onChange={changeMod}
 							filterOption={createFilter({ ignoreAccents: false })}
 							components={optimizeSelect.components}
+							styles={SELECT_STYLE}
 						/>
 					</div>
 					<div className="gallery-tool-group">
@@ -148,6 +171,7 @@ function Gallery() {
 							isClearable={false}
 							isSearchable={false}
 							onChange={changeSort}
+							styles={SELECT_STYLE}
 						/>
 					</div>
 				</div>

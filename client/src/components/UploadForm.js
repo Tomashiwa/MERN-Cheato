@@ -9,6 +9,15 @@ import Col from "reactstrap/lib/Col";
 
 import {optimizeSelect} from "./OptimizedSelect";
 
+export const SELECT_STYLE = {
+	option: (provided, state) => ({
+		...provided,
+		whiteSpace: "nowrap",
+		textOverflow: "ellipsis",
+		overflow: "hidden",
+	}),
+};
+
 function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 	const [schools, setSchools] = useState([]);
 	const [modules, setModules] = useState([]);
@@ -231,6 +240,7 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 						value={schState.selected}
 						filterOption={createFilter({ignoreAccents: false})}
 						components={optimizeSelect.components}
+						styles={SELECT_STYLE}
 					/>
 					<FormText>Select a school that your cheatsheet is for. If none was found, you may enter your school name to create it.</FormText>
 				</Col>
@@ -249,6 +259,7 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 						value={modState.selected}
 						filterOption={createFilter({ignoreAccents: false})}
 						components={optimizeSelect.components}
+						styles={SELECT_STYLE}
 					/>
 					<FormText>Select a module that your cheatshet is for. If none was found, you may enter your module name to create it.</FormText>
 				</Col>

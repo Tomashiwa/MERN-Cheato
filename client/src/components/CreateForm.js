@@ -11,6 +11,15 @@ import axios from "axios";
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
 import Col from 'reactstrap/lib/Col';
 
+export const SELECT_STYLE = {
+	option: (provided, state) => ({
+		...provided,
+		whiteSpace: "nowrap",
+		textOverflow: "ellipsis",
+		overflow: "hidden",
+	}),
+};
+
 function CreateForm({form, setForm, isAnonymous}) {
     const [schools, setSchools] = useState([]);
     const [modules, setModules] = useState([]);
@@ -185,7 +194,8 @@ function CreateForm({form, setForm, isAnonymous}) {
                         options={schoolOptions}
                         value={schState.selected}
                         filterOption={createFilter({ignoreAccents: false})}
-						components={optimizeSelect.components}
+                        components={optimizeSelect.components}
+                        styles={SELECT_STYLE}
                     />
                     <FormText>Select a school that your cheatshet is for. If none is found, you may enter your school name to create it.</FormText>
                 </Col>
@@ -202,7 +212,8 @@ function CreateForm({form, setForm, isAnonymous}) {
                         options={moduleOptions}
                         value={modState.selected}
                         filterOption={createFilter({ignoreAccents: false})}
-						components={optimizeSelect.components}
+                        components={optimizeSelect.components}
+                        styles={SELECT_STYLE}
                     />
                     <FormText>Select a module that your cheatshet is for. If none was found, you may enter your module name to create it.</FormText>
                 </Col>
