@@ -3,7 +3,7 @@ import { ImagesContext, ConfigContext } from "../App"
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 
 import { CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT } from "./ImageCanvas";
-import { binPack } from "../library/BinPack"
+import { binPack } from '../lib/Binpacker/BinPack'
 
 import "./css/InputForm.css"
 

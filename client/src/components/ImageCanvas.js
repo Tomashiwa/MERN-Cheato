@@ -5,7 +5,7 @@ import Konva from 'konva';
 import { Stage, Layer } from 'react-konva';
 
 import "./css/ImageCanvas.css";
-import { binPack } from '../library/BinPack';
+import { binPack } from '../lib/Binpacker/BinPack'
 
 import { ImagesContext, ConfigContext } from "../pages/Create";
 
