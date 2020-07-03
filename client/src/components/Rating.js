@@ -1,11 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import UserContext from "../context/UserContext";
+import SuggestionContext from "../context/SuggestionContext";
 
 import "./css/Rating.css";
 
 function Rating({ sheet }) {
 	const { userData } = useContext(UserContext);
+    const { engine } = useContext(SuggestionContext);
 
 	const [isUpToggled, setIsUpToggled] = useState(false);
 	const [isDownToggled, setIsDownToggled] = useState(false);
@@ -57,6 +59,8 @@ function Rating({ sheet }) {
                                     rated: ratedArr,
                                 })
                                 .then(res => {
+                                    engine.upvotes.add(userData.user, sheet, () => console.log("Upvote recorded"));
+                                    engine.downvotes.remove(userData.user, sheet, () => console.log("Downvote removed"));
                                     setIsLoading(false);
                                 })
                                 .catch((err) => {
@@ -79,6 +83,7 @@ function Rating({ sheet }) {
                                     rated: ratedArr,
                                 })
                                 .then(res => {
+                                    engine.upvotes.remove(userData.user, sheet, () => console.log("Upvote removed"));
                                     setIsLoading(false);
                                 })
                                 .catch((err) => {
@@ -101,6 +106,7 @@ function Rating({ sheet }) {
                                     rated: ratedArr,
                                 })
                                 .then(res => {
+                                    engine.upvotes.add(userData.user, sheet, () => console.log("Upvote recorded"));
                                     setIsLoading(false);
                                 })
                                 .catch((err) => {
@@ -145,6 +151,7 @@ function Rating({ sheet }) {
                                     rated: ratedArr,
                                 })
                                 .then(res => {
+                                    engine.downvotes.remove(userData.user, sheet, () => console.log("Downvote removed"));
                                     setIsLoading(false);
                                 })
                                 .catch((err) => {
@@ -168,6 +175,8 @@ function Rating({ sheet }) {
                                     rated: ratedArr,
                                 })
                                 .then(res => {
+                                    engine.downvotes.add(userData.user, sheet, () => console.log("Downvote recorded"));
+                                    engine.upvotes.remove(userData.user, sheet, () => console.log("Upvote removed"));
                                     setIsLoading(false);
                                 })
                                 .catch((err) => {
@@ -190,6 +199,7 @@ function Rating({ sheet }) {
                                     rated: ratedArr,
                                 })
                                 .then(res => {
+                                    engine.downvotes.add(userData.user, sheet, () => console.log("Downvote recorded"));
                                     setIsLoading(false);
                                 })
                                 .catch((err) => {

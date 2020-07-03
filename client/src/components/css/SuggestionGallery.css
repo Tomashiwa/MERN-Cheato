@@ -1,0 +1,13 @@
+#suggestions-gallery-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: center;
+}
+
+#suggestions-gallery-horizontal {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+}

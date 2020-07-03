@@ -10,6 +10,7 @@ import CommentGallery from "../components/CommentGallery";
 
 import "./css/View.css";
 import Rating from "../components/Rating";
+import SuggestionGallery from "../components/SuggestionGallery";
 
 function View() {
 	const { userData } = useContext(UserContext);
@@ -92,7 +93,7 @@ function View() {
 						</div>
 
 						<div id="view-similars">
-							<h5>Similar cheatsheets</h5>
+							<SuggestionGallery align="vertical" limit={5} />
 						</div>
 					</div>
 				</Container>

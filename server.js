@@ -8,6 +8,9 @@ const cheatsheets = require("./routes/api/cheatsheets");
 const comments = require("./routes/api/comments");
 const uploads = require("./routes/upload.router");
 const auth = require("./routes/api/auth");
+const similars = require("./routes/api/similars");
+const suggestions = require("./routes/api/suggestions");
+
 
 const School = require("./models/School");
 const Module = require("./models/Module");
@@ -38,6 +41,8 @@ app.use("/api/modules", modules);
 app.use("/api/cheatsheets", cheatsheets);
 app.use("/api/comments", comments);
 app.use("/api/auth", auth);
+app.use("/api/similars", similars);
+app.use("/api/suggestions", suggestions);
 app.use("/upload", uploads);
 
 app.get("/backend/schools/:name", (req, res) => {
