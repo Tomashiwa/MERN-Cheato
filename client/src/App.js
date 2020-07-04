@@ -8,6 +8,7 @@ import SuggestionContext from "./context/SuggestionContext";
 import Home from "./pages/Home"
 import Create from "./pages/Create"
 import Upload from "./pages/Upload"
+import Edit from "./pages/Edit"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
 
@@ -61,6 +62,7 @@ function App() {
 										<Route exact path="/create" component={Create} />
 										<Route exact path="/upload" component={Upload} />
 										<Route exact path="/view/:id" component={View} />
+										<Route exact path="/edit/:id" component={Edit} />
 										{ userData.token === undefined && <Route exact path="/register" component={Register}/>}
 										{ userData.token === undefined && <Route exact path="/login" component={Login}/>}
 										<Route exact path="/" component={Home} />

@@ -66,6 +66,10 @@ function View() {
 		history.push("/");
 	};
 
+	const goEdit = () => {
+		history.push(`/edit/${id}`);
+	}
+
 	const loginLink = <a href={"/login"}>here</a>;
 
 	return (
@@ -80,6 +84,7 @@ function View() {
 						</div>
 
 						<div id="view-feedback">
+							<Button onClick={goEdit}>Edit</Button>
 							<BookmarkButton sheet={sheet} size={"24px"} />
 							<Rating sheet={sheet} />
 						</div>
