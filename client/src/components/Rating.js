@@ -13,107 +13,57 @@ function Rating({ sheet }) {
 	const [isDownToggled, setIsDownToggled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-	const [vote, setVote] = useState(sheet.rating);
+	const [vote, setVote] = useState(sheet.upvotedUsers.length - sheet.downvotedUsers.length);
 
 	useEffect(() => {
-		setVote(sheet.rating);
-
         if(userData.user !== undefined) {
             axios.get(`/api/users/${userData.user.id}`).then((res) => {
                 const fetchedUser = res.data;
-                const result = fetchedUser.rated.find((ratedSheet) => ratedSheet.id === sheet._id);
-                setIsUpToggled(result !== undefined && result.type === "upvote");
-                setIsDownToggled(result !== undefined && result.type === "downvote");
+
+                console.log('fetchedUser:', fetchedUser);
+                console.log('sheet:', sheet);
+
+                if(fetchedUser.upvotedSheets.find(id => id === sheet._id)) {
+                    setIsUpToggled(true);
+                    setIsDownToggled(false);
+                } else if(fetchedUser.downvotedSheets.find(id => id === sheet._id)) {
+                    setIsUpToggled(false);
+                    setIsDownToggled(true);
+                }
             });
         }
 	}, [sheet, userData]);
 
 	const upvote = () => {
-		const userID = userData.user.id;
-		const upvoteCheck = { id: sheet._id, type: "upvote" };
-		const increasedVote = vote + 1;
-		const decreasedVote = vote - 1;
-        
         setIsLoading(true);
 
-        axios.get(`/api/users/${userID}`)
+        axios.post(`/api/cheatsheets/${sheet._id}`, userData)
             .then(res => {
-                const fetchedUser = res.data;
-                const ratedResult = fetchedUser.rated.find(ratedSheet => ratedSheet.id === sheet._id);
-
-                let ratedArr = fetchedUser.rated.slice(0, fetchedUser.rated.length);
-
-                if(ratedResult !== undefined && ratedResult.type === "downvote") {
-                    // User placed a downvote previously, canceling that downvote and adding upvote (+2)
-                    ratedArr = ratedArr.filter(ratedSheet => !ratedSheet.id === sheet._id);
-                    ratedArr.push(upvoteCheck);
-
-                    axios
-                        .put(`/api/cheatsheets/${sheet._id}`, {
-                            rating: increasedVote + 1,
-                        })
-                        .then((res) => {
-                            setVote(increasedVote + 1);
-                            axios
-                                .put(`/api/users/${userID}`, {
-                                    rated: ratedArr,
-                                })
-                                .then(res => {
-                                    engine.upvotes.add(userData.user, sheet, () => console.log("Upvote recorded"));
-                                    engine.downvotes.remove(userData.user, sheet, () => console.log("Downvote removed"));
-                                    setIsLoading(false);
-                                })
-                                .catch((err) => {
-                                    console.log(`Fail to upvote: ${err}`);
-                                    setIsLoading(false);
-                                });
-                        });
-                } else if(ratedResult !== undefined && ratedResult.type === "upvote") {
+                const fetchedSheet = res.data;
+                const upvotedUsers = fetchedSheet.upvotedUsers;
+                const downvotedUsers = fetchedSheet.downvotedUsers;
+                
+                if(upvotedUsers.find(id => id === userData.user.id)) {
                     // User placed a upvote previously, canceling the upvote... (-1)
-                    ratedArr = ratedArr.filter(ratedSheet => !ratedSheet.id === sheet._id);
+                    engine.upvotes.remove(userData.user, sheet, () => {
+                        setVote(upvotedUsers.length - downvotedUsers.length - 1);
+                        setIsLoading(false);
+                    });
 
-                    axios
-                        .put(`/api/cheatsheets/${sheet._id}`, {
-                            rating: decreasedVote,
-                        })
-                        .then((res) => {
-                            setVote(decreasedVote);
-                            axios
-                                .put(`/api/users/${userID}`, {
-                                    rated: ratedArr,
-                                })
-                                .then(res => {
-                                    engine.upvotes.remove(userData.user, sheet, () => console.log("Upvote removed"));
-                                    setIsLoading(false);
-                                })
-                                .catch((err) => {
-                                    console.log(`Fail to upvote: ${err}`);
-                                    setIsLoading(false);
-                                });
+                } else if(downvotedUsers.find(id => id === userData.user.id)) {
+                    // User placed a downvote previously, canceling that downvote and adding upvote (+2)
+                    engine.downvotes.remove(userData.user, sheet, () => {
+                        engine.upvotes.add(userData.user, sheet, () => {
+                            setVote(upvotedUsers.length - downvotedUsers.length + 2);
+                            setIsLoading(false);
                         });
+                    });
                 } else {
                     // User has yet to place a vote, upvoting... (+1)
-                    ratedArr.push(upvoteCheck);
-
-                    axios
-                        .put(`/api/cheatsheets/${sheet._id}`, {
-                            rating: increasedVote,
-                        })
-                        .then((res) => {
-                            setVote(increasedVote);
-                            axios
-                                .put(`/api/users/${userID}`, {
-                                    rated: ratedArr,
-                                })
-                                .then(res => {
-                                    engine.upvotes.add(userData.user, sheet, () => console.log("Upvote recorded"));
-                                    setIsLoading(false);
-                                })
-                                .catch((err) => {
-                                    console.log(`Fail to upvote: ${err}`);
-                                    setIsLoading(false);
-                                });
-                        });
+                    engine.upvotes.add(userData.user, sheet, () => {
+                        setVote(upvotedUsers.length - downvotedUsers.length + 1);
+                        setIsLoading(false);
+                    })
                 }
             });
 
@@ -122,91 +72,35 @@ function Rating({ sheet }) {
 	};
 
 	const downvote = () => {
-		const userID = userData.user.id;
-		const downvoteCheck = { id: sheet._id, type: "downvote" };
-		const increasedVote = vote + 1;
-		const decreasedVote = vote - 1;
-
         setIsLoading(true);
 
-		axios.get(`/api/users/${userID}`)
+        axios.post(`/api/cheatsheets/${sheet._id}`, userData)
             .then(res => {
-                const fetchedUser = res.data;
-                const ratedResult = fetchedUser.rated.find(ratedSheet => ratedSheet.id === sheet._id);
+                const fetchedSheet = res.data;
+                const upvotedUsers = fetchedSheet.upvotedUsers;
+                const downvotedUsers = fetchedSheet.downvotedUsers;
 
-                let ratedArr = fetchedUser.rated.slice(0, fetchedUser.rated.length);
-
-                if(ratedResult !== undefined && ratedResult.type === "downvote") {
+                if(downvotedUsers.find(id => id === userData.user.id)) {
                     // User placed a downvote previously, canceling that downvote (+1)
-                    ratedArr = ratedArr.filter(ratedSheet => !ratedSheet.id === sheet._id);
+                    engine.downvotes.remove(userData.user, sheet, () => {
+                        setVote(upvotedUsers.length - downvotedUsers.length + 1);
+                        setIsLoading(false);
+                    });
 
-                    axios
-                        .put(`/api/cheatsheets/${sheet._id}`, {
-                            rating: increasedVote,
-                        })
-                        .then((res) => {
-                            setVote(increasedVote);
-                            axios
-                                .put(`/api/users/${userID}`, {
-                                    rated: ratedArr,
-                                })
-                                .then(res => {
-                                    engine.downvotes.remove(userData.user, sheet, () => console.log("Downvote removed"));
-                                    setIsLoading(false);
-                                })
-                                .catch((err) => {
-                                    console.log(`Fail to downvote: ${err}`);
-                                    setIsLoading(false);
-                                });
-                        });
-                } else if(ratedResult !== undefined && ratedResult.type === "upvote") {
+                } else if(upvotedUsers.find(id => id === userData.user.id)) {
                     // User placed a upvote previously, canceling the upvote and placing an downvote (-2)
-                    ratedArr = ratedArr.filter(ratedSheet => !ratedSheet.id === sheet._id);
-                    ratedArr.push(downvoteCheck);
-
-                    axios
-                        .put(`/api/cheatsheets/${sheet._id}`, {
-                            rating: decreasedVote - 1,
-                        })
-                        .then((res) => {
-                            setVote(decreasedVote - 1);
-                            axios
-                                .put(`/api/users/${userID}`, {
-                                    rated: ratedArr,
-                                })
-                                .then(res => {
-                                    engine.downvotes.add(userData.user, sheet, () => console.log("Downvote recorded"));
-                                    engine.upvotes.remove(userData.user, sheet, () => console.log("Upvote removed"));
-                                    setIsLoading(false);
-                                })
-                                .catch((err) => {
-                                    console.log(`Fail to downvote: ${err}`);
-                                    setIsLoading(false);
-                                });
+                    engine.upvotes.remove(userData.user, sheet, () => {
+                        engine.downvotes.add(userData.user, sheet, () => {
+                            setVote(upvotedUsers.length - downvotedUsers.length - 2);
+                            setIsLoading(false);
                         });
+                    });
                 } else {
                     // User has yet to place a vote, downvoting... (-1)
-                    ratedArr.push(downvoteCheck);
-
-                    axios
-                        .put(`/api/cheatsheets/${sheet._id}`, {
-                            rating: decreasedVote,
-                        })
-                        .then((res) => {
-                            setVote(decreasedVote);
-                            axios
-                                .put(`/api/users/${userID}`, {
-                                    rated: ratedArr,
-                                })
-                                .then(res => {
-                                    engine.downvotes.add(userData.user, sheet, () => console.log("Downvote recorded"));
-                                    setIsLoading(false);
-                                })
-                                .catch((err) => {
-                                    console.log(`Fail to downvote: ${err}`);
-                                    setIsLoading(false);
-                                });
-                        });
+                    engine.downvotes.add(userData.user, sheet, () => {
+                        setVote(upvotedUsers.length - downvotedUsers.length - 1);
+                        setIsLoading(false);
+                    })
                 }
             });
 
