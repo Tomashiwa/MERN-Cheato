@@ -1,35 +1,38 @@
 #view-header {
-    display: flex;
-    flex-direction: row;
-    padding-bottom: 10px;
+	display: flex;
+	flex-direction: row;
+}
+
+.view-section-line {
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #view-header #view-description {
-    flex-grow: 1.0;
+	flex-grow: 1;
 }
 
 #view-header #view-feedback {
-    align-self: center;
+	align-self: center;
 
-    display: flex;
+	display: flex;
 }
 
-/* #view-header #view-feedback button {
-    margin-right: 10px;
-} */
-
 #view-footer {
-    display: flex;
-    flex-direction: row;
-    padding-top: 10px;
-    padding-bottom: 50px;
+	display: flex;
+	flex-direction: row;
+	padding-top: 10px;
 }
 
 #view-footer #view-comments {
-    flex-grow: 1.0;
+	flex-grow: 1;
 }
 
 #view-feedback > #bookmarkbtn {
-    margin-right: 30px;
+	margin-right: 30px;
 }
 
+#view-similars {
+	margin-left: 10px;
+}

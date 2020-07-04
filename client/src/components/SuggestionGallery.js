@@ -36,9 +36,10 @@ function SuggestionGallery({ align = "vertical", limit = 3 }) {
 	}, [limit, userData, engine]);
 
 	return (
-		<div>
-			<div>Suggestions</div>
-			<div id={`suggestions-gallery-${align}`}>
+		<div id="suggestion-gallery">
+			<h5>Suggestions</h5>
+			<div id="suggestion-gallery-line"/>
+			<div id={`suggestion-gallery-${align}`}>
 				{suggestions.map((suggestion, index) => (
 					<CheatsheetCard key={index} sheet={suggestion} />
 				))}

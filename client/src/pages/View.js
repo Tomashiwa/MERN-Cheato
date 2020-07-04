@@ -85,7 +85,11 @@ function View() {
 						</div>
 					</div>
 
+					<div className="view-section-line" />
+
 					<ImagePreviewer imageURL={sheet.file} />
+
+					<div className="view-section-line" />
 
 					<div id="view-footer">
 						<div id="view-comments">
