@@ -91,6 +91,13 @@ function View() {
 
 					<div className="view-section-line" />
 
+					<div>
+						<h5>Description</h5>
+						<h6>{sheet.description}</h6>
+					</div>
+
+					<div className="view-section-line" />
+
 					<div id="view-footer">
 						<div id="view-comments">
 							<CommentGallery sheetID={id} />
