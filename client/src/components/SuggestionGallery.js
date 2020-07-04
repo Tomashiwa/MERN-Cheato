@@ -13,7 +13,6 @@ function SuggestionGallery({ align = "vertical", limit = 3 }) {
 
 	useEffect(() => {
 		const fetchSuggestions = async () => {
-			console.log(`Updating ${userData.user.name}'s suggestions`);
 			const result = await engine.suggestTo(userData.user);
 
 			console.log(`Suggestions for user ${userData.user.name}`);
@@ -25,6 +24,8 @@ function SuggestionGallery({ align = "vertical", limit = 3 }) {
 					suggestionIds.map((id) => axios.post(`/api/cheatsheets/${id}`, userData))
 				);
 				const sheets = sheetsRes.map((res) => res.value.data);
+
+				console.log("Suggestions presented:");
 				console.log(sheets);
 
 				setSuggestions(sheets);
