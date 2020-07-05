@@ -1,6 +1,7 @@
 #edit-header {
     display: flex;
     flex-direction: row;
+    padding-bottom: 25px;
 }
 
 #edit-header > h2 {

@@ -5,7 +5,7 @@ import UserContext from "../context/UserContext";
 
 import "./css/BookmarkButton.css"
 
-function BookmarkButton({ sheet, size }) {
+function BookmarkButton({ sheet }) {
 	const { userData } = useContext(UserContext);
 	const [isToggled, setIsToggled] = useState(false);
 

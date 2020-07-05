@@ -7,6 +7,8 @@ import { optimizeSelect } from "./OptimizedSelect";
 import axios from "axios";
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
 
+import "./css/EditForm.css";
+
 export const SELECT_STYLE = {
 	option: (provided, state) => ({
 		...provided,
@@ -17,22 +19,22 @@ export const SELECT_STYLE = {
 };
 
 function EditForm({ form, setForm, isAnonymous }) {
-    const [nameState, setNameState] = useState({ valid: false, invalid: false });
-    
+	const [nameState, setNameState] = useState({ valid: false, invalid: false });
+
 	const [schools, setSchools] = useState([]);
 	const [modules, setModules] = useState([]);
 	const [schoolOptions, setSchoolOptions] = useState([]);
 	const [moduleOptions, setModuleOptions] = useState([]);
 	const [schState, setSchState] = useState({
 		isLoading: false,
-        isDisabled: false,
-        isSynced: false,
+		isDisabled: false,
+		isSynced: false,
 		selected: null,
 	});
 	const [modState, setModState] = useState({
 		isLoading: false,
-        isDisabled: false,
-        isSynced: false,
+		isDisabled: false,
+		isSynced: false,
 		selected: null,
 	});
 
@@ -98,19 +100,29 @@ function EditForm({ form, setForm, isAnonymous }) {
 		);
 	}, [schools, modules, schState.selected]);
 
-    useEffect(() => {
-        if(!schState.isSynced && schoolOptions.length > 0 && form.school.length > 0) {
+	useEffect(() => {
+		if (!schState.isSynced && schoolOptions.length > 0 && form.school.length > 0) {
 			const selectedSchool = schoolOptions.find((option) => option.value === form.school);
-			setSchState({ isLoading: false, isDisabled: false, isSynced: true, selected: selectedSchool });
-        }
-    }, [schState.isSynced, schoolOptions, form.school]);
+			setSchState({
+				isLoading: false,
+				isDisabled: false,
+				isSynced: true,
+				selected: selectedSchool,
+			});
+		}
+	}, [schState.isSynced, schoolOptions, form.school]);
 
-    useEffect(() => {
+	useEffect(() => {
 		if (!modState.isSynced && moduleOptions.length > 0 && form.module.length > 0) {
 			const selectedModule = moduleOptions.find((option) => option.value === form.module);
-			setModState({ isLoading: false, isDisabled: false, isSynced: true, selected: selectedModule });
+			setModState({
+				isLoading: false,
+				isDisabled: false,
+				isSynced: true,
+				selected: selectedModule,
+			});
 		}
-    }, [modState.isSynced, moduleOptions, form.module])
+	}, [modState.isSynced, moduleOptions, form.module]);
 
 	// Verify the name and save it to the form
 	const checkName = (e) => {
@@ -122,7 +134,14 @@ function EditForm({ form, setForm, isAnonymous }) {
 		}
 	};
 
-	const saveName = (e) => setForm({ ...form, ...{ name: e.target.value } });
+	const saveName = (e) =>
+		setForm({
+			...form,
+			...{
+				name: e.target.value,
+				isInvalid: e.target.value.length && hasInvalidSymbols(e.target.value),
+			},
+		});
 
 	// Saving the description to the form
 	const saveDesc = (e) => setForm({ ...form, ...{ description: e.target.value } });
@@ -217,6 +236,7 @@ function EditForm({ form, setForm, isAnonymous }) {
 						value={form.name}
 						valid={nameState.valid ? true : false}
 						invalid={nameState.invalid ? true : false}
+						disabled={!schState.isSynced}
 					/>
 					<FormFeedback invalid="true">
 						Name cannot contains an invalid symbol.
@@ -252,7 +272,9 @@ function EditForm({ form, setForm, isAnonymous }) {
 					<CreatableSelect
 						id="editform-input-module"
 						isClearable
-						isDisabled={modState.isDisabled || schState.selected === null || !modState.isSynced}
+						isDisabled={
+							modState.isDisabled || schState.selected === null || !modState.isSynced
+						}
 						isLoading={modState.isLoading || !modState.isSynced}
 						onChange={saveModule}
 						onCreateOption={addModule}
@@ -276,6 +298,7 @@ function EditForm({ form, setForm, isAnonymous }) {
 						type="textarea"
 						value={form.description}
 						onChange={saveDesc}
+						disabled={!schState.isSynced}
 					/>
 					<FormText>
 						Information that may help others understand your cheatsheet.
@@ -288,7 +311,7 @@ function EditForm({ form, setForm, isAnonymous }) {
 						id="editform-input-public"
 						type="checkbox"
 						checked={form.isPublic}
-						// value={form.isPublic.toString()}
+						disabled={!schState.isSynced}
 						onChange={!isAnonymous ? saveIsPublic : () => {}}
 					/>{" "}
 					Share with public

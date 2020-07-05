@@ -11,8 +11,8 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 function Edit() {
 	const { userData } = useContext(UserContext);
-    const { id } = useParams();
-    const history = useHistory();
+	const { id } = useParams();
+	const history = useHistory();
 
 	const [sheet, setSheet] = useState(null);
 	const [form, setForm] = useState({
@@ -21,13 +21,14 @@ function Edit() {
 		module: "",
 		description: "",
 		isPublic: false,
+		isInvalid: false
 	});
 
 	const confirmEdit = () => {
 		axios
 			.post(`/api/cheatsheets/edit/${id}`, { user: userData.user, form })
 			.then((result) => {
-                history.push(`/view/${id}`);
+				history.push(`/view/${id}`);
 			})
 			.catch((err) => {
 				console.log("post err:", err);
@@ -37,15 +38,14 @@ function Edit() {
 	useEffect(() => {
 		axios.post(`/api/cheatsheets/${id}`, userData.user).then((result) => {
 			const fetchedSheet = result.data;
-            setSheet(fetchedSheet);
-
-			// setSheet(fetchedSheet);
+			setSheet(fetchedSheet);
 			setForm({
 				name: fetchedSheet.name,
 				school: fetchedSheet.school,
 				module: fetchedSheet.module,
 				description: fetchedSheet.description,
 				isPublic: fetchedSheet.isPublic,
+				isInvalid: false
 			});
 		});
 	}, [id, userData]);
@@ -53,8 +53,12 @@ function Edit() {
 	return (
 		<Container id="edit-container">
 			<div id="edit-header">
-				<h2>Edit your cheatsheet {id}</h2>
-				<Button color="warning" onClick={confirmEdit}>
+				<h2>Edit your cheatsheet</h2>
+				<Button
+					color="warning"
+					onClick={confirmEdit}
+					disabled={form.name.length <= 0 || form.school.length <= 0 || form.module.length <= 0 || form.isInvalid}
+				>
 					Confirm
 				</Button>
 			</div>

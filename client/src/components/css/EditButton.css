@@ -1,0 +1,19 @@
+#editbtn {
+    border-width: 0px;
+    padding: 0;
+}
+
+#editbtn:focus {outline:0;}
+
+#editbtn-icon {
+	width: 24px;
+	height: 24px;
+	margin-top: 4px;
+	background-color: #555555;
+	mask: url(../../icons/icon-edit.svg) no-repeat center / contain;
+	-webkit-mask: url(../../icons/icon-edit.svg) no-repeat center / contain;
+}
+
+#editbtn-icon:hover {
+    background-color: #ccaa44;
+}

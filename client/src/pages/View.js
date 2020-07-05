@@ -11,6 +11,7 @@ import CommentGallery from "../components/CommentGallery";
 import "./css/View.css";
 import Rating from "../components/Rating";
 import SuggestionGallery from "../components/SuggestionGallery";
+import EditButton from "../components/EditButton";
 
 function View() {
 	const { userData } = useContext(UserContext);
@@ -66,10 +67,6 @@ function View() {
 		history.push("/");
 	};
 
-	const goEdit = () => {
-		history.push(`/edit/${id}`);
-	}
-
 	const loginLink = <a href={"/login"}>here</a>;
 
 	return (
@@ -86,8 +83,8 @@ function View() {
 						{
 							userData.isLoaded && userData.user
 							?	<div id="view-feedback">
-									<Button onClick={goEdit}>Edit</Button>
-									<BookmarkButton sheet={sheet} size={"24px"} />
+									<EditButton sheet={sheet} />
+									<BookmarkButton sheet={sheet} />
 									<Rating sheet={sheet} />
 								</div>
 							: 	<></>
