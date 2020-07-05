@@ -144,8 +144,6 @@ function FuseSearchbar() {
     })
 
     const browse = result => {
-        console.log("Will be browsing...");
-        
         if(result.type === "sheet") {
             console.log("Browsing a sheet");
             console.log(result);

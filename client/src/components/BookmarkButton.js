@@ -13,8 +13,6 @@ function BookmarkButton({ sheet, size }) {
 		if (userData.isLoaded && userData.token !== undefined) {
 			const userID = userData.user.id;
 
-			console.log("Bookmark clicked");
-
 			axios
 				.get(`/api/users/${userID}`)
 				.then((res) => {
@@ -26,19 +24,17 @@ function BookmarkButton({ sheet, size }) {
 					if (newArray.filter((item) => item !== sheet._id).length !== newArray.length) {
 						let index = newArray.indexOf(sheet._id);
 						newArray.splice(index, 1);
-						console.log("Unbookmarking...");
 					} else {
 						newArray.push(sheet._id);
 						isToggling = true;
-						console.log("Bookmarking...");
 					}
                     setIsToggled(isToggling);
 
 					axios
 						.put(`/api/users/${userID}`, { bookmarks: newArray })
 						.then((res) => {
-							console.log("Successful");
-							console.log(res.data);
+							// console.log("Successful");
+							// console.log(res.data);
 						})
 						.catch((err) => {
 							console.log(`Fail to bookmark: ${err}`);

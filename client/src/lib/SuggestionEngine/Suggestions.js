@@ -12,7 +12,6 @@ class Suggestions {
 	}
 
 	async update(user) {
-		console.log("updating suggestions");
 		const similarities = (await axios.get(`/api/similars/toUser/${user.id}`)).data;
 		const unvotedSheets = (await axios.get(`/api/cheatsheets/withoutVotes/${user.id}`)).data;
 

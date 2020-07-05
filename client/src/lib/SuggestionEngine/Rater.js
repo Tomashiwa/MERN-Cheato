@@ -33,8 +33,6 @@ class Rater {
     sheetsByUsers(user, done) {
         axios.get(`/api/users/vote/${user.id}`)
             .then(res => {
-                console.log(`Sheets voted by user ${user.id}`);
-                console.log(res.data);
                 return res.data;
             })
             .catch(err => console.log(err));
@@ -45,8 +43,6 @@ class Rater {
     usersBySheet(sheet, done) {
         axios.get(`/api/cheatsheets/vote/${sheet._id}`)
             .then(res => {
-                console.log(`Users voted for sheet ${sheet._id}`);
-                console.log(res.data);
                 return res.data;
             })
             .catch(err => console.log(err));

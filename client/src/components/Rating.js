@@ -20,9 +20,6 @@ function Rating({ sheet }) {
             axios.get(`/api/users/${userData.user.id}`).then((res) => {
                 const fetchedUser = res.data;
 
-                console.log('fetchedUser:', fetchedUser);
-                console.log('sheet:', sheet);
-
                 if(fetchedUser.upvotedSheets.find(id => id === sheet._id)) {
                     setIsUpToggled(true);
                     setIsDownToggled(false);

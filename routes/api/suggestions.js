@@ -25,7 +25,6 @@ router.get("/toUser/:userId", (req, res) => {
 			res.json(result.suggestions);
 		})
 		.catch((err) => {
-			console.log("Finding fail");
 			res.status(404).json({ msg: err.msg });
 		});
 });

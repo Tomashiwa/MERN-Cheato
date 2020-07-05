@@ -100,7 +100,6 @@ function EditForm({ form, setForm, isAnonymous }) {
 
     useEffect(() => {
         if(!schState.isSynced && schoolOptions.length > 0 && form.school.length > 0) {
-			console.log("Sync school options with form school");
 			const selectedSchool = schoolOptions.find((option) => option.value === form.school);
 			setSchState({ isLoading: false, isDisabled: false, isSynced: true, selected: selectedSchool });
         }
@@ -108,7 +107,6 @@ function EditForm({ form, setForm, isAnonymous }) {
 
     useEffect(() => {
 		if (!modState.isSynced && moduleOptions.length > 0 && form.module.length > 0) {
-			console.log("Sync module options with form module");
 			const selectedModule = moduleOptions.find((option) => option.value === form.module);
 			setModState({ isLoading: false, isDisabled: false, isSynced: true, selected: selectedModule });
 		}

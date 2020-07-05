@@ -24,12 +24,9 @@ function Edit() {
 	});
 
 	const confirmEdit = () => {
-        console.log({ userData, form });
-        console.log(`/api/cheatsheets/edit/${id}`);
 		axios
 			.post(`/api/cheatsheets/edit/${id}`, { user: userData.user, form })
 			.then((result) => {
-                console.log("post result:", result);
                 history.push(`/view/${id}`);
 			})
 			.catch((err) => {
@@ -40,7 +37,6 @@ function Edit() {
 	useEffect(() => {
 		axios.post(`/api/cheatsheets/${id}`, userData.user).then((result) => {
 			const fetchedSheet = result.data;
-			console.log("fetchedSheet:", fetchedSheet);
             setSheet(fetchedSheet);
 
 			// setSheet(fetchedSheet);

@@ -94,8 +94,6 @@ router.post("/:id", (req, res) => {
 		} else {
 			Cheatsheet.findById(req.params.id)
 				.then((cheatsheet) => {
-					console.log(cheatsheet);
-
 					if (cheatsheet.user.toString() === id || cheatsheet.isPublic) {
 						res.json(cheatsheet);
 					} else {
@@ -247,30 +245,14 @@ router.get("/withoutVotes/:userId", (req, res) => {
 });
 
 router.post("/edit/:sheetId", (req, res) => {
-	console.log("PINGGGGGGGGGGGGGGGGGG");
 	// req.body => userData (requesting user), form (properties to be updated with)
 	const { user, form } = req.body;
 
-	console.log('user:', user);
-	console.log(`form:`, form);
-	console.log('req.params:', req.params);
-	console.log('req.params.sheetId:', req.params.sheetId);
-	console.log(typeof(req.params.sheetId));
-	// console.log(`finding by id: ${req.params.sheetId}`);
-
 	Cheatsheet.findById(req.params.sheetId)
 		.then(sheet => {
-			console.log(sheet.isPublic);
-			console.log(user.isAdmin);
-			console.log(`${sheet.user.toString()} / ${user.id}`);
-			console.log(!sheet.isPublic && sheet.user.toString() === user.id);
-			console.log(typeof(sheet.user.toString()));
-			console.log(typeof(user.id));
-
 			if(sheet.isPublic || user.isAdmin || (!sheet.isPublic && sheet.user.toString() === user.id)) {
 				Cheatsheet.updateOne({_id: req.params.sheetId}, form)
 					.then(result => {
-						console.log(result);
 						res.json(result);
 					})
 					.catch(err => res.status(404).json({msg: err}));
