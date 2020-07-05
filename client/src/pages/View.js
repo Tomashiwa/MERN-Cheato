@@ -80,15 +80,15 @@ function View() {
 							<h5>{`Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`}</h5>
 						</div>
 
-						{
-							userData.isLoaded && userData.user
-							?	<div id="view-feedback">
-									<EditButton sheet={sheet} />
-									<BookmarkButton sheet={sheet} />
-									<Rating sheet={sheet} />
-								</div>
-							: 	<></>
-						}
+						<div id="view-feedback">
+							{
+								userData.isLoaded && userData.user && (userData.user.id === sheet.user || userData.user.isAdmin)
+								?	<EditButton sheet={sheet} />
+								:	<></>
+							}
+							<BookmarkButton sheet={sheet} />
+							<Rating sheet={sheet} />
+						</div>
 					</div>
 
 					<div className="view-section-line" />
