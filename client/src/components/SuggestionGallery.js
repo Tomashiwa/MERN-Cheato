@@ -13,22 +13,23 @@ function SuggestionGallery({ align = "vertical", limit = 3 }) {
 
 	useEffect(() => {
 		const fetchSuggestions = async () => {
-			const result = await engine.suggestTo(userData.user);
-
-			console.log(`Suggestions for user ${userData.user.name}`);
-			console.log(result);
-
-			if (result.length > 0) {
-				const suggestionIds = result.map((result) => result.id).slice(0, limit);
-				const sheetsRes = await Promise.allSettled(
-					suggestionIds.map((id) => axios.post(`/api/cheatsheets/${id}`, userData))
-				);
-				const sheets = sheetsRes.map((res) => res.value.data);
-
-				console.log("Suggestions presented:");
-				console.log(sheets);
-
-				setSuggestions(sheets);
+			if(userData.isLoaded && userData.user) {
+				const result = await engine.suggestTo(userData.user);
+	
+				console.log(`Suggestions for user ${userData.user.name}`);
+				console.log(result);
+	
+				if (result.length > 0) {
+					const suggestionIds = result.map((result) => result.id).slice(0, limit);
+					const sheetsRes = await Promise.allSettled(
+						suggestionIds.map((id) => axios.post(`/api/cheatsheets/${id}`, userData))
+					);
+					const sheets = sheetsRes.map((res) => res.value.data);	
+					setSuggestions(sheets);
+				}
+			} else {
+				const randomSheets = await engine.random(limit);
+				setSuggestions(randomSheets);
 			}
 		};
 

@@ -270,7 +270,7 @@ router.post("/edit/:sheetId", (req, res) => {
 			if(sheet.isPublic || user.isAdmin || (!sheet.isPublic && sheet.user.toString() === user.id)) {
 				Cheatsheet.updateOne({_id: req.params.sheetId}, form)
 					.then(result => {
-						// console.log(result);
+						console.log(result);
 						res.json(result);
 					})
 					.catch(err => res.status(404).json({msg: err}));
@@ -279,5 +279,14 @@ router.post("/edit/:sheetId", (req, res) => {
 			}
 		});
 })
+
+router.get("/random", (req, res) => {
+	Cheatsheet.countDocuments({}, (err, count) => {
+		var random = Math.floor(Math.random() * count);
+		Cheatsheet.findOne().skip(random)
+			.then(result => res.json(result))
+			.catch(err => res.status(404).json(err));
+	})
+});
 
 module.exports = router;

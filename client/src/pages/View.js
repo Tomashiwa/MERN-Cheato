@@ -83,11 +83,15 @@ function View() {
 							<h5>{`Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`}</h5>
 						</div>
 
-						<div id="view-feedback">
-							<Button onClick={goEdit}>Edit</Button>
-							<BookmarkButton sheet={sheet} size={"24px"} />
-							<Rating sheet={sheet} />
-						</div>
+						{
+							userData.isLoaded && userData.user
+							?	<div id="view-feedback">
+									<Button onClick={goEdit}>Edit</Button>
+									<BookmarkButton sheet={sheet} size={"24px"} />
+									<Rating sheet={sheet} />
+								</div>
+							: 	<></>
+						}
 					</div>
 
 					<div className="view-section-line" />
