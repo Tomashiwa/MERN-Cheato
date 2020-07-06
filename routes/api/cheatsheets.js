@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+var mongoose = require('mongoose')
+
 //Cheatsheet model
 const Cheatsheet = require("../../models/Cheatsheet");
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -134,5 +136,18 @@ router.put("/:id", function(req, res, next){
             res.send(cheatsheet);
     });
 });
+
+router.get("/byUser/:userID", (req, res) => {
+    Cheatsheet.find({user:mongoose.Types.ObjectId(req.params.userID)})
+        .then(cheatsheet => res.json(cheatsheet))
+        .catch(err => res.status(404).json({msg: `Cheatsheet with ${req.params.userID} cannot be found`}));
+})
+
+router.get("/byCheatsheet/:sheetID", (req, res) => {
+    Cheatsheet.find({id:mongoose.Types.ObjectId(req.params.sheetID)})
+        .then(cheatsheet => res.json(cheatsheet))
+        .catch(err => res.status(404).json({msg: `Cheatsheet with ${req.params.sheetID} cannot be found`}));
+})
+
 //So other files can read what's in this file
 module.exports = router;

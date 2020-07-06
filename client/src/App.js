@@ -9,6 +9,9 @@ import Create from "./pages/Create"
 import Upload from "./pages/Upload"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
+import Profile from "./pages/Profile"
+import MyBookmark from "./pages/MyBookmark"
+import MyUpload from "./pages/MyUpload"
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
@@ -59,6 +62,9 @@ function App() {
 									{ userData.token === undefined && <Route exact path="/register" component={Register}/>}
 									{ userData.token === undefined && <Route exact path="/login" component={Login}/>}
 									<Route exact path="/" component={Home} />
+									<Route exact path="/profile/:userID" component={Profile} />
+									<Route exact path="/MyUpload/:userID" component={MyUpload} />
+									<Route exact path="/MyBookmark/:userID" component={MyBookmark} />
 									<Route exact path="*" component={NotFound} />
 								</Switch>
 							: 	<div></div>

@@ -25,7 +25,7 @@ export const SELECT_STYLE = {
 	}),
 };
 
-function Gallery() {
+function Gallery({ cheatsheetArray = [] }) {
 	const { userData } = useContext(UserContext);
 
 	const [sortOrder, setSortOrder] = useState("dateTime");
@@ -40,16 +40,21 @@ function Gallery() {
 
 	const [schLoading, setSchLoading] = useState(false);
 	const [modLoading, setModLoading] = useState(false);
-
+	console.log(cheatsheetArray)
+	
 	useEffect(() => {
 		const postConfig = { headers: { "Content-Type": "application/json" } };
 
 		const userInfo = userData.user !== undefined ? userData.user : null;
-
-		axios.post("/api/cheatsheets", userInfo, postConfig).then((res) => {
-			setSheets(res.data);
-			setDisplaySheets(res.data);
-		});
+		if (cheatsheetArray.length === 0) {
+			axios.post("/api/cheatsheets", userInfo, postConfig).then((res) => {
+				setSheets(res.data);
+				setDisplaySheets(res.data);
+			});
+		} else {
+			setSheets(cheatsheetArray);
+			setDisplaySheets(cheatsheetArray)
+		}
 
 		setSchLoading(true);
 

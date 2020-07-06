@@ -22,6 +22,18 @@ function UserDropdown() {
         history.push("/");
     }
 
+    const viewProfile = () => {
+        history.push("/profile");
+    }
+
+    const viewBookmarked = () => {
+        history.push(`/MyBookmark/${userData.user.id}`);
+    }
+
+    const viewUpload = () => {
+        history.push(`/MyUpload/${userData.user.id}`);
+    }
+
     return (
         <ButtonDropdown isOpen={isOpen} toggle={toggle} id="userdropdown">
             <DropdownToggle caret color="warning">
@@ -34,9 +46,9 @@ function UserDropdown() {
                 {userData.user.name}
             </DropdownToggle>
             <DropdownMenu>
-                <DropdownItem>My profile</DropdownItem>
-                <DropdownItem>My uploads</DropdownItem>
-                <DropdownItem>My bookmarks</DropdownItem>
+                <DropdownItem onClick={viewProfile}>My profile</DropdownItem>
+                <DropdownItem onClick ={viewUpload}>My uploads</DropdownItem>
+                <DropdownItem onClick={viewBookmarked}>My bookmarks</DropdownItem>
                 <DropdownItem divider/>
                 <DropdownItem onClick={logout}>Log out</DropdownItem>
             </DropdownMenu>
