@@ -15,6 +15,7 @@ function MyBookmark() {
     const [user, setUser] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [bookmarked, setBookmarked] = useState(null);
+    const [display,setDisplay] = useState(null);
     console.log(userData.user.id)
     const { userID } = useParams();
     const cheatsheetObjectArray = [];
@@ -38,8 +39,7 @@ function MyBookmark() {
         */
     useEffect(() => {
         if (user !== null) {
-            setBookmarked(user.bookmarks)
-            setIsLoaded(true);
+            setBookmarked(user.bookmarks);
         }
     }, [user])
 
@@ -47,10 +47,12 @@ function MyBookmark() {
         if (bookmarked !== null) {
             for (var i = 0; i < bookmarked.length; i++) {
                 axios
-                    .get(`/api/cheatsheets/byCheatsheet/${bookmarked[i]}`)
+                    .post(`/api/cheatsheets/${bookmarked[i]}`, userData.user)
                     .then((res) => {
-                        cheatsheetObjectArray.push(res)
-                        console.log(cheatsheetObjectArray)
+                        cheatsheetObjectArray.push(res.data)
+                        setDisplay(cheatsheetObjectArray)
+                        setIsLoaded(true);
+                        
                     })
                     .catch((err) => {
                         console.log(`Fail to fetch cheatsheets: ${err}`);
@@ -60,13 +62,14 @@ function MyBookmark() {
     }, [bookmarked]);
 
     console.log(cheatsheetObjectArray)
+    console.log(display)
 
 
 
     return (
         <div>
             {isLoaded
-                ? <Gallery cheatsheetArray={bookmarked} />
+                ? <Gallery cheatsheetArray={display} />
                 : <div></div>
             }
         </div>

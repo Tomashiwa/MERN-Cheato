@@ -25,7 +25,7 @@ export const SELECT_STYLE = {
 	}),
 };
 
-function Gallery({ cheatsheetArray = [] }) {
+function Gallery({ cheatsheetArray = []}) {
 	const { userData } = useContext(UserContext);
 
 	const [sortOrder, setSortOrder] = useState("dateTime");
@@ -46,7 +46,7 @@ function Gallery({ cheatsheetArray = [] }) {
 		const postConfig = { headers: { "Content-Type": "application/json" } };
 
 		const userInfo = userData.user !== undefined ? userData.user : null;
-		if (cheatsheetArray.length === 0) {
+		if (cheatsheetArray === null || cheatsheetArray.length === 0) {
 			axios.post("/api/cheatsheets", userInfo, postConfig).then((res) => {
 				setSheets(res.data);
 				setDisplaySheets(res.data);

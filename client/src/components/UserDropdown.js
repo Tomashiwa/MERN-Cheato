@@ -23,7 +23,7 @@ function UserDropdown() {
     }
 
     const viewProfile = () => {
-        history.push("/profile");
+        history.push(`/profile/${userData.user.id}`);
     }
 
     const viewBookmarked = () => {

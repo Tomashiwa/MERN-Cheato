@@ -1,0 +1,14 @@
+#userCard{
+    width:15%;
+    height:15%;
+    padding:0px;
+    position:relative;
+    margin:20px;
+    top:0px;
+    right:0px;
+    background:#fff;
+    display:flex;
+    transition: .6s ease-out;
+    box-shadow:  0 10px 10px rbga(0,0,0),0.5;
+    
+}

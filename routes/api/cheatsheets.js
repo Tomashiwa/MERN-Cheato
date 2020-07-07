@@ -143,11 +143,6 @@ router.get("/byUser/:userID", (req, res) => {
         .catch(err => res.status(404).json({msg: `Cheatsheet with ${req.params.userID} cannot be found`}));
 })
 
-router.get("/byCheatsheet/:sheetID", (req, res) => {
-    Cheatsheet.find({id:mongoose.Types.ObjectId(req.params.sheetID)})
-        .then(cheatsheet => res.json(cheatsheet))
-        .catch(err => res.status(404).json({msg: `Cheatsheet with ${req.params.sheetID} cannot be found`}));
-})
 
 //So other files can read what's in this file
 module.exports = router;

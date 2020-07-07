@@ -1,6 +1,6 @@
-.cheatsheet{
-    width:250px;
-    height:250px;
+#cheatsheetCard{
+    width:25%;
+    height:25%;
     padding:0px;
     position:relative;
     margin:20px;
@@ -13,7 +13,22 @@
     
 }
 
-.cheatsheet img {
+#Button-Group{
+    position:absolute;
+    opacity:0;
+    top:0px;
+    right:0px;
+
+}
+
+#cheatsheetCard:hover #Button-Group{
+    opacity:1;
+} 
+
+#vote{
+    display:flex
+}
+/*.CardImg {
     width:100%;
     height:70%;
     position:absolute;
@@ -99,3 +114,4 @@
     opacity:1;
 } 
 
+*/
