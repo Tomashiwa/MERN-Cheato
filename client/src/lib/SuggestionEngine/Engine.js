@@ -11,12 +11,24 @@ class Engine {
         this.suggestions = new Suggestions();
     }
 
-    async suggestTo(user) {
+    timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async update(user) {
+        console.log("Waiting for 5s before update runs");    
+        await this.timeout(5000);
+        console.log("Update starts");
+
         await this.similars.update(user);
         await this.suggestions.update(user);
+    }
+
+    async suggestTo(user) {
+        // await this.similars.update(user);
+        // await this.suggestions.update(user);
 
         const results = await this.suggestions.forUser(user);
-        
         return results;
     }
 

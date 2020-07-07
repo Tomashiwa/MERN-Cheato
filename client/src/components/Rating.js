@@ -45,6 +45,7 @@ function Rating({ sheet }) {
                     engine.upvotes.remove(userData.user, sheet, () => {
                         setVote(upvotedUsers.length - downvotedUsers.length - 1);
                         setIsLoading(false);
+                        engine.update(userData.user);
                     });
 
                 } else if(downvotedUsers.find(id => id === userData.user.id)) {
@@ -53,6 +54,7 @@ function Rating({ sheet }) {
                         engine.upvotes.add(userData.user, sheet, () => {
                             setVote(upvotedUsers.length - downvotedUsers.length + 2);
                             setIsLoading(false);
+                            engine.update(userData.user);
                         });
                     });
                 } else {
@@ -60,8 +62,11 @@ function Rating({ sheet }) {
                     engine.upvotes.add(userData.user, sheet, () => {
                         setVote(upvotedUsers.length - downvotedUsers.length + 1);
                         setIsLoading(false);
+                        engine.update(userData.user);
                     })
                 }
+
+                // engine.update(userData.user);
             });
 
 		setIsUpToggled(!isUpToggled);
@@ -82,6 +87,7 @@ function Rating({ sheet }) {
                     engine.downvotes.remove(userData.user, sheet, () => {
                         setVote(upvotedUsers.length - downvotedUsers.length + 1);
                         setIsLoading(false);
+                        engine.update(userData.user);
                     });
 
                 } else if(upvotedUsers.find(id => id === userData.user.id)) {
@@ -90,6 +96,7 @@ function Rating({ sheet }) {
                         engine.downvotes.add(userData.user, sheet, () => {
                             setVote(upvotedUsers.length - downvotedUsers.length - 2);
                             setIsLoading(false);
+                            engine.update(userData.user);
                         });
                     });
                 } else {
@@ -97,8 +104,10 @@ function Rating({ sheet }) {
                     engine.downvotes.add(userData.user, sheet, () => {
                         setVote(upvotedUsers.length - downvotedUsers.length - 1);
                         setIsLoading(false);
+                        engine.update(userData.user);
                     })
                 }
+
             });
 
 		setIsDownToggled(!isDownToggled);
