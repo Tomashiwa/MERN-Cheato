@@ -1,33 +1,24 @@
 const axios = require("axios");
 const mongoose = require("mongoose");
-// import axios from "axios";
-// import mongoose from "mongoose";
 
-const url = "http://localhost:5000";
+const url = process.env.NODE_ENV !== "production"
+				? "http://localhost:5000"
+				: "https://stormy-journey-99385.herokuapp.com";
 
 const updateSimilars = async (user) => {
-    // console.log("updating similars")
-
     // IDs of all existing users
 	const otherUsers = (await axios.get(`${url}/api/users/`).catch(err => console.log("err", err))).data.filter(
 		(otherUser) => otherUser._id !== user.id
     );
     
-    // console.log('otherUsers.length:', otherUsers.length);
-
 	// Set of IDS for user's upvoted and downvoted sheets
 	const upvotedSheets = (await axios.get(`${url}/api/users/vote/${user.id}?type=upvote`)).data;
 	const downvotedSheets = (await axios.get(`${url}/api/users/vote/${user.id}?type=downvote`)).data;
-
-    // console.log('upvotedSheets.length:', upvotedSheets.length);
-    // console.log('downvotedSheets.length:', downvotedSheets.length);
 
 	let similarities = otherUsers.map((otherUser) => {
 		return { id: otherUser._id, index: 0.0 };
     });
     
-    // console.log('similarities.length:', similarities.length);
-
 	// Array of IDs for other others that voted for the same cheatsheets as the user
 	let otherVotedUsers = [];
 	(
@@ -44,8 +35,6 @@ const updateSimilars = async (user) => {
 		});
     });
     
-    // console.log('otherVotedUsers.length:', otherVotedUsers.length);
-
 	for (const otherVotedUser of otherVotedUsers) {
 		const otherUpvotedSheets = (
 			await axios.get(`${url}/api/users/vote/${otherVotedUser}?type=upvote`)
@@ -74,8 +63,6 @@ const updateSimilars = async (user) => {
 		similarities[replaceAt] = { id: otherVotedUser, index: similarity };
     }
     
-    // console.log('similarities:', similarities);
-
 	const similaritiesRes = await axios.post(`${url}/api/similars/toUser/${user.id}`, {
 		similarities: similarities.map((entry) => {
 			return { user: mongoose.Types.ObjectId(entry.id), index: entry.index };
@@ -89,13 +76,8 @@ const updateSimilars = async (user) => {
 };
 
 const updateSuggestions = async (user) => {
-    // console.log("updating suggestions");
-
 	const similarities = (await axios.get(`${url}/api/similars/toUser/${user.id}`)).data;
 	const unvotedSheets = (await axios.get(`${url}/api/cheatsheets/withoutVotes/${user.id}`)).data;
-
-    // console.log('similarities.length:', similarities.length);
-    // console.log('unvotedSheets.length:', unvotedSheets.length);
 
 	let suggestions = await Promise.all(
 		unvotedSheets.map(async (unvotedSheet) => {
@@ -146,8 +128,6 @@ const updateSuggestions = async (user) => {
 			return Math.random() >= 0.5 ? 1 : -1;
 		}
 	});
-
-    // console.log('suggestions.length:', suggestions.length);
 
 	const suggestionRes = await axios.post(`${url}/api/suggestions/toUser/${user.id}`, {
 		suggestions,

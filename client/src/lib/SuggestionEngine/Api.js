@@ -46,7 +46,7 @@ export const sheetsByUser = (user, done) => {
 };
 
 const suggestionsFor = async (user) => {
-    const res = await axios.get(`/api/suggestions/toUser/${user.id}`);
+	const res = await axios.get(`/api/suggestions/toUser/${user.id}`);
 	if (res.status === 404) {
 		console.log(`Error encountered when finding suggestions`);
 		console.log(`${res}`);
