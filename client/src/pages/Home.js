@@ -9,7 +9,7 @@ function Home() {
     
 return (
         <div>
-            <Gallery/>
+            {/* <Gallery/> */}
             <div id = "dropdownMenu">
             </div>
         </div>

@@ -22,7 +22,7 @@ router.get("/", (req, res) => {
 	// Mongo query
 	User.find()
 		.sort({ name: -1 })
-		.then((users) => res.json(users));
+		.then((users) => res.status(200).json(users));
 });
 
 // @route POST api/users
@@ -62,7 +62,7 @@ router.post("/register", (req, res) => {
 				newUser.password = hash;
 				newUser.save().then((user) => {
 					jwt.sign({ id: user.id }, jwtSecret, {}, (err, token) => {
-						res.json({
+						res.status(200).json({
 							token,
 							user: { id: user.id, name: user.name, isAdmin: user.isAdmin },
 						});
@@ -88,7 +88,7 @@ router.post("/nameAvaliable", (req, res) => {
 		if (user) {
 			return res.status(400).json({ isAvaliable: false, msg: "Name has being taken." });
 		} else {
-			res.json({ isAvaliable: true, msg: "" });
+			res.status(200).json({ isAvaliable: true, msg: "" });
 		}
 	});
 });
@@ -96,20 +96,20 @@ router.post("/nameAvaliable", (req, res) => {
 router.post("/tokenIsValid", (req, res) => {
 	const token = req.header("x-auth-token");
 	if (!token) {
-		return res.json({ isValid: false, msg: "Token not found" });
+		return res.status(200).json({ isValid: false, msg: "Token not found" });
 	}
 
 	const verified = jwt.verify(token, jwtSecret);
 	if (!verified) {
-		return res.json({ isValid: false, msg: "Invalid Token" });
+		return res.status(200).json({ isValid: false, msg: "Invalid Token" });
 	}
 
 	User.findById(verified.id).then((user) => {
 		if (!user) {
-			return res.json({ isValid: false, msg: "No user found with the given id" });
+			return res.status(200).json({ isValid: false, msg: "No user found with the given id" });
 		}
 
-		return res.json({
+		return res.status(200).json({
 			isValid: true,
 			msg: "Token is valid",
 			user: { id: user._id, name: user.name, isAdmin: user.isAdmin },
@@ -119,7 +119,7 @@ router.post("/tokenIsValid", (req, res) => {
 
 router.get("/:id", (req, res) => {
 	User.findById(req.params.id)
-		.then((user) => res.json(user))
+		.then((user) => res.status(200).json(user))
 		.catch((err) =>
 			res.status(404).json({ msg: `User with ${req.params.id} cannot be found` })
 		);
@@ -130,13 +130,13 @@ router.get("/:id", (req, res) => {
 // @access Public
 router.delete("/:id", (req, res) => {
 	User.findById(req.params.id)
-		.then((users) => users.remove().then(() => res.json({ success: true })))
+		.then((users) => users.remove().then(() => res.status(200).json({ success: true })))
 		.catch((err) => res.status(404).json({ success: false }));
 });
 
 router.put("/:id", function (req, res, next) {
 	User.findByIdAndUpdate(req.params.id, req.body, { new: true }).then(function (user) {
-		res.send(user);
+		res.status(200).send(user);
 	});
 });
 
@@ -155,7 +155,7 @@ router.post("/vote/add/:userId", (req, res) => {
 
 			User.updateOne({ _id: req.params.userId }, { upvotedSheets })
 				.then((result) => {
-					res.json({ upvotedSheets });
+					res.status(200).json({ upvotedSheets });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		} else if (type === "downvote") {
@@ -165,7 +165,7 @@ router.post("/vote/add/:userId", (req, res) => {
 
 			User.updateOne({ _id: req.params.userId }, { downvotedSheets })
 				.then((result) => {
-					res.json({ downvotedSheets });
+					res.status(200).json({ downvotedSheets });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		} else {
@@ -209,9 +209,9 @@ router.get("/vote/:userId", (req, res) => {
 	User.findById(req.params.userId)
 		.then((user) => {
 			if (req.query.type) {
-				res.json(req.query.type === "upvote" ? user.upvotedSheets : user.downvotedSheets);
+				res.status(200).json(req.query.type === "upvote" ? user.upvotedSheets : user.downvotedSheets);
 			} else {
-				res.json(user.upvotedSheets.concat(user.downvotedSheets));
+				res.status(200).json(user.upvotedSheets.concat(user.downvotedSheets));
 			}
 		})
 		.catch((err) => res.status(404).json({ msg: err.msg }));
