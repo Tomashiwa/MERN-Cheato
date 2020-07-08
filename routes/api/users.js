@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const engine = require("../../client/src/lib/SuggestionEngine/Engine");
 
 const jwtSecret =
 	!process.env.NODE_ENV || process.env.NODE_ENV === "development"
@@ -47,6 +48,8 @@ router.post("/register", (req, res) => {
 			password: req.body.password,
 			bookmarks: [],
 			isAdmin: req.body.isAdmin,
+			upvotedSheets: [],
+			downvotedSheets: []
 		});
 
 		//Hashes password and save the user to backend
@@ -63,6 +66,8 @@ router.post("/register", (req, res) => {
 							token,
 							user: { id: user.id, name: user.name, isAdmin: user.isAdmin },
 						});
+
+						engine.update({id: user.id});
 					});
 				});
 			});
