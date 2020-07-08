@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const engine = require("../../client/src/lib/SuggestionEngine/Engine");
 
 //Cheatsheet model
 const Cheatsheet = require("../../models/Cheatsheet");
@@ -148,6 +149,7 @@ router.post("/vote/add/:sheetId", (req, res, next) => {
 			Cheatsheet.updateOne({ _id: req.params.sheetId }, { upvotedUsers })
 				.then((result) => {
 					res.status(200).json({ upvotedUsers });
+					engine.update({id: userId});
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		});
@@ -159,6 +161,7 @@ router.post("/vote/add/:sheetId", (req, res, next) => {
 			Cheatsheet.updateOne({ _id: req.params.sheetId }, { downvotedUsers })
 				.then((result) => {
 					res.status(200).json({ downvotedUsers });
+					engine.update({id: userId});
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		});
@@ -182,6 +185,7 @@ router.post("/vote/remove/:sheetId", (req, res, next) => {
 			Cheatsheet.updateOne({ _id: req.params.sheetId }, { upvotedUsers })
 				.then((result) => {
 					res.status(200).json({ upvotedUsers });
+					engine.update({id: userId});
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		});
@@ -193,6 +197,7 @@ router.post("/vote/remove/:sheetId", (req, res, next) => {
 			Cheatsheet.updateOne({ _id: req.params.sheetId }, { downvotedUsers })
 				.then((result) => {
 					res.status(200).json({ downvotedUsers });
+					engine.update({id: userId});
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		});

@@ -2,19 +2,19 @@ import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import UserContext from "../context/UserContext";
 import CheatsheetCard from "./CheatsheetCard";
-import SuggestionContext from "../context/SuggestionContext";
+
+import { suggestTo, random } from "../lib/SuggestionEngine/Api";
 
 import "./css/SuggestionGallery.css";
 
 function SuggestionGallery({ align = "vertical", limit = 3 }) {
 	const { userData } = useContext(UserContext);
-	const { engine } = useContext(SuggestionContext);
 	const [suggestions, setSuggestions] = useState([]);
 
 	useEffect(() => {
 		const fetchSuggestions = async () => {
 			if(userData.isLoaded && userData.user) {
-				const result = await engine.suggestTo(userData.user);
+				const result = await suggestTo(userData.user);
 	
 				console.log(`Suggestions for user ${userData.user.name}`);
 				console.log(result);
@@ -28,13 +28,13 @@ function SuggestionGallery({ align = "vertical", limit = 3 }) {
 					setSuggestions(sheets);
 				}
 			} else {
-				const randomSheets = await engine.random(limit);
+				const randomSheets = await random(limit);
 				setSuggestions(randomSheets);
 			}
 		};
 
 		fetchSuggestions();
-	}, [limit, userData, engine]);
+	}, [limit, userData]);
 
 	return (
 		<div id="suggestion-gallery">

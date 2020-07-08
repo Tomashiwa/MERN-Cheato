@@ -3,7 +3,6 @@ import { BrowserRouter, Switch, Route } from "react-router-dom"
 import axios from "axios"
 
 import UserContext from "./context/UserContext";
-import SuggestionContext from "./context/SuggestionContext";
 
 import Home from "./pages/Home"
 import Create from "./pages/Create"
@@ -18,15 +17,12 @@ import AppNavbar from './components/AppNavbar';
 import View from './pages/View';
 import NotFound from './pages/NotFound';
 
-import Engine from "./lib/SuggestionEngine/Engine";
-
 function App() {
 	const [userData, setUserData] = useState({
 		token: undefined,
 		user: undefined,
 		isLoaded: false
 	});
-	const [engine, setEngine] = useState(new Engine());
 
 	useEffect(() => {
 		// Check if there's any token in local storage and use it to retrieve user information
@@ -53,25 +49,25 @@ function App() {
 	return (
 		<BrowserRouter>
 			<UserContext.Provider value={{userData, setUserData}}>
-				<SuggestionContext.Provider value={{engine, setEngine}}>
-					<AppNavbar />
-					<div>
-						{
-							userData.isLoaded
-								?	<Switch>
-										<Route exact path="/create" component={Create} />
-										<Route exact path="/upload" component={Upload} />
-										<Route exact path="/view/:id" component={View} />
-										{ userData.token === undefined && <Route exact path="/edit/:id" component={Edit} />}
-										{ userData.token === undefined && <Route exact path="/register" component={Register}/>}
-										{ userData.token === undefined && <Route exact path="/login" component={Login}/>}
-										<Route exact path="/" component={Home} />
-										<Route exact path="*" component={NotFound} />
-									</Switch>
-								: 	<div></div>
-						}
-					</div>
-				</SuggestionContext.Provider>
+				<AppNavbar />
+				<div>
+					{
+						userData.isLoaded
+							?	<Switch>
+									<Route exact path="/create" component={Create} />
+									<Route exact path="/upload" component={Upload} />
+									<Route exact path="/view/:id" component={View} />
+									{ userData.token === undefined && 
+									
+									<Route exact path="/edit/:id" component={Edit} />}
+									{ userData.token === undefined && <Route exact path="/register" component={Register}/>}
+									{ userData.token === undefined && <Route exact path="/login" component={Login}/>}
+									<Route exact path="/" component={Home} />
+									<Route exact path="*" component={NotFound} />
+								</Switch>
+							: 	<div></div>
+					}
+				</div>
 			</UserContext.Provider>
 		</BrowserRouter>
   	);
