@@ -1,4 +1,5 @@
 const express = require("express");
+const compression = require('compression')
 const app = express();
 
 const users = require("./routes/api/users");
@@ -19,6 +20,7 @@ var modUpdateJob = require("./APIScheduler");
 
 // Load body-parser middleware
 app.use(express.json({limit: '50mb'}));
+app.use(compression());
 
 //Connect to URI of mongoDB's cluster
 const mongoose = require('mongoose');
