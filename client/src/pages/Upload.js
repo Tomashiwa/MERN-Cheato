@@ -8,6 +8,7 @@ import UserContext from '../context/UserContext';
 import axios from 'axios';
 import uuid from "uuid";
 import mongoose from "mongoose";
+import Resizer from "react-image-file-resizer";
 
 import "./css/Upload.css";
 
@@ -21,6 +22,7 @@ function Upload() {
     const [formStep, setFormStep] = useState(UPLOAD_STEP_FORM);
     const [form, setForm] = useState({
         url: "",
+        thumbnailUrl: "",
         name: "",
         school: "",
         module: "",
@@ -29,43 +31,108 @@ function Upload() {
     });
     const [nextEnabled, setNextEnabled] = useState(false);
     const [sheetId, setSheetId] = useState(undefined);
+
     const [blob, setBlob] = useState(undefined);
+    const [thumbnailBlob, setThumbnailBlob] = useState(undefined);
 
     const history = useHistory();
 
-    // Navigation events that happened when Next button is pressed
-    const saveToDb = url => {
-        const newSheet = {
-            file: url,
-            user: userData.isLoaded && userData.token === undefined
-                ? mongoose.Types.ObjectId(-1)
-                : mongoose.Types.ObjectId(userData.user.id),
-            name: form.name,
-            school: mongoose.Types.ObjectId(form.school),
-            module: mongoose.Types.ObjectId(form.module),
-            description: form.description,
-            datetime: Date.now(),
-            rating: 0,
-            comments: [],
-            isPublic: form.isPublic,
-            isAnonymous: userData.isLoaded && userData.token === undefined
-        }
+    const setUploadBlobs = blob => {
+        setBlob(blob);
+        console.log(`blob set`);
 
-        axios.post("/api/cheatsheets/add", newSheet)
-            .then(sheet => {
-                setSheetId(sheet.data._id);
-            })
-            .catch(err => console.log(err));
+        console.log(`Resizing blob to 300x300 png`);
+        Resizer.imageFileResizer(
+            blob, //is the file of the new image that can now be uploaded...
+            300, // is the maxWidth of the  new image
+            300, // is the maxHeight of the  new image
+            "PNG", // is the compressFormat of the  new image
+            100, // is the quality of the new image
+            0, // is the degree of clockwise rotation to apply to the image. 
+            newBlob => { 
+                setThumbnailBlob(newBlob);
+                console.log("resizing completed");
+            },  // is the callBack function of the new image URI
+            "blob"  // is the output type of the new image
+        );
     }
+
+    // Navigation events that happened when Next button is pressed
+    // const saveToDb = url => {
+    //     const newSheet = {
+    //         file: url,
+    //         user: userData.isLoaded && userData.token === undefined
+    //             ? mongoose.Types.ObjectId(-1)
+    //             : mongoose.Types.ObjectId(userData.user.id),
+    //         name: form.name,
+    //         school: mongoose.Types.ObjectId(form.school),
+    //         module: mongoose.Types.ObjectId(form.module),
+    //         description: form.description,
+    //         datetime: Date.now(),
+    //         rating: 0,
+    //         comments: [],
+    //         isPublic: form.isPublic,
+    //         isAnonymous: userData.isLoaded && userData.token === undefined
+    //     }
+
+    //     axios.post("/api/cheatsheets/add", newSheet)
+    //         .then(sheet => {
+    //             setSheetId(sheet.data._id);
+    //         })
+    //         .catch(err => console.log(err));
+    // }
 
     const upload = () => {
         const formData = new FormData();
-        formData.append("file", blob, `${form.name}-${uuid.v4()}.png`);
-        
+        const thumbnailFormData = new FormData();
+        const hashcode = uuid.v4();
+
+        formData.append("file", blob, `${form.name}-${hashcode}.png`);
+        thumbnailFormData.append("file", thumbnailBlob, `thumbnail-${form.name}-${hashcode}.png`);        
+
         axios.post("/upload", formData)
             .then(res => {
-                saveToDb(res.data.data.Location);
+                // saveToDb(res.data.data.Location);
                 setForm({...form, ...{url: res.data.data.Location}});
+                console.log('res.data:', res.data);
+
+                if(thumbnailBlob) {
+                    console.log(`thumbnail blob found, saving it to S3`);
+
+                    axios.post("/upload", thumbnailFormData)
+                        .then(thumbnailRes => {
+                            console.log('thumbnailRes.data:', thumbnailRes.data);
+
+                            setForm({...form, ...{thumbnailUrl: thumbnailRes.data.data.Location}});
+                            
+                            const newSheet = {
+                                file: res.data.data.Location,
+                                thumbnail: thumbnailRes.data.data.Location,
+                                user: userData.isLoaded && userData.token === undefined
+                                    ? mongoose.Types.ObjectId(-1)
+                                    : mongoose.Types.ObjectId(userData.user.id),
+                                name: form.name,
+                                school: mongoose.Types.ObjectId(form.school),
+                                module: mongoose.Types.ObjectId(form.module),
+                                description: form.description,
+                                datetime: Date.now(),
+                                rating: 0,
+                                comments: [],
+                                isPublic: form.isPublic,
+                                isAnonymous: userData.isLoaded && userData.token === undefined
+                            };
+
+                            console.log('newSheet:', newSheet);
+
+                            axios.post("/api/cheatsheets/add", newSheet)
+                                .then(sheet => {
+                                    setSheetId(sheet.data._id);
+                                })
+                                .catch(err => console.log(err));
+                            
+                            console.log("RESIZED HAS BEEN SAVED TO S3");
+                        })
+                }
             })
             .catch(err => console.log(err));
     };
@@ -149,7 +216,7 @@ function Upload() {
                 </div>
                 {
                     formStep === UPLOAD_STEP_FORM
-                        ? <UploadForm form={form} setForm={setForm} setBlob={setBlob} isAnonymous={userData.isLoaded && userData.token === undefined}/>
+                        ? <UploadForm form={form} setForm={setForm} setBlob={setUploadBlobs} isAnonymous={userData.isLoaded && userData.token === undefined}/>
                     : formStep === UPLOAD_STEP_PREVIEW
                         ? <ImagePreviewer imageURL={form.url} />
                     : <div></div>

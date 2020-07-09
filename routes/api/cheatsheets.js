@@ -46,6 +46,7 @@ router.post("/", (req, res) => {
 router.post("/add", (req, res) => {
 	const newCheatsheet = new Cheatsheet({
 		file: req.body.file,
+		thumbnail: req.body.thumbnail,
 		user: req.body.user,
 		name: req.body.name,
 		school: req.body.school,

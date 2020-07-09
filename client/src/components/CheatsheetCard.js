@@ -238,7 +238,7 @@ function CheatsheetCard({ sheet }) {
         <div className="row">
             <div className="col-md-4">
                 <div className="cheatsheet">
-                    <img src={sheet.file} alt="" className="img-fluid"></img>
+                    <img src={sheet.thumbnail ? sheet.thumbnail : sheet.file} alt="" className="img-fluid"></img>
                     <div className="cheatsheet-text">
                         <p>{sheet.name}</p>
                     </div>
