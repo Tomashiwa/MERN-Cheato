@@ -25,7 +25,7 @@ export const SELECT_STYLE = {
 	}),
 };
 
-function Gallery({ cheatsheetArray = []}) {
+function Gallery({ cheatsheetArray = [], text = "", dropdown = true }) {
 	const { userData } = useContext(UserContext);
 
 	const [sortOrder, setSortOrder] = useState("dateTime");
@@ -41,7 +41,12 @@ function Gallery({ cheatsheetArray = []}) {
 	const [schLoading, setSchLoading] = useState(false);
 	const [modLoading, setModLoading] = useState(false);
 	console.log(cheatsheetArray)
-	
+
+	const isText = (text === "");
+
+	const isDropdown = (dropdown === true);
+	console.log(isText)
+
 	useEffect(() => {
 		const postConfig = { headers: { "Content-Type": "application/json" } };
 
@@ -131,56 +136,62 @@ function Gallery({ cheatsheetArray = []}) {
 	return (
 		<div>
 			<Container>
-				<h3>Browse Cheatsheets</h3>
-
-				<div id="gallery-toolbar">
-					<div className="gallery-tool-group">
-						<div className="gallery-tool-label">School</div>
-						<Select
-							className="gallery-tool-select"
-							defaultValue={schOpts[0]}
-							options={schOpts}
-							isClearable={false}
-							isSearchable={false}
-							isDisabled={schLoading}
-							isLoading={schLoading}
-							onChange={changeSch}
-							value={schFilter}
-							auto
-							styles={SELECT_STYLE}
-						/>
+				{isText
+					? <h3>Browse Cheatsheets</h3>
+					: <div>
+						<h3>{text}</h3>
 					</div>
-					<div className="gallery-tool-group">
-						<div className="gallery-tool-label">Module</div>
-						<Select
-							className="gallery-tool-select"
-							defaultValue={modOpts[0]}
-							options={modOpts}
-							isDisabled={modOpts.length === 0 || modLoading}
-							isClearable={false}
-							isSearchable={true}
-							isLoading={modLoading}
-							value={modFilter}
-							onChange={changeMod}
-							filterOption={createFilter({ ignoreAccents: false })}
-							components={optimizeSelect.components}
-							styles={SELECT_STYLE}
-						/>
+				}
+				{isDropdown
+					? <div id="gallery-toolbar">
+						<div className="gallery-tool-group">
+							<div className="gallery-tool-label">School</div>
+							<Select
+								className="gallery-tool-select"
+								defaultValue={schOpts[0]}
+								options={schOpts}
+								isClearable={false}
+								isSearchable={false}
+								isDisabled={schLoading}
+								isLoading={schLoading}
+								onChange={changeSch}
+								value={schFilter}
+								auto
+								styles={SELECT_STYLE}
+							/>
+						</div>
+						<div className="gallery-tool-group">
+							<div className="gallery-tool-label">Module</div>
+							<Select
+								className="gallery-tool-select"
+								defaultValue={modOpts[0]}
+								options={modOpts}
+								isDisabled={modOpts.length === 0 || modLoading}
+								isClearable={false}
+								isSearchable={true}
+								isLoading={modLoading}
+								value={modFilter}
+								onChange={changeMod}
+								filterOption={createFilter({ ignoreAccents: false })}
+								components={optimizeSelect.components}
+								styles={SELECT_STYLE}
+							/>
+						</div>
+						<div className="gallery-tool-group">
+							<div className="gallery-tool-label">Sort by</div>
+							<Select
+								className="gallery-tool-select"
+								defaultValue={SORT_OPTIONS[0]}
+								options={SORT_OPTIONS}
+								isClearable={false}
+								isSearchable={false}
+								onChange={changeSort}
+								styles={SELECT_STYLE}
+							/>
+						</div>
 					</div>
-					<div className="gallery-tool-group">
-						<div className="gallery-tool-label">Sort by</div>
-						<Select
-							className="gallery-tool-select"
-							defaultValue={SORT_OPTIONS[0]}
-							options={SORT_OPTIONS}
-							isClearable={false}
-							isSearchable={false}
-							onChange={changeSort}
-							styles={SELECT_STYLE}
-						/>
-					</div>
-				</div>
-
+					: <div></div>
+				}
 				<div className="gallery">
 					{displaySheets.map((cs, index) => (
 						<CheatsheetCard key={index} sheet={cs} />

@@ -11,10 +11,9 @@ import userIcon from "../icons/icon-user.svg";
 
 import "./css/Profile.css"
 
-import {
-    Card, CardImg, CardText, CardBody,
-    CardTitle, CardSubtitle, Button, CardLink, ButtonGroup, CardHeader
-} from 'reactstrap';
+import { useHistory } from 'react-router-dom';
+
+import { Card, CardImg, Button, CardHeader } from 'reactstrap';
 
 
 function Profile() {
@@ -29,6 +28,15 @@ function Profile() {
     const [display, setDisplay] = useState(null);
     const cheatsheetObjectArray = [];
 
+    const history = useHistory();
+
+    const viewBookmark = () => {
+        history.push(`/MyBookmark/${userID}`);
+    }
+
+    const viewUpload = () => {
+        history.push(`/MyUpload/${userID}`);
+    }
 
     useEffect(() => {
         if (userData.isLoaded && userData.token !== undefined) {
@@ -48,7 +56,7 @@ function Profile() {
         axios
             .get(`/api/cheatsheets/byUser/${userID}`)
             .then((res) => {
-                setUpload(res.data);
+                setUpload(res.data.slice(0, 3));
                 setIsSet(true);
             })
             .catch((err) => {
@@ -69,7 +77,7 @@ function Profile() {
                     .post(`/api/cheatsheets/${bookmarked[i]}`, userData.user)
                     .then((res) => {
                         cheatsheetObjectArray.push(res.data)
-                        setDisplay(cheatsheetObjectArray)
+                        setDisplay(cheatsheetObjectArray.slice(0, 3))
                         setIsPresent(true);
 
                     })
@@ -79,12 +87,11 @@ function Profile() {
             }
         }
     }, [bookmarked]);
+
     console.log(display)
     console.log(upload)
     console.log(bookmarked)
     console.log(cheatsheetObjectArray)
-
-
 
     return (
         <div>
@@ -95,14 +102,19 @@ function Profile() {
                         <CardHeader>{user.name}</CardHeader>
                     </Card>
                     {isSet
-                        ? <Gallery cheatsheetArray={upload} />
+                        ? <div>
+                            <Button color="info" id="viewUpload" onClick={viewUpload}>View All</Button>
+                            <Gallery cheatsheetArray={upload} text="My Upload" dropdown="false" />
+                        </div>
                         : <div></div>
                     }
                     {isPresent
-                        ? <Gallery cheatsheetArray={display} />
+                        ? <div>
+                            <Button color="info" id="viewBookmark" onClick={viewBookmark}>View All</Button>
+                            <Gallery cheatsheetArray={display} text="My Bookmark" dropdown="false" />
+                        </div>
                         : <div></div>
                     }
-
                 </div>
                 : <div></div>
             }

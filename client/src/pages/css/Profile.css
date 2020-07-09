@@ -12,3 +12,17 @@
     box-shadow:  0 10px 10px rbga(0,0,0),0.5;
     
 }
+
+#viewUpload{
+    display:flex;
+    position:relative;
+    top:35px;
+    right:-320px;
+}
+
+#viewBookmark{
+    display:flex;
+    position:relative;
+    top:35px;
+    right:-350px;
+}

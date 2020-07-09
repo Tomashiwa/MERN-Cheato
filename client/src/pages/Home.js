@@ -5,10 +5,11 @@ import Gallery from "../components/Gallery";
 import "./css/Home.css";
 
 function Home() {
+     const display = false
     
 return (
         <div>
-            <Gallery/>
+            <Gallery />
             <div id = "dropdownMenu">
             </div>
         </div>

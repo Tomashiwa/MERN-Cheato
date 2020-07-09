@@ -16,6 +16,8 @@ function MyUpload() {
     const [upload, setUpload] = useState(null);
     const [isLoaded,setIsLoaded] = useState(false);
     const { userID } = useParams();
+    const textDisplay = "My Upload"
+    const dropdownDisplay = false;
 
     /* useEffect(() => {
          if (userData.isLoaded && userData.token !== undefined) {
@@ -47,7 +49,7 @@ function MyUpload() {
     return (
         <div>
             {(isLoaded) 
-            ? <Gallery cheatsheetArray = {upload}/>
+            ? <Gallery cheatsheetArray = {upload} text={textDisplay} dropdown={dropdownDisplay}/>
             : <div></div>
             }
         </div>

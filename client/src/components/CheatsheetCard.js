@@ -6,7 +6,7 @@ import UserContext from "../context/UserContext";
 
 import {
     Card, CardImg, CardText, CardBody,
-    CardTitle, CardSubtitle, Button, CardLink, ButtonGroup, CardHeader
+    CardTitle, CardSubtitle, Button, CardLink, ButtonGroup, CardHeader, CardFooter
 } from 'reactstrap';
 
 
@@ -341,23 +341,20 @@ function CheatsheetCard({ sheet }) {
                                </div>
                                : <div></div>
                            }<CardTitle>{sheet.name}</CardTitle>
+                            <Button color="link" size="sm" onClick={viewAuthor}>View Author</Button>
+                        <Button color="link" size="sm" onClick={viewCheatsheet}>View Cheatsheet</Button>
                        </Button> */
 
     return (
         <div id="cheatsheetCard">
             <Card>
-            <CardHeader id="title"><div class="one">
-  <p>{sheet.name}</p>
-</div>
-<div class="two">
-  <p>Rating:{vote}</p>
-</div></CardHeader>
-            
-            
-                <CardImg top width="100%" onClick={viewCheatsheet} src={sheet.file} alt="Card image cap" />
-                <CardBody>
-                    
-                    
+                <CardHeader id="title">
+                    <div class="one">
+                        <p>{sheet.name}</p>
+                    </div>
+                    <Button color="link" size="sm" onClick={viewAuthor}>{userData.user.name}</Button>
+                </CardHeader>
+                <CardImg top width="250px" height="250px" onClick={viewCheatsheet} src={sheet.file} alt="Card image cap" />
                     <ButtonGroup id="Button-Group">
                         <Button id={`upvoteBtn-${sheet._id}`} >
                             <svg className="bi bi-arrow-up-short" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -378,9 +375,7 @@ function CheatsheetCard({ sheet }) {
                             </svg>
                         </Button>
                     </ButtonGroup>
-                    <CardLink onClick={viewAuthor}>View Author</CardLink>
-                    <CardLink href={'/view/' + sheet._id}>View Cheatsheet</CardLink>
-                </CardBody>
+                
             </Card>
         </div >
     );

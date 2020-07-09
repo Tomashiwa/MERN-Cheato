@@ -15,10 +15,12 @@ function MyBookmark() {
     const [user, setUser] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [bookmarked, setBookmarked] = useState(null);
-    const [display,setDisplay] = useState(null);
+    const [display, setDisplay] = useState(null);
     console.log(userData.user.id)
     const { userID } = useParams();
     const cheatsheetObjectArray = [];
+    const textDisplay = "My Bookmarks"
+    const dropdownDisplay = false;
 
     useEffect(() => {
         if (userData.isLoaded && userData.token !== undefined) {
@@ -52,7 +54,7 @@ function MyBookmark() {
                         cheatsheetObjectArray.push(res.data)
                         setDisplay(cheatsheetObjectArray)
                         setIsLoaded(true);
-                        
+
                     })
                     .catch((err) => {
                         console.log(`Fail to fetch cheatsheets: ${err}`);
@@ -69,7 +71,7 @@ function MyBookmark() {
     return (
         <div>
             {isLoaded
-                ? <Gallery cheatsheetArray={display} />
+                ? <Gallery cheatsheetArray={display} text={textDisplay} dropdown={dropdownDisplay} />
                 : <div></div>
             }
         </div>

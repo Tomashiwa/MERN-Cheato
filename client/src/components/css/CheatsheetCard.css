@@ -9,9 +9,9 @@
     background:#fff;
     display:flex;
     transition: .6s ease-out;
-    box-shadow:  0 10px 10px rbga(0,0,0),0.5;
-    
+    box-shadow:  0 10px 10px rbga(0,0,0),0.5;   
 }
+
 
 #Button-Group{
     position:absolute;
