@@ -177,15 +177,15 @@ function Gallery() {
 				</div>
 
 				<div className="gallery">
-					{/* {
+					{
 						displaySheets
 							.filter(sheet => sheet.thumbnail)
 							.map((sheet, index) => <CheatsheetCard key={index} sheet={sheet} />)
-					} */}
+					}
 					
-					{displaySheets.map((cs, index) => (
+					{/* {displaySheets.map((cs, index) => (
 						<CheatsheetCard key={index} sheet={cs} />
-					))}
+					))} */}
 				</div>
 			</Container>
 		</div>
