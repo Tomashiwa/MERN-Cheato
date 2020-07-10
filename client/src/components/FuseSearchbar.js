@@ -1,14 +1,16 @@
 import React, {useState, useEffect, useRef, useContext} from 'react'
-import {Input, Button} from "reactstrap";
+import {useHistory} from "react-router-dom";
 import axios from "axios";
 import Fuse from "fuse.js";
-import {useHistory} from "react-router-dom";
 
-import "./css/FuseSearchbar.css"
+import Input from 'reactstrap/lib/Input';
+import Button from 'reactstrap/lib/Button';
+
 import sheetIcon from "../icons/icon-sheet.svg";
 import schoolIcon from "../icons/icon-school.svg";
 import moduleIcon from "../icons/icon-module.svg";
 import UserContext from '../context/UserContext';
+import "./css/FuseSearchbar.css"
 
 const SEARCHBAR_MAX_CHARS = 50;
 const SEARCHBAR_ICON_SIZE = 24;

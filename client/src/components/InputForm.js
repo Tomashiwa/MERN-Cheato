@@ -1,6 +1,11 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import { ImagesContext, ConfigContext } from "../App"
-import { Form, FormGroup, Label, Input, Button } from "reactstrap";
+
+import Button from 'reactstrap/lib/Button';
+import Form from 'reactstrap/lib/Form';
+import FormGroup from 'reactstrap/lib/FormGroup';
+import Label from 'reactstrap/lib/Label';
+import Input from 'reactstrap/lib/Input';
 
 import { CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT } from "./ImageCanvas";
 import { binPack } from '../lib/Binpacker/BinPack'

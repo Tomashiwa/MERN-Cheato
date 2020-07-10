@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Spinner } from "reactstrap";
+
+import Button from 'reactstrap/lib/Button';
+import Spinner from 'reactstrap/lib/Spinner';
 
 import Konva from "konva";
 import { Stage, Layer } from "react-konva";

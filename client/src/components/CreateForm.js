@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { Form, FormGroup, Label, Input, FormFeedback, FormText } from "reactstrap";
+import axios from "axios";
+
+import Form from 'reactstrap/lib/Form';
+import FormGroup from 'reactstrap/lib/FormGroup';
+import Label from 'reactstrap/lib/Label';
+import FormFeedback from 'reactstrap/lib/FormFeedback';
+import FormText from 'reactstrap/lib/FormText';
+import Input from 'reactstrap/lib/Input';
+import Col from 'reactstrap/lib/Col';
+
 import CreatableSelect from "react-select/creatable";
 import { createFilter } from "react-select"
 import {optimizeSelect} from "./OptimizedSelect";
 
+import { invalidSymbols } from "../misc/InvalidSymbols.js";
 
 import "./css/CreateForm.css"
-
-import axios from "axios";
-import { invalidSymbols } from "../misc/InvalidSymbols.js";
-import Col from 'reactstrap/lib/Col';
 
 export const SELECT_STYLE = {
 	option: (provided, state) => ({

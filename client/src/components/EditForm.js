@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Form, FormGroup, Label, Input, FormFeedback, FormText } from "reactstrap";
+import axios from "axios";
+
+import Form from 'reactstrap/lib/Form';
+import FormGroup from 'reactstrap/lib/FormGroup';
+import Label from 'reactstrap/lib/Label';
+import FormFeedback from 'reactstrap/lib/FormFeedback';
+import FormText from 'reactstrap/lib/FormText';
+import Input from 'reactstrap/lib/Input';
+import Col from 'reactstrap/lib/Col';
+
 import CreatableSelect from "react-select/creatable";
-import Col from "reactstrap/lib/Col";
 import { createFilter } from "react-select";
 import { optimizeSelect } from "./OptimizedSelect";
-import axios from "axios";
+
 import { invalidSymbols } from "../misc/InvalidSymbols.js";
 
 import "./css/EditForm.css";

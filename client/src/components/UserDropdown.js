@@ -1,10 +1,14 @@
 import React, { useState, useContext, useRef } from 'react'
-import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import UserContext from '../context/UserContext';
+import { useHistory } from 'react-router-dom';
 
+import ButtonDropdown from "reactstrap/lib/ButtonDropdown";
+import DropdownToggle from "reactstrap/lib/DropdownToggle";
+import DropdownMenu from "reactstrap/lib/DropdownMenu";
+import DropdownItem from "reactstrap/lib/DropdownItem";
+
+import UserContext from '../context/UserContext';
 import userIcon from "../icons/icon-user.svg";
 import "./css/UserDropdown.css"
-import { useHistory } from 'react-router-dom';
 
 function UserDropdown() {
     const {userData, setUserData} = useContext(UserContext);

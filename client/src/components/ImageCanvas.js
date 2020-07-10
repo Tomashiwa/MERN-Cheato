@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useContext, useState } from 'react';
-import { Button, Spinner } from "reactstrap";
+
+import Button from 'reactstrap/lib/Button';
+import Spinner from 'reactstrap/lib/Spinner';
 
 import Konva from 'konva';
 import { Stage, Layer } from 'react-konva';
 
-import "./css/ImageCanvas.css";
 import { binPack } from '../lib/Binpacker/BinPack'
-
 import { ImagesContext, ConfigContext } from "../pages/Create";
+
+import "./css/ImageCanvas.css";
 
 //Dimension of the canvas window presented in the page
 export const CANVAS_VIEW_WIDTH = 1123;

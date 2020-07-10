@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+
+import Container from "reactstrap/lib/Container";
 
 import Select from "react-select";
 import { optimizeSelect } from "./OptimizedSelect";
 import { createFilter } from "react-select";
 
 import CheatsheetCard from "../components/CheatsheetCard";
-
-import axios from "axios";
-import "./css/Gallery.css";
-import Container from "reactstrap/lib/Container";
 import UserContext from "../context/UserContext";
+
+import "./css/Gallery.css";
 
 export const SORT_OPTIONS = [
 	{ label: "Date uploaded", value: "dateTime" },

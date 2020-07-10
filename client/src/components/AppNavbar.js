@@ -1,19 +1,18 @@
 import React, { useState, useContext } from 'react'
-import {
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    NavItem,
-    NavLink,
-    Container,
-} from "reactstrap";
+
+import UserDropdown from './UserDropdown';
+import Navbar from 'reactstrap/lib/Navbar';
+import Collapse from 'reactstrap/lib/Collapse';
+import Container from 'reactstrap/lib/Container';
+import NavbarBrand from 'reactstrap/lib/NavbarBrand';
+import NavbarToggler from 'reactstrap/lib/NavbarToggler';
+import NavItem from 'reactstrap/lib/NavItem';
+import NavLink from 'reactstrap/lib/NavLink';
 
 import FuseSearchbar from './FuseSearchbar';
 import UserContext from '../context/UserContext';
 
 import "./css/AppNavbar.css"
-import UserDropdown from './UserDropdown';
 
 function AppNavbar() {
     const {userData} = useContext(UserContext);
