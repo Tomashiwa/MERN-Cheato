@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { Suspense, useState, useEffect } from 'react'
 import { BrowserRouter, Switch, Route } from "react-router-dom"
 import axios from "axios"
 
 import UserContext from "./context/UserContext";
-
-import Home from "./pages/Home"
-import Create from "./pages/Create"
-import Upload from "./pages/Upload"
-import Edit from "./pages/Edit"
-import Register from "./pages/Register"
-import Login from "./pages/Login"
+import AppNavbar from './components/AppNavbar';
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
-import AppNavbar from './components/AppNavbar';
-import View from './pages/View';
-import NotFound from './pages/NotFound';
+
+const Home = React.lazy(() => import("./pages/Home"));
+const Create = React.lazy(() => import("./pages/Create"));
+const Upload = React.lazy(() => import("./pages/Upload"));
+const View = React.lazy(() => import("./pages/View"));
+const Edit = React.lazy(() => import("./pages/Edit"));
+const Register = React.lazy(() => import("./pages/Register"));
+const Login = React.lazy(() => import("./pages/Login"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 function App() {
 	const [userData, setUserData] = useState({
@@ -53,18 +53,18 @@ function App() {
 				<div>
 					{
 						userData.isLoaded
-							?	<Switch>
-									<Route exact path="/create" component={Create} />
-									<Route exact path="/upload" component={Upload} />
-									<Route exact path="/view/:id" component={View} />
-									{ userData.token === undefined && 
-									
-									<Route exact path="/edit/:id" component={Edit} />}
-									{ userData.token === undefined && <Route exact path="/register" component={Register}/>}
-									{ userData.token === undefined && <Route exact path="/login" component={Login}/>}
-									<Route exact path="/" component={Home} />
-									<Route exact path="*" component={NotFound} />
-								</Switch>
+							?	<Suspense fallback={<div>Loading...</div>}>
+									<Switch>
+										<Route exact path="/create" component={Create} />
+										<Route exact path="/upload" component={Upload} />
+										<Route exact path="/view/:id" component={View} />
+										{ userData.token === undefined && <Route exact path="/edit/:id" component={Edit} />}
+										{ userData.token === undefined && <Route exact path="/register" component={Register}/>}
+										{ userData.token === undefined && <Route exact path="/login" component={Login}/>}
+										<Route exact path="/" component={Home} />
+										<Route exact path="*" component={NotFound} />
+									</Switch>
+								</Suspense>
 							: 	<div></div>
 					}
 				</div>

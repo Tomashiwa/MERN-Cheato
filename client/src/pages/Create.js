@@ -1,28 +1,26 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
-
-import ImageCanvas from "../components/ImageCanvas";
-import CreateForm from '../components/CreateForm';
-import ImagePreviewer from '../components/ImagePreviewer';
-
-import {Container, Button} from 'reactstrap';
-import {useHistory} from "react-router-dom"
-import "./css/Create.css"
-
+import React, { useState, useEffect, useRef, useContext, Suspense } from 'react'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import axios from 'axios';
 import uuid from "uuid";
 import mongoose from "mongoose";
 import Stepper from 'react-stepper-horizontal';
-
-import {CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "../components/ImageCanvas"
-import UserContext from '../context/UserContext';
-
-// import {toThumbnail} from "../lib/Tinify/Api";
 import Resizer from "react-image-file-resizer";
+
+import Container from "reactstrap/lib/Container";
+import Button from "reactstrap/lib/Button";
+
+import ImageCanvas from "../components/ImageCanvas";
+import {CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "../components/ImageCanvas"
+
+import UserContext from '../context/UserContext';
+import "./css/Create.css"
+
+const CreateForm = React.lazy(() => import("../components/CreateForm"));
+const ImagePreviewer = React.lazy(() => import("../components/ImagePreviewer"));
 
 export const CREATE_STEP_IMPORT = 1;
 export const CREATE_STEP_FORM = 2;
 export const CREATE_STEP_PREVIEW = 3;
-
 export const STEP_CIRCLE_SIZE = 40;
 
 export const ImagesContext = React.createContext(null);
@@ -215,15 +213,18 @@ function Create() {
                                         </Button>
                             }
                         </div>
-                        {
-                            formStep === CREATE_STEP_IMPORT
-                                ? <ImageCanvas form={form} setBlob={setBlob} />
-                            : formStep === CREATE_STEP_FORM
-                                ? <CreateForm form={form} setForm={setForm} isAnonymous={userData.isLoaded && userData.token === undefined}/>
-                            : formStep === CREATE_STEP_PREVIEW
-                                ? <ImagePreviewer imageURL={form.url} />
-                            : <div></div>
-                        }
+
+                        <Suspense fallback={<div>Loading...</div>}>
+                            {
+                                formStep === CREATE_STEP_IMPORT
+                                    ? <ImageCanvas form={form} setBlob={setBlob} />
+                                : formStep === CREATE_STEP_FORM
+                                    ? <CreateForm form={form} setForm={setForm} isAnonymous={userData.isLoaded && userData.token === undefined}/>
+                                : formStep === CREATE_STEP_PREVIEW
+                                    ? <ImagePreviewer imageURL={form.url} />
+                                : <div></div>
+                            }
+                        </Suspense>
                     </ConfigContext.Provider>
                 </ImagesContext.Provider>
             </Container>

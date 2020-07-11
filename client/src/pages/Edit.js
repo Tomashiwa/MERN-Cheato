@@ -1,12 +1,18 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
+import axios from "axios";
+
+import Container from "reactstrap/lib/Container";
+import Button from "reactstrap/lib/Button";
+import Card from "reactstrap/lib/Card";
+import CardHeader from "reactstrap/lib/CardHeader";
+import CardBody from "reactstrap/lib/CardBody";
+import CardText from "reactstrap/lib/CardText";
+
 import UserContext from "../context/UserContext";
-import { Container, Button, Card, CardHeader, CardBody, CardText } from "reactstrap";
 import EditForm from "../components/EditForm";
 
 import "./css/Edit.css";
-import axios from "axios";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 function Edit() {
 	const { userData } = useContext(UserContext);

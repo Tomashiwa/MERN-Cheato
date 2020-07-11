@@ -1,17 +1,24 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Container, Button, Card, CardHeader, CardBody, CardText } from "reactstrap";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
 
-import UserContext from "../context/UserContext";
+import Container from "reactstrap/lib/Container";
+import Button from "reactstrap/lib/Button";
+import Card from "reactstrap/lib/Card";
+import CardHeader from "reactstrap/lib/CardHeader";
+import CardBody from "reactstrap/lib/CardBody";
+import CardText from "reactstrap/lib/CardText";
+
 import ImagePreviewer from "../components/ImagePreviewer";
+import EditButton from "../components/EditButton";
 import BookmarkButton from "../components/BookmarkButton";
+import Rating from "../components/Rating";
 import CommentGallery from "../components/CommentGallery";
+import SuggestionGallery from "../components/SuggestionGallery";
+
+import UserContext from "../context/UserContext";
 
 import "./css/View.css";
-import Rating from "../components/Rating";
-import SuggestionGallery from "../components/SuggestionGallery";
-import EditButton from "../components/EditButton";
 
 function View() {
 	const { userData } = useContext(UserContext);

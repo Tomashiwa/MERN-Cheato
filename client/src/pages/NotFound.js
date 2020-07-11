@@ -1,6 +1,12 @@
 import React from 'react'
-import { Container, Button, Card, CardHeader, CardBody, CardText } from "reactstrap";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
+import Container from "reactstrap/lib/Container";
+import Button from "reactstrap/lib/Button";
+import Card from "reactstrap/lib/Card";
+import CardHeader from "reactstrap/lib/CardHeader";
+import CardBody from "reactstrap/lib/CardBody";
+import CardText from "reactstrap/lib/CardText";
 
 function NotFound() {
     const history = useHistory();

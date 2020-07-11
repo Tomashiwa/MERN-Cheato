@@ -1,8 +1,14 @@
 import React, { useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
-import { Form, FormGroup, Label, Input, FormFeedback, Button, Container } from "reactstrap";
-
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
+
+import Form from "reactstrap/lib/Form";
+import FormGroup from "reactstrap/lib/FormGroup";
+import Label from "reactstrap/lib/Label";
+import Input from "reactstrap/lib/Input";
+import FormFeedback from "reactstrap/lib/FormFeedback";
+import Button from "reactstrap/lib/Button";
+import Container from "reactstrap/lib/Container";
 
 import UserContext from "../context/UserContext";
 

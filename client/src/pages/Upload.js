@@ -1,20 +1,24 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, {Suspense, useState, useContext, useEffect} from 'react'
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Stepper from 'react-stepper-horizontal'
-import {useHistory} from "react-router-dom"
-import UploadForm from "../components/UploadForm"
-import ImagePreviewer from '../components/ImagePreviewer';
-import {Container, Button} from 'reactstrap';
-import UserContext from '../context/UserContext';
 import axios from 'axios';
 import uuid from "uuid";
 import mongoose from "mongoose";
 import Resizer from "react-image-file-resizer";
 
+import Container from "reactstrap/lib/Container";
+import Button from "reactstrap/lib/Button";
+
+import UploadForm from "../components/UploadForm"
+// import ImagePreviewer from '../components/ImagePreviewer';
+
+import UserContext from '../context/UserContext';
 import "./css/Upload.css";
+
+const ImagePreviewer = React.lazy(() => import("../components/ImagePreviewer"));
 
 export const UPLOAD_STEP_FORM = 1;
 export const UPLOAD_STEP_PREVIEW = 2;
-
 export const STEP_CIRCLE_SIZE = 40;
 
 function Upload() {
@@ -43,45 +47,21 @@ function Upload() {
 
         console.log(`Resizing blob to 300x300 png`);
         Resizer.imageFileResizer(
-            blob, //is the file of the new image that can now be uploaded...
-            300, // is the maxWidth of the  new image
-            300, // is the maxHeight of the  new image
-            "PNG", // is the compressFormat of the  new image
-            100, // is the quality of the new image
-            0, // is the degree of clockwise rotation to apply to the image. 
+            blob,
+            300, 
+            300,
+            "PNG",
+            100,
+            0,
             newBlob => { 
                 setThumbnailBlob(newBlob);
                 console.log("resizing completed");
-            },  // is the callBack function of the new image URI
-            "blob"  // is the output type of the new image
+            },  
+            "blob"
         );
     }
 
     // Navigation events that happened when Next button is pressed
-    // const saveToDb = url => {
-    //     const newSheet = {
-    //         file: url,
-    //         user: userData.isLoaded && userData.token === undefined
-    //             ? mongoose.Types.ObjectId(-1)
-    //             : mongoose.Types.ObjectId(userData.user.id),
-    //         name: form.name,
-    //         school: mongoose.Types.ObjectId(form.school),
-    //         module: mongoose.Types.ObjectId(form.module),
-    //         description: form.description,
-    //         datetime: Date.now(),
-    //         rating: 0,
-    //         comments: [],
-    //         isPublic: form.isPublic,
-    //         isAnonymous: userData.isLoaded && userData.token === undefined
-    //     }
-
-    //     axios.post("/api/cheatsheets/add", newSheet)
-    //         .then(sheet => {
-    //             setSheetId(sheet.data._id);
-    //         })
-    //         .catch(err => console.log(err));
-    // }
-
     const upload = () => {
         const formData = new FormData();
         const thumbnailFormData = new FormData();
@@ -214,13 +194,16 @@ function Upload() {
                               </Button>
                     }
                 </div>
-                {
-                    formStep === UPLOAD_STEP_FORM
-                        ? <UploadForm form={form} setForm={setForm} setBlob={setUploadBlobs} isAnonymous={userData.isLoaded && userData.token === undefined}/>
-                    : formStep === UPLOAD_STEP_PREVIEW
-                        ? <ImagePreviewer imageURL={form.url} />
-                    : <div></div>
-                }
+
+                <Suspense fallback={<div>Loading...</div>}>
+                    {
+                        formStep === UPLOAD_STEP_FORM
+                            ? <UploadForm form={form} setForm={setForm} setBlob={setUploadBlobs} isAnonymous={userData.isLoaded && userData.token === undefined}/>
+                        : formStep === UPLOAD_STEP_PREVIEW
+                            ? <ImagePreviewer imageURL={form.url} />
+                        : <div></div>
+                    }
+                </Suspense>
             </Container>
         </div>
     )
