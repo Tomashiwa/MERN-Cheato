@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
-
-import userIcon from "../icons/icon-user.svg";
-import { Comment, Form, Button } from "semantic-ui-react";
-import "./css/CommentCard.css";
 import axios from "axios";
 
+import { Comment, Form, Button } from "semantic-ui-react";
+
+import userIcon from "../icons/icon-user.svg";
 import UserContext from "../context/UserContext";
+
+import "./css/CommentCard.css";
 
 function CommentCard({ isStale, setIsStale, comment }) {
   const { userData } = useContext(UserContext);

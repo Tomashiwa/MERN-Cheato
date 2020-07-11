@@ -1,12 +1,13 @@
-import CommentCard from "../components/CommentCard";
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import mongoose from "mongoose";
+
 import { Button, Comment, Form, Header } from "semantic-ui-react";
 
-import "./css/_CommentGallery.scss";
-
-import React, { useState, useEffect, useContext } from "react";
-import mongoose from "mongoose";
-import axios from "axios";
+import CommentCard from "../components/CommentCard";
 import UserContext from "../context/UserContext";
+
+import "./css/_CommentGallery.scss";
 
 function CommentGallery({ sheetID }) {
 	const { userData } = useContext(UserContext);
@@ -34,8 +35,6 @@ function CommentGallery({ sheetID }) {
 		setBody(e.target.value);
 	};
 
-
-
 	const submitComment = () => {
 		const newComment = {
 			user: userData.user.name,
@@ -51,8 +50,6 @@ function CommentGallery({ sheetID }) {
 				document.querySelector("#CommentText").value = "";
 			})
 			.catch((err) => console.log`(Error: ${err})`);
-
-
 	};
 
 	return (
@@ -71,8 +68,8 @@ function CommentGallery({ sheetID }) {
 						/>
 					</Form>
 				) : (
-						<></>
-					)}
+					<></>
+				)}
 				<Comment.Group>
 					<Header as="h3" dividing>
 						Comments
@@ -87,8 +84,8 @@ function CommentGallery({ sheetID }) {
 							/>
 						))
 					) : (
-							<div></div>
-						)}
+						<div></div>
+					)}
 				</Comment.Group>
 			</div>
 		</div>
