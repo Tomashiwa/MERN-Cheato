@@ -60,57 +60,27 @@ function FuseSearchbar() {
 
     // Fetch data from backend
     useEffect(() => {
-        const postConfig = {headers: {"Content-Type": "application/json"}};
-
-        const searchSheets = userData.user === undefined
-            ? axios.post("/api/cheatsheets", null, postConfig)
-            : axios.post("/api/cheatsheets", userData.user, postConfig); 
-        // const searchSchools = axios.get("/api/schools/");
-        // const searchModules = axios.get("/api/modules/");
-
-        searchSheets
-            .then(resultSheets => {
-                const sheets = resultSheets.data.map(sheet => {
-                    return {
-                        id: sheet._id,
-                        type: "sheet",
-                        data: sheet
-                    };
-                });
-
-                setList(sheets);
-            })
-
-        // Promise
-        //     .all([searchSheets, searchSchools, searchModules])
-        //     .then(resultSets => {
-        //         const sheets = resultSets[0].data.map(sheet => {
-        //             return {
-        //                 id: sheet._id,
-        //                 type: "sheet",
-        //                 data: sheet
-        //             }
-        //         });
-
-        //         const schools = resultSets[1].data.map(school => {
-        //             return {
-        //                 id: school._id,
-        //                 type: "school",
-        //                 data: school
-        //             }
-        //         });
-
-        //         const modules = resultSets[2].data.map(module => {
-        //             return {
-        //                 id: module._id,
-        //                 type: "module",
-        //                 data: module
-        //             }
-        //         });
-
-        //         setList(sheets.concat(schools, modules));
-        //     })
-    }, [userData.user])
+        if(isFocused) {
+            const postConfig = {headers: {"Content-Type": "application/json"}};
+    
+            const searchSheets = userData.user === undefined
+                ? axios.post("/api/cheatsheets", null, postConfig)
+                : axios.post("/api/cheatsheets", userData.user, postConfig); 
+    
+            searchSheets
+                .then(resultSheets => {
+                    const sheets = resultSheets.data.map(sheet => {
+                        return {
+                            id: sheet._id,
+                            type: "sheet",
+                            data: sheet
+                        };
+                    });
+    
+                    setList(sheets);
+                })
+        }
+    }, [userData.user, isFocused])
 
     // Determine results when user provide a search term
     useEffect(() => {
@@ -130,9 +100,6 @@ function FuseSearchbar() {
         const searchBar = document.querySelector("#searchbar-input");
         const search = e => {
             if(e.key === "Enter" && term.length > 0) {
-                // const fuse = new Fuse(list, optionsRef.current);
-                // const results = fuse.search(term).map(result => result.item);
-
                 setIsFocused(false);
                 setResults([]);
                 document.querySelector("#searchbar-input").value = "";
