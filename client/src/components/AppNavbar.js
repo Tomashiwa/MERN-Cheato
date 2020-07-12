@@ -64,7 +64,7 @@ function AppNavbar() {
                                     </ul>
                                 </Collapse> 
                             </> 
-                            : <div></div>
+                        : <div></div>
                     }
                 </Container>
             </Navbar>

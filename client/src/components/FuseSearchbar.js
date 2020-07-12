@@ -60,7 +60,7 @@ function FuseSearchbar() {
 
     // Fetch data from backend
     useEffect(() => {
-        if(isFocused && list.length === 0) {
+        if(isFocused) {
             const postConfig = {headers: {"Content-Type": "application/json"}};
     
             const searchSheets = userData.user === undefined

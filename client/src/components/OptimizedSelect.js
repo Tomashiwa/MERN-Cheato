@@ -30,7 +30,6 @@ const OptimizedMenuList = (props) => {
 };
 
 const OptimizedOption = (props) => {
-	//   delete props.innerProps.onMouseMove
 	delete props.innerProps.onMouseOver;
 	return <components.Option {...props}>{props.children}</components.Option>;
 };

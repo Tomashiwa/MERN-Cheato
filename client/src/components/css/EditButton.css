@@ -1,9 +1,11 @@
 #editbtn {
-    border-width: 0px;
-    padding: 0;
+	border-width: 0px;
+	padding: 0;
 }
 
-#editbtn:focus {outline:0;}
+#editbtn:focus {
+	outline: 0;
+}
 
 #editbtn-icon {
 	width: 24px;
@@ -15,5 +17,5 @@
 }
 
 #editbtn-icon:hover {
-    background-color: #ccaa44;
+	background-color: #ccaa44;
 }

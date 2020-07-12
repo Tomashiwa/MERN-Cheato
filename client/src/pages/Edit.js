@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, Suspense } from "react";
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
 
@@ -9,10 +9,12 @@ import CardHeader from "reactstrap/lib/CardHeader";
 import CardBody from "reactstrap/lib/CardBody";
 import CardText from "reactstrap/lib/CardText";
 
+// import EditForm from "../components/EditForm";
 import UserContext from "../context/UserContext";
-import EditForm from "../components/EditForm";
 
 import "./css/Edit.css";
+
+const EditForm = React.lazy(() => import("../components/EditForm"));
 
 function Edit() {
 	const { userData } = useContext(UserContext);
@@ -87,11 +89,13 @@ function Edit() {
 								</Button>
 							</div>
 				
-							<EditForm
-								form={form}
-								setForm={setForm}
-								isAnonymous={userData.isLoaded && userData.token === undefined}
-							/>
+							<Suspense fallback={<div>Loading...</div>}>
+								<EditForm
+									form={form}
+									setForm={setForm}
+									isAnonymous={userData.isLoaded && userData.token === undefined}
+								/>
+							</Suspense>
 						</Container>
 					:	<Container id="edit-container-error">
 							<Card>

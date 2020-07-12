@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, Suspense } from "react";
 import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
 
@@ -10,7 +10,6 @@ import CardBody from "reactstrap/lib/CardBody";
 import CardText from "reactstrap/lib/CardText";
 
 import ImagePreviewer from "../components/ImagePreviewer";
-import EditButton from "../components/EditButton";
 import BookmarkButton from "../components/BookmarkButton";
 import Rating from "../components/Rating";
 import CommentGallery from "../components/CommentGallery";
@@ -19,6 +18,8 @@ import SuggestionGallery from "../components/SuggestionGallery";
 import UserContext from "../context/UserContext";
 
 import "./css/View.css";
+
+const EditButton = React.lazy(() => import("../components/EditButton"));
 
 function View() {
 	const { userData } = useContext(UserContext);
@@ -88,11 +89,13 @@ function View() {
 						</div>
 
 						<div id="view-feedback">
-							{
-								userData.isLoaded && userData.user && (userData.user.id === sheet.user || userData.user.isAdmin)
-								?	<EditButton sheet={sheet} />
-								:	<></>
-							}
+							<Suspense fallback={<div>Loading...</div>}>
+								{
+									userData.isLoaded && userData.user && (userData.user.id === sheet.user || userData.user.isAdmin)
+									?	<EditButton sheet={sheet} />
+									:	<></>
+								}
+							</Suspense>
 							<BookmarkButton sheet={sheet} />
 							<Rating sheet={sheet} />
 						</div>

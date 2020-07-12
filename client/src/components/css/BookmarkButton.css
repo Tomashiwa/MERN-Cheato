@@ -1,9 +1,11 @@
 #bookmarkbtn {
-    border-width: 0px;
-    padding: 0;
+	border-width: 0px;
+	padding: 0;
 }
 
-#bookmarkbtn:focus {outline:0;}
+#bookmarkbtn:focus {
+	outline: 0;
+}
 
 #bookmarkbtn-icon {
 	width: 24px;
@@ -15,7 +17,7 @@
 }
 
 #bookmarkbtn-icon:hover {
-    background-color: #ccaa44;
+	background-color: #ccaa44;
 }
 
 #bookmarkbtn-icon-toggled {
@@ -28,5 +30,5 @@
 }
 
 #bookmarkbtn-icon-toggled:hover {
-    background-color: #ffda47;
+	background-color: #ffda47;
 }

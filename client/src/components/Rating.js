@@ -5,7 +5,6 @@ import UserContext from "../context/UserContext";
 import "./css/Rating.css";
 
 import { vote, unvote } from "../lib/SuggestionEngine/Api";
-// import { update, vote, unvote } from "../lib/SuggestionEngine/SuggestionEngine";
 
 function Rating({ sheet }) {
 	const { userData } = useContext(UserContext);
@@ -63,8 +62,6 @@ function Rating({ sheet }) {
 					setIsLoading(false);
 				});
 			}
-
-			// engine.update(userData.user);
 		});
 
 		setIsUpToggled(!isUpToggled);
