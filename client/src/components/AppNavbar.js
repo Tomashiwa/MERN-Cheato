@@ -9,7 +9,6 @@ import NavItem from 'reactstrap/lib/NavItem';
 import NavLink from 'reactstrap/lib/NavLink';
 
 import FuseSearchbar from './FuseSearchbar';
-// import UserDropdown from './UserDropdown';
 import UserContext from '../context/UserContext';
 
 import "./css/AppNavbar.css"

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import axios from "axios";
+// import axios from "axios";
 
 import Form from "reactstrap/lib/Form";
 import FormGroup from "reactstrap/lib/FormGroup";
@@ -30,19 +30,22 @@ function Login() {
 			password: document.querySelector("#login-input-pass").value,
 		};
 
-		return axios
-			.post("/api/auth", user)
-			.then((loginRes) => {
-				setUserData({
-					...userData,
-					...{ token: loginRes.data.token, user: loginRes.data.user },
-				});
-				localStorage.setItem("auth-token", loginRes.data.token);
-				history.push("/");
-			})
-			.catch((err) => {
-				setInvalidMsg(err.response.data.msg);
-				setFieldsInvalid({ name: true, pass: true });
+		return import("axios")
+			.then(axios => {
+				axios
+					.post("/api/auth", user)
+					.then((loginRes) => {
+						setUserData({
+							...userData,
+							...{ token: loginRes.data.token, user: loginRes.data.user },
+						});
+						localStorage.setItem("auth-token", loginRes.data.token);
+						history.push("/");
+					})
+					.catch((err) => {
+						setInvalidMsg(err.response.data.msg);
+						setFieldsInvalid({ name: true, pass: true });
+					});
 			});
 	};
 

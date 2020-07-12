@@ -1,6 +1,8 @@
 import React from "react";
 import NotFound from "./NotFound";
-import { CardHeader, CardText, Button } from "reactstrap";
+import Button from "reactstrap/lib/Button";
+import CardHeader from "reactstrap/lib/CardHeader";
+import CardText from "reactstrap/lib/CardText";
 import mount from "enzyme/build/mount";
 
 // Page not found Header

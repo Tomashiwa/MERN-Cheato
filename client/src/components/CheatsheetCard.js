@@ -1,15 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { useHistory } from 'react-router-dom';
-
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import axios from 'axios';
+
 import UserContext from "../context/UserContext";
 
-// import similarIcon from "../icons/icon-similar.svg";
-// import authorIcon from "../icons/icon-author.svg";
-// import viewIcon from "../icons/icon-view.svg";
-// import upvoteIcon from "../icons/icon-upvote.svg";
-// import downvoteIcon from "../icons/icon-downvote.svg";
-// import bookmarkIcon from "../icons/icon-bookmark.svg";
 import "./css/CheatsheetCard.css"
 
 function CheatsheetCard({ sheet }) {

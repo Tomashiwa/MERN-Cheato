@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import axios from "axios";
+// import axios from "axios";
 
 import Form from "reactstrap/lib/Form";
 import FormGroup from "reactstrap/lib/FormGroup";
@@ -63,24 +63,27 @@ function Register() {
 		if (areInputsValid()) {
 			const newUser = { name, password, isAdmin: false };
 
-			return axios
-				.post("/api/users/register", newUser)
-				.then((registerRes) => {
-					return axios.post("/api/auth", { name, password }).then((loginRes) => {
-						setUserData({
-							...userData,
-							...{
-								token: loginRes.data.token,
-								user: loginRes.data.user,
-							},
+			return import("axios")
+				.then(axios => {
+					axios
+						.post("/api/users/register", newUser)
+						.then((registerRes) => {
+							return axios.post("/api/auth", { name, password }).then((loginRes) => {
+								setUserData({
+									...userData,
+									...{
+										token: loginRes.data.token,
+										user: loginRes.data.user,
+									},
+								});
+								localStorage.setItem("auth-token", loginRes.data.token);
+								history.push("/");
+							});
+						})
+						.catch((err) => {
+							setInvalidMsg(err.response.data.msg);
+							setFieldsInvalid({ name: true, pass: false, check: false });
 						});
-						localStorage.setItem("auth-token", loginRes.data.token);
-						history.push("/");
-					});
-				})
-				.catch((err) => {
-					setInvalidMsg(err.response.data.msg);
-					setFieldsInvalid({ name: true, pass: false, check: false });
 				});
 		}
 	};
