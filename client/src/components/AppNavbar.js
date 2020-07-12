@@ -1,6 +1,5 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, Suspense } from 'react'
 
-import UserDropdown from './UserDropdown';
 import Navbar from 'reactstrap/lib/Navbar';
 import Collapse from 'reactstrap/lib/Collapse';
 import Container from 'reactstrap/lib/Container';
@@ -10,9 +9,12 @@ import NavItem from 'reactstrap/lib/NavItem';
 import NavLink from 'reactstrap/lib/NavLink';
 
 import FuseSearchbar from './FuseSearchbar';
+// import UserDropdown from './UserDropdown';
 import UserContext from '../context/UserContext';
 
 import "./css/AppNavbar.css"
+
+const UserDropdown = React.lazy(() => import("./UserDropdown"));
 
 function AppNavbar() {
     const {userData} = useContext(UserContext);
@@ -47,24 +49,26 @@ function AppNavbar() {
                                                 Upload
                                             </NavLink>
                                         </NavItem>
-                                        {
-                                            userData.user
-                                                ? <NavItem>
-                                                    <UserDropdown />
-                                                </NavItem>
-                                                : <>
-                                                    <NavItem>
-                                                        <NavLink href="/register">Register</NavLink>
-                                                    </NavItem>
-                                                    <NavItem>
-                                                        <NavLink href="/login">Login</NavLink>
-                                                    </NavItem>
-                                                </>
-                                        }
+                                        <Suspense fallback={<div>Loading...</div>}>
+                                            {
+                                                userData.user
+                                                    ?   <NavItem>
+                                                            <UserDropdown />
+                                                        </NavItem>
+                                                    :   <>
+                                                            <NavItem>
+                                                                <NavLink href="/register">Register</NavLink>
+                                                            </NavItem>
+                                                            <NavItem>
+                                                                <NavLink href="/login">Login</NavLink>
+                                                            </NavItem>
+                                                        </>
+                                            }
+                                        </Suspense>
                                     </ul>
                                 </Collapse> 
                             </> 
-                        : <div></div>
+                        :   <div></div>
                     }
                 </Container>
             </Navbar>
