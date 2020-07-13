@@ -5,6 +5,8 @@ import axios from "axios"
 import UserContext from "./context/UserContext";
 import AppNavbar from './components/AppNavbar';
 
+import "./output/_mixins.css";
+import "./output/_compiled.css";
 // import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
 
