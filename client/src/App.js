@@ -5,7 +5,7 @@ import axios from "axios"
 import UserContext from "./context/UserContext";
 import AppNavbar from './components/AppNavbar';
 
-import "bootstrap/dist/css/bootstrap.min.css"
+// import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
 
 const Home = React.lazy(() => import("./pages/Home"));
