@@ -1,8 +1,6 @@
 import React, {Suspense, useState, useContext, useEffect} from 'react'
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Stepper from 'react-stepper-horizontal'
-// import axios from 'axios';
-// import mongoose from "mongoose";
 import uuid from "uuid";
 import Resizer from "react-image-file-resizer";
 
@@ -10,7 +8,6 @@ import Container from "reactstrap/lib/Container";
 import Button from "reactstrap/lib/Button";
 
 import UploadForm from "../components/UploadForm"
-// import ImagePreviewer from '../components/ImagePreviewer';
 
 import UserContext from '../context/UserContext';
 import "./css/Upload.css";

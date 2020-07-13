@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef, useContext, Suspense } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-// import axios from 'axios';
-// import mongoose from "mongoose";
 import uuid from "uuid";
 import Stepper from 'react-stepper-horizontal';
 import Resizer from "react-image-file-resizer";

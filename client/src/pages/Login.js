@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-// import axios from "axios";
 
 import Form from "reactstrap/lib/Form";
 import FormGroup from "reactstrap/lib/FormGroup";

@@ -37,6 +37,9 @@
     "uuid": "^8.1.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "chalk": "^4.1.0",
+    "nodemon": "^2.0.4",
+    "progress-bar-webpack-plugin": "^2.1.0",
+    "webpack-bundle-analyzer": "^3.8.0"
   }
 }
