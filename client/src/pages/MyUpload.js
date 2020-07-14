@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import Gallery from "../components/Gallery";
 
@@ -8,29 +8,34 @@ import { useParams } from "react-router-dom";
 
 import UserContext from '../context/UserContext';
 
-
-
 function MyUpload() {
     const { userData, setUserData } = useContext(UserContext);
-    //const [user, setUser] = useState(null);
+
+    const [user, setUser] = useState(null);
     const [upload, setUpload] = useState(null);
-    const [isLoaded,setIsLoaded] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [uploadText, setUploadText] = useState("");
+
     const { userID } = useParams();
+
     const textDisplay = "My Upload"
     const dropdownDisplay = false;
 
-    /* useEffect(() => {
-         if (userData.isLoaded && userData.token !== undefined) {
-             axios
-                 .get(`/api/users/${userData.user.id}`)
-                 .then((res) => {
-                     setUser(res.data);
-                 })
-                 .catch((err) => {
-                     console.log(`Fail to fetch user data: ${err}`);
-                 });
-         }
-     }, [userData]); */
+    const isUser = (userData.user.id === userID);
+
+    useEffect(() => {
+        if (userData.isLoaded && userData.token !== undefined) {
+            axios
+                .get(`/api/users/${userID}`)
+                .then((res) => {
+                    setUser(res.data);
+                    setUploadText(`${res.data.name} Upload`);
+                })
+                .catch((err) => {
+                    console.log(`Fail to fetch user data: ${err}`);
+                });
+        }
+    }, [userData,userID]);
 
     useEffect(() => {
         axios
@@ -44,13 +49,18 @@ function MyUpload() {
             });
     }, [userID]);
 
-    console.log(upload)
+    console.log(user)
 
     return (
         <div>
-            {(isLoaded) 
-            ? <Gallery cheatsheetArray = {upload} text={textDisplay} dropdown={dropdownDisplay}/>
-            : <div></div>
+            {(isLoaded)
+                ? <div>
+                    {isUser
+                        ? <Gallery cheatsheetArray={upload} text={textDisplay} dropdown={dropdownDisplay} numbering="false"/>
+                        : <Gallery cheatsheetArray={upload} text={uploadText} dropdown={dropdownDisplay} numbering="false"/>
+                    }
+                </div>
+                : <div></div>
             }
         </div>
 

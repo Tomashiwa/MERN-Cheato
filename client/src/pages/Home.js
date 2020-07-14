@@ -4,8 +4,7 @@ import Gallery from "../components/Gallery";
 
 import "./css/Home.css";
 
-function Home() {
-     const display = false
+function Home() {   
     
 return (
         <div>

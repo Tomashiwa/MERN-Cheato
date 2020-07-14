@@ -1,9 +1,9 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Stepper from 'react-stepper-horizontal'
-import {useHistory} from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import UploadForm from "../components/UploadForm"
 import ImagePreviewer from '../components/ImagePreviewer';
-import {Container, Button} from 'reactstrap';
+import { Container, Button } from 'reactstrap';
 import UserContext from '../context/UserContext';
 import axios from 'axios';
 import uuid from "uuid";
@@ -17,7 +17,7 @@ export const UPLOAD_STEP_PREVIEW = 2;
 export const STEP_CIRCLE_SIZE = 40;
 
 function Upload() {
-    const {userData} = useContext(UserContext);
+    const { userData } = useContext(UserContext);
     const [formStep, setFormStep] = useState(UPLOAD_STEP_FORM);
     const [form, setForm] = useState({
         url: "",
@@ -61,17 +61,17 @@ function Upload() {
     const upload = () => {
         const formData = new FormData();
         formData.append("file", blob, `${form.name}-${uuid.v4()}.png`);
-        
+
         axios.post("/upload", formData)
             .then(res => {
                 saveToDb(res.data.data.Location);
-                setForm({...form, ...{url: res.data.data.Location}});
+                setForm({ ...form, ...{ url: res.data.data.Location } });
             })
             .catch(err => console.log(err));
     };
 
     const saveSheet = () => {
-        if(formStep === UPLOAD_STEP_FORM) {
+        if (formStep === UPLOAD_STEP_FORM) {
             upload();
         }
     }
@@ -90,20 +90,20 @@ function Upload() {
 
     // Verify if user can proceed to next step and toggle the Next button
     useEffect(() => {
-        if(formStep === UPLOAD_STEP_FORM) {
-            if(!nextEnabled && blob !== undefined && form.name.length > 0 && form.school.length > 0 && form.module.length > 0) {
+        if (formStep === UPLOAD_STEP_FORM) {
+            if (!nextEnabled && blob !== undefined && form.name.length > 0 && form.school.length > 0 && form.module.length > 0) {
                 setNextEnabled(true);
-            } else if(nextEnabled && (blob === undefined || form.name.length === 0 || form.school.length === 0 || form.module.length === 0)) {
+            } else if (nextEnabled && (blob === undefined || form.name.length === 0 || form.school.length === 0 || form.module.length === 0)) {
                 setNextEnabled(false);
             }
         } else if (formStep === UPLOAD_STEP_PREVIEW) {
             setNextEnabled(false);
         }
     }, [form.module, form.name, form.school, form.url, formStep, nextEnabled, blob]);
-    
+
     // Direct to the sheet's view page
     const viewSheet = () => {
-        if(sheetId !== undefined) {
+        if (sheetId !== undefined) {
             history.push(`/view/${sheetId}`);
             window.location.reload();
         }
@@ -113,7 +113,7 @@ function Upload() {
         <div>
             <Container id="upload-container">
                 <Stepper
-                    size={STEP_CIRCLE_SIZE}   
+                    size={STEP_CIRCLE_SIZE}
                     defaultColor="#555555"
                     activeColor="#ffdd66"
                     completeColor="#ccaa44"
@@ -122,7 +122,7 @@ function Upload() {
                     defaultBarColor="#555555"
                     completeBarColor="#ccaa44"
                     circleFontColor="#555555"
-                    steps={[{title: "Upload"}, {title: "Preview"}]}
+                    steps={[{ title: "Upload" }, { title: "Preview" }]}
                     activeStep={formStep - 1}
                 />
 
@@ -131,9 +131,9 @@ function Upload() {
                         {
                             formStep === UPLOAD_STEP_FORM
                                 ? "Upload your cheatsheet"
-                            : formStep === UPLOAD_STEP_PREVIEW
-                                ? "Preview"
-                            : ""
+                                : formStep === UPLOAD_STEP_PREVIEW
+                                    ? "Preview"
+                                    : ""
                         }
                     </h2>
 
@@ -149,10 +149,10 @@ function Upload() {
                 </div>
                 {
                     formStep === UPLOAD_STEP_FORM
-                        ? <UploadForm form={form} setForm={setForm} setBlob={setBlob} isAnonymous={userData.isLoaded && userData.token === undefined}/>
-                    : formStep === UPLOAD_STEP_PREVIEW
-                        ? <ImagePreviewer imageURL={form.url} />
-                    : <div></div>
+                        ? <UploadForm form={form} setForm={setForm} setBlob={setBlob} isAnonymous={userData.isLoaded && userData.token === undefined} />
+                        : formStep === UPLOAD_STEP_PREVIEW
+                            ? <ImagePreviewer imageURL={form.url} />
+                            : <div></div>
                 }
             </Container>
         </div>

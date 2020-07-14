@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import Gallery from "../components/Gallery";
 
@@ -12,15 +12,21 @@ import { useParams } from "react-router-dom";
 
 function MyBookmark() {
     const { userData, setUserData } = useContext(UserContext);
+    
     const [user, setUser] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [bookmarked, setBookmarked] = useState(null);
     const [display, setDisplay] = useState(null);
-    console.log(userData.user.id)
+    const [bookmarkText, setBookmarkText] = useState("");
+    
     const { userID } = useParams();
+    
     const cheatsheetObjectArray = [];
     const textDisplay = "My Bookmarks"
     const dropdownDisplay = false;
+    
+    
+    const isUser = (userData.user.id === userID);
 
     useEffect(() => {
         if (userData.isLoaded && userData.token !== undefined) {
@@ -34,14 +40,12 @@ function MyBookmark() {
                     console.log(`Fail to fetch user data: ${err}`);
                 });
         }
-    }, [userData]);
+    }, [userData,userID]);
 
-    /*setBookmarked(user.bookmarks)
-                        setIsLoaded(true);
-        */
     useEffect(() => {
         if (user !== null) {
             setBookmarked(user.bookmarks);
+            setBookmarkText(`${user.name} Bookmark`);
         }
     }, [user])
 
@@ -61,17 +65,19 @@ function MyBookmark() {
                     });
             }
         }
-    }, [bookmarked]);
+    }, [bookmarked,userData]);
 
-    console.log(cheatsheetObjectArray)
-    console.log(display)
-
-
+    console.log(user)
 
     return (
         <div>
             {isLoaded
-                ? <Gallery cheatsheetArray={display} text={textDisplay} dropdown={dropdownDisplay} />
+                ? <div>
+                    {isUser 
+                        ? <Gallery cheatsheetArray={display} text={textDisplay} dropdown={dropdownDisplay} numbering="false"/>
+                        : <Gallery cheatsheetArray={display} text={bookmarkText} dropdown={dropdownDisplay} numbering="false"/>
+                    }
+                </div>
                 : <div></div>
             }
         </div>
