@@ -18,6 +18,9 @@ const Edit = React.lazy(() => import("./pages/Edit"));
 const Register = React.lazy(() => import("./pages/Register"));
 const Login = React.lazy(() => import("./pages/Login"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
+const Profile = React.lazy(() => import("./pages/Profile"));
+const MyUpload = React.lazy(() => import("./pages/MyUpload"));
+const MyBookmark = React.lazy(() => import("./pages/MyBookmark"));
 
 function App() {
 	const [userData, setUserData] = useState({
