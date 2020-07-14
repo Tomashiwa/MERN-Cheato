@@ -34,3 +34,13 @@
     top:0px;
     left:-100px;
 }
+
+.pageButtons{
+    position:absolute;
+    top:0px;
+    right:0px;
+}
+
+btn-secondary {
+    background-color:#7FDBFF
+}

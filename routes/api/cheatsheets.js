@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const engine = require("../../client/src/lib/SuggestionEngine/Engine");
 
+var mongoose = require('mongoose')
+
 //Cheatsheet model
 const Cheatsheet = require("../../models/Cheatsheet");
 const ObjectId = require("mongoose").Types.ObjectId;
@@ -277,4 +279,12 @@ router.get("/random", (req, res) => {
 	})
 });
 
+router.get("/byUser/:userID", (req, res) => {
+    Cheatsheet.find({user:mongoose.Types.ObjectId(req.params.userID)})
+        .then(cheatsheet => res.json(cheatsheet))
+        .catch(err => res.status(404).json({msg: `Cheatsheet with ${req.params.userID} cannot be found`}));
+})
+
+
+//So other files can read what's in this file
 module.exports = router;

@@ -21,7 +21,7 @@ function NotFound() {
                 <CardHeader tag="h3">Page not found</CardHeader>
                 <CardBody>
                     <CardText>
-                        The page you trying to acccess does not exist. Please try again or return to home.
+                        The page you trying to access does not exist. Please try again or return to home.
                     </CardText>
                     <Button onClick={goHome}>Back to Home</Button>
                 </CardBody>

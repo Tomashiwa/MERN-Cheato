@@ -28,20 +28,20 @@ function App() {
 
 	useEffect(() => {
 		// Check if there's any token in local storage and use it to retrieve user information
-		const checkLoggedIn = async() => {
+		const checkLoggedIn = async () => {
 			let token = localStorage.getItem("auth-token");
 
-			if(!token) {
+			if (!token) {
 				localStorage.setItem("auth-token", "");
 				token = "";
 			}
 
-			const tokenRes = await axios.post("/api/users/tokenIsValid", null, {headers: {"Content-Type": "application/json", "x-auth-token": token}});
+			const tokenRes = await axios.post("/api/users/tokenIsValid", null, { headers: { "Content-Type": "application/json", "x-auth-token": token } });
 
-			if(tokenRes.data.isValid) {
-				setUserData({token, user: tokenRes.data.user, isLoaded: true});
+			if (tokenRes.data.isValid) {
+				setUserData({ token, user: tokenRes.data.user, isLoaded: true });
 			} else {
-				setUserData({token: undefined, user: undefined, isLoaded: true});
+				setUserData({ token: undefined, user: undefined, isLoaded: true });
 			}
 		}
 
@@ -50,29 +50,32 @@ function App() {
 
 	return (
 		<BrowserRouter>
-			<UserContext.Provider value={{userData, setUserData}}>
+			<UserContext.Provider value={{ userData, setUserData }}>
 				<AppNavbar />
 				<div>
 					{
 						userData.isLoaded
-							?	<Suspense fallback={<div>Loading...</div>}>
-									<Switch>
-										<Route exact path="/create" component={Create} />
-										<Route exact path="/upload" component={Upload} />
-										<Route exact path="/view/:id" component={View} />
-										{ userData.token === undefined && <Route exact path="/edit/:id" component={Edit} />}
-										{ userData.token === undefined && <Route exact path="/register" component={Register}/>}
-										{ userData.token === undefined && <Route exact path="/login" component={Login}/>}
-										<Route exact path="/" component={Home} />
-										<Route exact path="*" component={NotFound} />
-									</Switch>
-								</Suspense>
-							: 	<div></div>
+							? <Suspense fallback={<div>Loading...</div>}>
+								<Switch>
+									<Route exact path="/create" component={Create} />
+									<Route exact path="/upload" component={Upload} />
+									<Route exact path="/view/:id" component={View} />
+									{userData.token === undefined && <Route exact path="/edit/:id" component={Edit} />}
+									{userData.token === undefined && <Route exact path="/register" component={Register} />}
+									{userData.token === undefined && <Route exact path="/login" component={Login} />}
+									<Route exact path="/profile/:userID" component={Profile} />
+									<Route exact path="/MyUpload/:userID" component={MyUpload} />
+									<Route exact path="/MyBookmark/:userID" component={MyBookmark} />
+									<Route exact path="/" component={Home} />
+									<Route exact path="*" component={NotFound} />
+								</Switch>
+							</Suspense>
+							: <div></div>
 					}
 				</div>
 			</UserContext.Provider>
 		</BrowserRouter>
-  	);
+	);
 }
 
 export default App;
