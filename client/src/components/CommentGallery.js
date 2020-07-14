@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import mongoose from "mongoose";
 
 import { Button, Comment, Form, Header } from "semantic-ui-react";
 
@@ -36,20 +35,22 @@ function CommentGallery({ sheetID }) {
 	};
 
 	const submitComment = () => {
-		const newComment = {
-			user: userData.user.name,
-			datetime: Date.now(),
-			cheatsheet: mongoose.Types.ObjectId(sheetID),
-			body: body,
-		};
+		import("mongoose").then((mongoose) => {
+			const newComment = {
+				user: userData.user.name,
+				datetime: Date.now(),
+				cheatsheet: mongoose.Types.ObjectId(sheetID),
+				body: body,
+			};
 
-		axios
-			.post("/api/comments", newComment)
-			.then((res) => {
-				setIsStale(!isStale);
-				document.querySelector("#CommentText").value = "";
-			})
-			.catch((err) => console.log`(Error: ${err})`);
+			axios
+				.post("/api/comments", newComment)
+				.then((res) => {
+					setIsStale(!isStale);
+					document.querySelector("#CommentText").value = "";
+				})
+				.catch((err) => console.log`(Error: ${err})`);
+		});
 	};
 
 	return (

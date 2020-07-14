@@ -9,7 +9,6 @@ import CardHeader from "reactstrap/lib/CardHeader";
 import CardBody from "reactstrap/lib/CardBody";
 import CardText from "reactstrap/lib/CardText";
 
-// import EditForm from "../components/EditForm";
 import UserContext from "../context/UserContext";
 
 import "./css/Edit.css";
@@ -21,7 +20,6 @@ function Edit() {
 	const { id } = useParams();
 	const history = useHistory();
 
-	const [sheet, setSheet] = useState(null);
 	const [form, setForm] = useState({
 		name: "",
 		school: "",
@@ -56,7 +54,6 @@ function Edit() {
 		axios.post(`/api/cheatsheets/${id}`, userData.user)
 			.then((result) => {
 				const fetchedSheet = result.data;
-				setSheet(fetchedSheet);
 				setForm({
 					name: fetchedSheet.name,
 					school: fetchedSheet.school,
