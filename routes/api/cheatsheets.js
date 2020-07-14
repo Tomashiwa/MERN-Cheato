@@ -3,8 +3,6 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const engine = require("../../client/src/lib/SuggestionEngine/Engine");
 
-var mongoose = require('mongoose')
-
 //Cheatsheet model
 const Cheatsheet = require("../../models/Cheatsheet");
 const ObjectId = require("mongoose").Types.ObjectId;
