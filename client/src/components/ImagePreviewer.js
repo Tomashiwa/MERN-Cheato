@@ -68,6 +68,7 @@ function ImagePreviewer({imageURL}) {
 
     //Load image onto previewer and adjust previewer's scaling to fit the image's dimension
     useEffect(() => {
+        console.log(imageURL);
         if(displayImage !== null) {
             var img = new Image();
             img.onload = () => {
@@ -97,9 +98,10 @@ function ImagePreviewer({imageURL}) {
             }
 
             img.crossOrigin = "anonymous";
-            img.src = imageURL + "?noCache=" + Math.random().toString();
+            img.src = imageURL;// + "?noCache=" + Math.random().toString();
         } else {
-            Konva.Image.fromURL(imageURL + "?noCache=" + Math.random().toString(), image => {
+            Konva.Image.fromURL(imageURL, image => {
+            // Konva.Image.fromURL(imageURL + "?noCache=" + Math.random().toString(), image => {
                 image.transformsEnabled("none");
                 image.setAbsolutePosition({x: 0, y: 0});
                 
@@ -229,7 +231,8 @@ function ImagePreviewer({imageURL}) {
         }
 
         const download = e => {
-            fetch(imageURL + "?noCache=" + Math.random().toString())
+            fetch(imageURL)
+            // fetch(imageURL + "?noCache=" + Math.random().toString())
                 .then(response => {
                     return response.blob();
                 })

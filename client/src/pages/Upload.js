@@ -18,6 +18,8 @@ export const UPLOAD_STEP_FORM = 1;
 export const UPLOAD_STEP_PREVIEW = 2;
 export const STEP_CIRCLE_SIZE = 40;
 
+export const cloudfrontURL = "https://d2conugba1evp1.cloudfront.net/";
+
 function Upload() {
     const {userData} = useContext(UserContext);
     const [formStep, setFormStep] = useState(UPLOAD_STEP_FORM);
@@ -71,8 +73,7 @@ function Upload() {
             .then(([axios, mongoose]) => {
                 axios.post("/upload", formData)
                     .then(res => {
-                        // saveToDb(res.data.data.Location);
-                        setForm({...form, ...{url: res.data.data.Location}});
+                        setForm({...form, ...{url: cloudfrontURL.concat(res.data.data.Key)}});
                         console.log('res.data:', res.data);
         
                         if(thumbnailBlob) {
@@ -82,11 +83,10 @@ function Upload() {
                                 .then(thumbnailRes => {
                                     console.log('thumbnailRes.data:', thumbnailRes.data);
         
-                                    setForm({...form, ...{thumbnailUrl: thumbnailRes.data.data.Location}});
-                                    
+                                    setForm({...form, ...{thumbnailUrl: cloudfrontURL.concat(thumbnailRes.data.data.Key)}});
                                     const newSheet = {
-                                        file: res.data.data.Location,
-                                        thumbnail: thumbnailRes.data.data.Location,
+                                        file: cloudfrontURL.concat(res.data.data.Key),
+                                        thumbnail: cloudfrontURL.concat(thumbnailRes.data.data.Key), 
                                         user: userData.isLoaded && userData.token === undefined
                                             ? mongoose.Types.ObjectId(-1)
                                             : mongoose.Types.ObjectId(userData.user.id),

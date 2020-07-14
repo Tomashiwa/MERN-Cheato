@@ -21,6 +21,8 @@ export const CREATE_STEP_FORM = 2;
 export const CREATE_STEP_PREVIEW = 3;
 export const STEP_CIRCLE_SIZE = 40;
 
+export const cloudfrontURL = "https://d2conugba1evp1.cloudfront.net/";
+
 export const ImagesContext = React.createContext(null);
 export const ConfigContext = React.createContext(null);
 
@@ -86,7 +88,7 @@ function Create() {
             .then(([axios, mongoose]) => {
                 axios.post("/upload", formData)
                     .then(res => {
-                        setForm({...form, ...{url: res.data.data.Location}});
+                        setForm({...form, ...{url: cloudfrontURL.concat(res.data.data.Key)}});
                         console.log("res.data", res.data);
                         
                         if(thumbnailBlobRef.current) {
@@ -96,10 +98,10 @@ function Create() {
                             .then(thumbnailRes => {
                                 console.log("thumbnailres.data", thumbnailRes.data);
         
-                                setForm({...form, ...{thumbnailUrl: thumbnailRes.data.data.Location}});
+                                setForm({...form, ...{thumbnailUrl: cloudfrontURL.concat(thumbnailRes.data.data.Key)}});
                                 const newCheatsheet = {
-                                    file: res.data.data.Location,
-                                    thumbnail: thumbnailRes.data.data.Location, 
+                                    file: cloudfrontURL.concat(res.data.data.Key),
+                                    thumbnail: cloudfrontURL.concat(thumbnailRes.data.data.Key), 
                                     user: userData.isLoaded && userData.token === undefined
                                         ? mongoose.Types.ObjectId(-1)
                                         : mongoose.Types.ObjectId(userData.user.id),
