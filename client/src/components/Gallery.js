@@ -27,18 +27,16 @@ export const SELECT_STYLE = {
 	}),
 };
 
+export const SHEETS_PER_PAGE = 9;
 
-
-function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering = true }) {
+function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPagination = true, injectedSheets = [] }) {
 	const { userData } = useContext(UserContext);
 
 	const [sortOrder, setSortOrder] = useState("dateTime");
 	const [schFilter, setSchFilter] = useState(null);
 	const [modFilter, setModfilter] = useState(null);
 
-	const [isLoaded, setIsLoaded] = useState(false);
 	const [sheets, setSheets] = useState([]);
-	const [displaySheets, setDisplaySheets] = useState([]);
 
 	const [schOpts, setSchOpts] = useState([]);
 	const [modOpts, setModOpts] = useState([]);
@@ -46,37 +44,31 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 	const [schLoading, setSchLoading] = useState(false);
 	const [modLoading, setModLoading] = useState(false);
 
-	const [currentPage, setCurrentPage] = useState(1);
-	const [cheatsheetPerPage, setCheatsheetPerPage] = useState(9);
 	const [prev, setPrev] = useState(true);
 	const [next, setNext] = useState(true);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [sheetsCount, setSheetsCount] = useState(0);
 
-	const isText = (text === "");
-	const isDropdown = (dropdown === true);
-	const isNumbering = (numbering === true);
+	const changeSch = (option) => {
+		setCurrentPage(1);
+		setSchFilter(option);
+		setModfilter(null);
+	};
+	const changeMod = (option) => {
+		setCurrentPage(1);
+		setModfilter(option)
+	};
+	const changeSort = (option) => {
+		setCurrentPage(1);
+		setSortOrder(option.value)
+	};
+	const paginate = (pageNum) => setCurrentPage(pageNum);
+	const nextPage = () => setCurrentPage(currentPage + 1);
+	const previousPage = () => setCurrentPage(currentPage - 1);
 
-	const indexOfLastCard = currentPage * cheatsheetPerPage;
-	const indexOfFirstCard = indexOfLastCard - cheatsheetPerPage;
-	const currentCard = displaySheets.slice(indexOfFirstCard, indexOfLastCard)
-
-	const pageNum = []
-
+	// Fetch school upon page start
 	useEffect(() => {
-		const postConfig = { headers: { "Content-Type": "application/json" } };
-		const userInfo = userData.user !== undefined ? userData.user : null;
-		if (cheatsheetArray === null || cheatsheetArray.length === 0) {
-			axios.post("/api/cheatsheets", userInfo, postConfig).then((res) => {
-				setSheets(res.data);
-				setDisplaySheets(res.data);
-				setIsLoaded(true);
-			});
-		} else {
-			setSheets(cheatsheetArray);
-			setDisplaySheets(cheatsheetArray)
-		}
-
 		setSchLoading(true);
-
 		axios
 			.get("/api/schools")
 			.then((res) => {
@@ -92,8 +84,9 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 			.catch((err) => {
 				console.log(`Fail to fetch Schools: ${err}`);
 			});
-	}, [userData.user]);
+	}, []);
 
+	// Fetch modules upon selecting a school
 	useEffect(() => {
 		if (schFilter && schFilter.value !== null) {
 			setModLoading(true);
@@ -113,39 +106,37 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 	}, [schFilter]);
 
 	useEffect(() => {
-		let sortedSheets = sheets.slice(0, sheets.length);
+		if(injectedSheets.length === 0) {
+			let config = {
+				user: userData.user !== undefined ? userData.user : null,
+				filter: {},
+				sortBy: sortOrder,
+				itemsPerPage: SHEETS_PER_PAGE
+			};
 
-		if (sortOrder === "dateTime") {
-			sortedSheets.sort((a, b) => {
-				return new Date(b.date) - new Date(a.date);
+			console.log('schFilter:', schFilter)
+			if(schFilter && schFilter.value) {
+				config.filter.school = schFilter.value;
+			}
+
+			console.log('modFilter:', modFilter)
+			if(modFilter && modFilter.value) {
+				config.filter.module = modFilter.value;
+			}
+
+			console.log('config:', config);
+	
+			axios.post("/api/cheatsheets/sheetCount", config).then((result) => {
+				console.log("result.data.count", result.data.count);
+				setSheetsCount(result.data.count);
 			});
-		} else if (sortOrder === "rating") {
-			sortedSheets.sort((a, b) => (a.rating < b.rating ? 1 : -1));
+	
+			axios.post(`/api/cheatsheets/page/${currentPage}`, config).then((result) => {
+				console.log("result.data:", result.data);
+				setSheets(result.data);
+			});
 		}
-
-		if (schFilter && schFilter.value) {
-			sortedSheets = sortedSheets.filter((sheet) => sheet.school === schFilter.value);
-		}
-
-		if (modFilter && modFilter.value) {
-			sortedSheets = sortedSheets.filter((sheet) => sheet.module === modFilter.value);
-		}
-
-		setDisplaySheets(sortedSheets);
-	}, [sortOrder, schFilter, modFilter, sheets]);
-
-	const changeSort = (option) => {
-		setSortOrder(option.value);
-	};
-
-	const changeSch = (option) => {
-		setSchFilter(option);
-		setModfilter(null);
-	};
-
-	const changeMod = (option) => {
-		setModfilter(option);
-	};
+	}, [schFilter, modFilter, sortOrder, userData.user, currentPage, injectedSheets.length]);
 
 	useEffect(() => {
 		if (currentPage === 1) {
@@ -153,35 +144,23 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 		} else {
 			setPrev(true);
 		}
-	}, [currentPage])
+	}, [currentPage]);
 
 	useEffect(() => {
-		if (currentPage === Math.ceil(displaySheets.length / cheatsheetPerPage)) {
+		if (currentPage === Math.ceil(sheetsCount / SHEETS_PER_PAGE)) {
 			setNext(false);
 		} else {
 			setNext(true);
 		}
-	}, [currentPage])
-
-	const paginate = pageNum => setCurrentPage(pageNum);
-
-	const nextPage = () => setCurrentPage(currentPage + 1);
-
-	const previousPage = () => setCurrentPage(currentPage - 1);
-
-	console.log(currentPage)
+	}, [currentPage, sheetsCount]);
 
 	return (
 		<div>
 			<Container>
-				{isText
-					? <h3>Browse Cheatsheets</h3>
-					: <div>
-						<h3>{text}</h3>
-					</div>
-				}
-				{isDropdown
-					? <div id="gallery-toolbar">
+				<h3>{title}</h3>
+
+				{hasToolbar ? (
+					<div id="gallery-toolbar">
 						<div className="gallery-tool-group">
 							<div className="gallery-tool-label">School</div>
 							<Select
@@ -228,17 +207,28 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 							/>
 						</div>
 					</div>
-					: <div></div>
-				}
+				) : (
+					<div></div>
+				)}
 				<div className="gallery">
-					{currentCard.map((cs, index) => (
+					{sheets.map((cs, index) => (
 						<CheatsheetCard key={index} sheet={cs} />
-					))} */}
+					))}
 				</div>
-				{isNumbering
-					? <Pagination cheatsheetPerPage={cheatsheetPerPage} totalCount={displaySheets.length} paginate={paginate} nextPage={nextPage} previousPage={previousPage} isPrev={prev} isNext={next} currentPage={currentPage}></Pagination>
-					: <div></div>
-				}
+				{hasPagination && (injectedSheets.length > 0 || sheetsCount > SHEETS_PER_PAGE) ? (
+					<Pagination
+						cheatsheetPerPage={SHEETS_PER_PAGE}
+						totalCount={sheetsCount}
+						paginate={paginate}
+						nextPage={nextPage}
+						previousPage={previousPage}
+						isPrev={prev}
+						isNext={next}
+						currentPage={currentPage}
+					></Pagination>
+				) : (
+					<div></div>
+				)}
 			</Container>
 		</div>
 	);

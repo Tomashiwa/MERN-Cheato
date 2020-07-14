@@ -1,9 +1,9 @@
 import React from "react";
 
-import "./css/Pagination.css";
-
 import Button from "reactstrap/lib/Button";
 import ButtonGroup from "reactstrap/lib/ButtonGroup";
+
+import "./css/Pagination.css";
 
 const Pagination = ({ currentPage, cheatsheetPerPage, totalCount, paginate, nextPage, previousPage, isPrev, isNext }) => {
     const pageNum = [];
@@ -12,12 +12,6 @@ const Pagination = ({ currentPage, cheatsheetPerPage, totalCount, paginate, next
         const active = (currentPage === i ? "active" :"");
         pageNum.push(<Button className={`waves-effect ${active}`} key={i} onClick={() => paginate(i)}>{i}</Button>)
     }
-    console.log(pageNum)
-   /* {pageNum.map(number => (
-        <Button key={number} variant="light" className={`waves-effect ${active}`} onClick={() => paginate(number)}>
-            {number}
-        </Button>
-    ))}*/
 
     return (
         <nav>
@@ -25,14 +19,14 @@ const Pagination = ({ currentPage, cheatsheetPerPage, totalCount, paginate, next
 
                 <ButtonGroup>
                     {isPrev
-                        ? (<Button variant="light" classname="page" onClick={() => previousPage()}>
+                        ? (<Button variant="light" className="page" onClick={() => previousPage()}>
                             Prev
                 </Button>)
                         : <div></div>
                     }
                     {pageNum}
                     {isNext
-                        ? (<Button variant="light" classname="page" onClick={() => nextPage()}>
+                        ? (<Button variant="light" className="page" onClick={() => nextPage()}>
                             Next
                 </Button>)
                         : <div></div>

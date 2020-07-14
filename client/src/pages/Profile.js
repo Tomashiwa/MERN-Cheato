@@ -30,8 +30,6 @@ function Profile() {
     const [display, setDisplay] = useState(null);
     const [uploadText, setUploadText] = useState("");
     const [bookmarkText, setBookmarkText] = useState("");
-
-    console.log(user)
     
     const { userID } = useParams();
     

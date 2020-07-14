@@ -14,14 +14,8 @@ function MyUpload() {
     const [user, setUser] = useState(null);
     const [upload, setUpload] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [uploadText, setUploadText] = useState("");
 
     const { userID } = useParams();
-
-    const textDisplay = "My Upload"
-    const dropdownDisplay = false;
-
-    const isUser = (userData.user.id === userID);
 
     useEffect(() => {
         if (userData.isLoaded && userData.token !== undefined) {
@@ -29,7 +23,6 @@ function MyUpload() {
                 .get(`/api/users/${userID}`)
                 .then((res) => {
                     setUser(res.data);
-                    setUploadText(`${res.data.name} Upload`);
                 })
                 .catch((err) => {
                     console.log(`Fail to fetch user data: ${err}`);
@@ -49,21 +42,19 @@ function MyUpload() {
             });
     }, [userID]);
 
-    console.log(user)
-
     return (
         <div>
-            {(isLoaded)
-                ? <div>
-                    {isUser
-                        ? <Gallery cheatsheetArray={upload} text={textDisplay} dropdown={dropdownDisplay} numbering="false"/>
-                        : <Gallery cheatsheetArray={upload} text={uploadText} dropdown={dropdownDisplay} numbering="false"/>
-                    }
-                </div>
-                : <div></div>
-            }
-        </div>
-
+			{isLoaded ? (
+				<Gallery
+					injectedSheets={upload}
+					title={userData.user.id === userID ? "My Uploads" : `${user.name}'s Uploads`}
+					hasToolbar={false}
+					hasPagination={false}
+				/>
+			) : (
+				<div></div>
+			)}
+		</div>
     )
 }
 

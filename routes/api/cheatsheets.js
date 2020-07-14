@@ -40,6 +40,101 @@ router.post("/", (req, res) => {
 	}
 });
 
+router.post("/sheetCount", (req, res) => {
+	let filter = {};
+	if (req.body.filter.school && req.body.filter.module) {
+		filter = {
+			$and: [
+				{ school: mongoose.Types.ObjectId(req.body.filter.school) },
+				{ module: mongoose.Types.ObjectId(req.body.filter.module) },
+			],
+		};
+	} else if (req.body.filter.school) {
+		filter = { school: mongoose.Types.ObjectId(req.body.filter.school) };
+	} else if (req.body.filter.module) {
+		filter = { module: mongoose.Types.ObjectId(req.body.filter.module) };
+	}
+
+	if (!req.body.user) {
+		Cheatsheet.countDocuments({ $and: [{ isPublic: true }, filter] }, (err, count) => {
+			res.status(200).json({ count });
+		});
+	} else {
+		const { id, isAdmin } = req.body.user;
+
+		if (isAdmin) {
+			Cheatsheet.countDocuments(filter, (err, count) => {
+				res.status(200).json({ count });
+			});
+		} else {
+			Cheatsheet.countDocuments(
+				{
+					$or: [
+						{ $and: [{ user: new ObjectId(id) }, filter] },
+						{ $and: [{ isPublic: true }, filter] },
+					],
+				},
+				(err, count) => {
+					res.status(200).json({ count });
+				}
+			);
+		}
+	}
+});
+
+router.post("/page/:pageId", (req, res) => {
+	if (!req.params.pageId) {
+		res.status(404).json({ msg: "Please provide a page id" });
+	} else {
+		let filter = {};
+		if (req.body.filter.school && req.body.filter.module) {
+			filter = {
+				$and: [
+					{ school: mongoose.Types.ObjectId(req.body.filter.school) },
+					{ module: mongoose.Types.ObjectId(req.body.filter.module) },
+				],
+			};
+		} else if (req.body.filter.school) {
+			filter = { school: mongoose.Types.ObjectId(req.body.filter.school) };
+		} else if (req.body.filter.module) {
+			filter = { module: mongoose.Types.ObjectId(req.body.filter.module) };
+		}
+
+		console.log(`filter`, filter);
+
+		const sortBy = req.body.sortBy === "dateTime" ? { datetime: -1 } : { rating: -1 };
+
+		if (!req.body.user) {
+			Cheatsheet.find({ isPublic: true, ...filter })
+				.sort(sortBy)
+				.skip((req.params.pageId - 1) * req.body.itemsPerPage)
+				.limit(req.body.itemsPerPage)
+				.then((cheatsheets) => res.json(cheatsheets));
+		} else {
+			const { id, isAdmin } = req.body.user;
+
+			if (isAdmin) {
+				Cheatsheet.find(filter)
+					.sort(sortBy)
+					.skip((req.params.pageId - 1) * req.body.itemsPerPage)
+					.limit(req.body.itemsPerPage)
+					.then((cheatsheets) => res.json(cheatsheets));
+			} else {
+				Cheatsheet.find({
+					$or: [
+						{ user: new ObjectId(id), ...filter },
+						{ isPublic: true, ...filter },
+					],
+				})
+					.sort(sortBy)
+					.skip((req.params.pageId - 1) * req.body.itemsPerPage)
+					.limit(req.body.itemsPerPage)
+					.then((cheatsheets) => res.json(cheatsheets));
+			}
+		}
+	}
+});
+
 // @route POST api/cheatsheets
 // @descr Create a cheatsheet
 // @access Public
@@ -147,10 +242,13 @@ router.post("/vote/add/:sheetId", (req, res, next) => {
 			let upvotedUsers = cheatsheet.upvotedUsers;
 			upvotedUsers.push(mongoose.Types.ObjectId(userId));
 
-			Cheatsheet.updateOne({ _id: req.params.sheetId }, { upvotedUsers })
+			Cheatsheet.updateOne(
+				{ _id: req.params.sheetId },
+				{ upvotedUsers, rating: upvotedUsers.length - cheatsheet.downvotedUsers.length }
+			)
 				.then((result) => {
-					res.status(200).json({ upvotedUsers });
-					engine.update({id: userId});
+					res.status(200).json({ upvotedUsers, rating: upvotedUsers.length - cheatsheet.downvotedUsers.length });
+					engine.update({ id: userId });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		});
@@ -159,10 +257,13 @@ router.post("/vote/add/:sheetId", (req, res, next) => {
 			let downvotedUsers = cheatsheet.downvotedUsers;
 			downvotedUsers.push(mongoose.Types.ObjectId(userId));
 
-			Cheatsheet.updateOne({ _id: req.params.sheetId }, { downvotedUsers })
+			Cheatsheet.updateOne(
+				{ _id: req.params.sheetId },
+				{ downvotedUsers, rating: cheatsheet.upvotedUsers.length - downvotedUsers.length }
+			)
 				.then((result) => {
-					res.status(200).json({ downvotedUsers });
-					engine.update({id: userId});
+					res.status(200).json({ downvotedUsers, rating: cheatsheet.upvotedUsers.length - downvotedUsers.length });
+					engine.update({ id: userId });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		});
@@ -183,10 +284,13 @@ router.post("/vote/remove/:sheetId", (req, res, next) => {
 			let upvotedUsers = cheatsheet.upvotedUsers;
 			upvotedUsers.remove(userId);
 
-			Cheatsheet.updateOne({ _id: req.params.sheetId }, { upvotedUsers })
+			Cheatsheet.updateOne(
+				{ _id: req.params.sheetId },
+				{ upvotedUsers, rating: upvotedUsers.length - cheatsheet.downvotedUsers.length }
+			)
 				.then((result) => {
-					res.status(200).json({ upvotedUsers });
-					engine.update({id: userId});
+					res.status(200).json({ upvotedUsers, rating: upvotedUsers.length - cheatsheet.downvotedUsers.length });
+					engine.update({ id: userId });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		});
@@ -195,10 +299,13 @@ router.post("/vote/remove/:sheetId", (req, res, next) => {
 			let downvotedUsers = cheatsheet.downvotedUsers;
 			downvotedUsers.remove(userId);
 
-			Cheatsheet.updateOne({ _id: req.params.sheetId }, { downvotedUsers })
+			Cheatsheet.updateOne(
+				{ _id: req.params.sheetId },
+				{ downvotedUsers, rating: cheatsheet.upvotedUsers.length - downvotedUsers.length }
+			)
 				.then((result) => {
-					res.status(200).json({ downvotedUsers });
-					engine.update({id: userId});
+					res.status(200).json({ downvotedUsers, rating: cheatsheet.upvotedUsers.length - downvotedUsers.length });
+					engine.update({ id: userId });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
 		});
@@ -251,38 +358,42 @@ router.get("/withoutVotes/:userId", (req, res) => {
 });
 
 router.post("/edit/:sheetId", (req, res) => {
-	// req.body => userData (requesting user), form (properties to be updated with)
 	const { user, form } = req.body;
 
-	Cheatsheet.findById(req.params.sheetId)
-		.then(sheet => {
-			if(sheet.isPublic || user.isAdmin || (!sheet.isPublic && sheet.user.toString() === user.id)) {
-				Cheatsheet.updateOne({_id: req.params.sheetId}, form)
-					.then(result => {
-						res.json(result);
-					})
-					.catch(err => res.status(404).json({msg: err}));
-			} else {
-				res.status(404).json({msg: "User has no rights to edit this cheatsheet..."});
-			}
-		});
-})
+	Cheatsheet.findById(req.params.sheetId).then((sheet) => {
+		if (
+			sheet.isPublic ||
+			user.isAdmin ||
+			(!sheet.isPublic && sheet.user.toString() === user.id)
+		) {
+			Cheatsheet.updateOne({ _id: req.params.sheetId }, form)
+				.then((result) => {
+					res.json(result);
+				})
+				.catch((err) => res.status(404).json({ msg: err }));
+		} else {
+			res.status(404).json({ msg: "User has no rights to edit this cheatsheet..." });
+		}
+	});
+});
 
 router.get("/random", (req, res) => {
 	Cheatsheet.countDocuments({}, (err, count) => {
 		var random = Math.floor(Math.random() * count);
-		Cheatsheet.findOne().skip(random)
-			.then(result => res.json(result))
-			.catch(err => res.status(404).json(err));
-	})
+		Cheatsheet.findOne()
+			.skip(random)
+			.then((result) => res.json(result))
+			.catch((err) => res.status(404).json(err));
+	});
 });
 
 router.get("/byUser/:userID", (req, res) => {
-    Cheatsheet.find({user:mongoose.Types.ObjectId(req.params.userID)})
-        .then(cheatsheet => res.json(cheatsheet))
-        .catch(err => res.status(404).json({msg: `Cheatsheet with ${req.params.userID} cannot be found`}));
-})
-
+	Cheatsheet.find({ user: mongoose.Types.ObjectId(req.params.userID) })
+		.then((cheatsheet) => res.json(cheatsheet))
+		.catch((err) =>
+			res.status(404).json({ msg: `Cheatsheet with ${req.params.userID} cannot be found` })
+		);
+});
 
 //So other files can read what's in this file
 module.exports = router;
