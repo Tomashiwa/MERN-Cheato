@@ -22,9 +22,9 @@
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js' --only-mapped --html ./visualise.html",
     "generate": "scss-powertools src/scss/_bootstrap.scss src/output/_compiled.css",
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:5000",
