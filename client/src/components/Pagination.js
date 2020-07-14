@@ -2,10 +2,8 @@ import React from "react";
 
 import "./css/Pagination.css";
 
-import {
-    Card, CardImg, CardText, CardBody,
-    CardTitle, CardSubtitle, Button, CardLink, ButtonGroup, CardHeader, CardFooter
-} from 'reactstrap';
+import Button from "reactstrap/lib/Button";
+import ButtonGroup from "reactstrap/lib/ButtonGroup";
 
 const Pagination = ({ currentPage, cheatsheetPerPage, totalCount, paginate, nextPage, previousPage, isPrev, isNext }) => {
     const pageNum = [];

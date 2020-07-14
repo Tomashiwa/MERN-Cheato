@@ -7,20 +7,12 @@ import UserContext from "../context/UserContext";
 import Rating from "../components/Rating";
 import BookmarkButton from "../components/BookmarkButton";
 
-import {
-    Card, CardImg, Button, CardHeader
-} from 'reactstrap';
+import Card from "reactstrap/lib/Card";
+import CardImg from "reactstrap/lib/CardImg";
+import Button from "reactstrap/lib/Button";
+import CardHeader from "reactstrap/lib/CardHeader";
 
-
-
-// import similarIcon from "../icons/icon-similar.svg";
-// import authorIcon from "../icons/icon-author.svg";
-// import viewIcon from "../icons/icon-view.svg";
-// import upvoteIcon from "../icons/icon-upvote.svg";
-// import downvoteIcon from "../icons/icon-downvote.svg";
-// import bookmarkIcon from "../icons/icon-bookmark.svg";
 import "./css/CheatsheetCard.css"
-import { AlexaForBusiness } from 'aws-sdk';
 
 function CheatsheetCard({ sheet }) {
     var [vote, setVote] = useState(sheet.rating);

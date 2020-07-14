@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import UserContext from '../context/UserContext';
 
 function MyUpload() {
-    const { userData, setUserData } = useContext(UserContext);
+    const { userData } = useContext(UserContext);
 
     const [user, setUser] = useState(null);
     const [upload, setUpload] = useState(null);
