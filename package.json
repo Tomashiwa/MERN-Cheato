@@ -24,6 +24,7 @@
     "dayjs": "^1.8.29",
     "express": "^4.17.1",
     "fuse.js": "^6.0.4",
+    "heroku-ssl-redirect": "0.0.4",
     "jsonwebtoken": "^8.5.1",
     "konva": "^6.0.0",
     "mongoose": "^5.9.14",

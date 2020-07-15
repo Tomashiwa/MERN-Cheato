@@ -1,3 +1,4 @@
+const sslRedirect = require('heroku-ssl-redirect');
 const express = require("express");
 const compression = require('compression')
 const app = express();
@@ -12,13 +13,12 @@ const auth = require("./routes/api/auth");
 const similars = require("./routes/api/similars");
 const suggestions = require("./routes/api/suggestions");
 
-
 const School = require("./models/School");
 const Module = require("./models/Module");
 
 var modUpdateJob = require("./APIScheduler");
 
-// Load body-parser middleware
+app.use(sslRedirect());
 app.use(express.json({limit: '50mb'}));
 app.use(compression());
 
