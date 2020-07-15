@@ -6,6 +6,7 @@ import Resizer from "react-image-file-resizer";
 
 import Container from "reactstrap/lib/Container";
 import Button from "reactstrap/lib/Button";
+import Spinner from 'reactstrap/lib/Spinner';
 
 import UploadForm from "../components/UploadForm"
 
@@ -195,7 +196,7 @@ function Upload() {
                     }
                 </div>
 
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
                     {
                         formStep === UPLOAD_STEP_FORM
                             ? <UploadForm form={form} setForm={setForm} setBlob={setUploadBlobs} isAnonymous={userData.isLoaded && userData.token === undefined}/>

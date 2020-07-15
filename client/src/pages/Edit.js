@@ -8,6 +8,7 @@ import Card from "reactstrap/lib/Card";
 import CardHeader from "reactstrap/lib/CardHeader";
 import CardBody from "reactstrap/lib/CardBody";
 import CardText from "reactstrap/lib/CardText";
+import Spinner from 'reactstrap/lib/Spinner';
 
 import UserContext from "../context/UserContext";
 
@@ -86,7 +87,7 @@ function Edit() {
 								</Button>
 							</div>
 				
-							<Suspense fallback={<div>Loading...</div>}>
+							<Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
 								<EditForm
 									form={form}
 									setForm={setForm}

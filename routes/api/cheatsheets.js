@@ -100,8 +100,6 @@ router.post("/page/:pageId", (req, res) => {
 			filter = { module: mongoose.Types.ObjectId(req.body.filter.module) };
 		}
 
-		console.log(`filter`, filter);
-
 		const sortBy = req.body.sortBy === "dateTime" ? { datetime: -1 } : { rating: -1 };
 
 		if (!req.body.user) {

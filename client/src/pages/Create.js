@@ -6,6 +6,7 @@ import Resizer from "react-image-file-resizer";
 
 import Container from "reactstrap/lib/Container";
 import Button from "reactstrap/lib/Button";
+import Spinner from 'reactstrap/lib/Spinner';
 
 import ImageCanvas from "../components/ImageCanvas";
 import {CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "../components/ImageCanvas"
@@ -217,7 +218,7 @@ function Create() {
                             }
                         </div>
 
-                        <Suspense fallback={<div>Loading...</div>}>
+                        <Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
                             {
                                 formStep === CREATE_STEP_IMPORT
                                     ? <ImageCanvas form={form} setBlob={setBlob} />

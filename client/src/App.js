@@ -2,6 +2,8 @@ import React, { Suspense, useState, useEffect } from 'react'
 import { BrowserRouter, Switch, Route } from "react-router-dom"
 import axios from "axios"
 
+import Spinner from 'reactstrap/lib/Spinner';
+
 import UserContext from "./context/UserContext";
 import AppNavbar from './components/AppNavbar';
 
@@ -58,7 +60,7 @@ function App() {
 				<div>
 					{
 						userData.isLoaded
-							? <Suspense fallback={<div>Loading...</div>}>
+							? <Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
 								<Switch>
 									<Route exact path="/create" component={Create} />
 									<Route exact path="/upload" component={Upload} />

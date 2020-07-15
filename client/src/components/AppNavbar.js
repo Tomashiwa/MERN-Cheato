@@ -7,6 +7,7 @@ import NavbarBrand from 'reactstrap/lib/NavbarBrand';
 import NavbarToggler from 'reactstrap/lib/NavbarToggler';
 import NavItem from 'reactstrap/lib/NavItem';
 import NavLink from 'reactstrap/lib/NavLink';
+import Spinner from 'reactstrap/lib/Spinner';
 
 import FuseSearchbar from './FuseSearchbar';
 import UserContext from '../context/UserContext';
@@ -48,7 +49,7 @@ function AppNavbar() {
                                                 Upload
                                             </NavLink>
                                         </NavItem>
-                                        <Suspense fallback={<div>Loading...</div>}>
+                                        <Suspense fallback={<div><Spinner color="warning"/></div>}>
                                             {
                                                 userData.user
                                                     ?   <NavItem>

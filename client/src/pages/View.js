@@ -8,6 +8,7 @@ import Card from "reactstrap/lib/Card";
 import CardHeader from "reactstrap/lib/CardHeader";
 import CardBody from "reactstrap/lib/CardBody";
 import CardText from "reactstrap/lib/CardText";
+import Spinner from 'reactstrap/lib/Spinner';
 
 import ImagePreviewer from "../components/ImagePreviewer";
 import BookmarkButton from "../components/BookmarkButton";
@@ -89,7 +90,7 @@ function View() {
 						</div>
 
 						<div id="view-feedback">
-							<Suspense fallback={<div>Loading...</div>}>
+							<Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
 								{
 									userData.isLoaded && userData.user && (userData.user.id === sheet.user || userData.user.isAdmin)
 									?	<EditButton sheet={sheet} />
