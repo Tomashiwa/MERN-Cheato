@@ -65,6 +65,10 @@ app.post("/backend/modules", (req, res) => {
     })
 })
 
+app.get("/ping", (req, res) => {
+    res.status(200).json({msg: "Pinged !!"});
+})
+
 //Serve static assets (frontend stuff) if in production
 const path = require("path");
 if(process.env.NODE_ENV === "production") {

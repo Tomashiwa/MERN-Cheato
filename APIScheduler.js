@@ -17,7 +17,7 @@ var modUpdateJob = schedule.scheduleJob("0 0 * * *", () => {
 		const backendURL =
 			process.env.NODE_ENV !== "production"
 				? "http://localhost:5000/backend"
-				: "https://stormy-journey-99385.herokuapp.com/backend";
+				: "https://cheato.herokuapp.com/backend";
 
 		axios
 			.get(`${backendURL}/schools/NUS`)

@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const url =
 	process.env.NODE_ENV !== "production"
 		? "http://localhost:5000"
-		: "https://stormy-journey-99385.herokuapp.com";
+		: "https://cheato.herokuapp.com";
 
 const updateSimilars = async (user) => {
 	// IDs of all existing users
