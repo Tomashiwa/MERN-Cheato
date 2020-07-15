@@ -78,7 +78,9 @@ function CheatsheetCard({ sheet }) {
                     <Rating sheet={sheet} />
                 </CardHeader>
                 <CardImg top onClick={viewCheatsheet} src={sheet.thumbnail} alt="Card image cap" />
-                <BookmarkButton sheet={sheet} />
+                <div className="bookmarkbtn-container">
+                    <BookmarkButton id="testbookmark" sheet={sheet} />
+                </div>
             </Card>
         </div >
     );

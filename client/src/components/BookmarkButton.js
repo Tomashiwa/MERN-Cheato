@@ -59,11 +59,11 @@ function BookmarkButton({ sheet }) {
 	}, [sheet, userData]);
 
 	return (
-		<button id="bookmarkbtn" type="button" onClick={bookmark} disabled={userData.user === undefined}>
+		<button className="bookmarkbtn" type="button" onClick={bookmark} disabled={userData.user === undefined}>
             {
                 isToggled
-                    ? <div id="bookmarkbtn-icon-toggled"></div>
-                    : <div id="bookmarkbtn-icon"></div>
+                    ? <div className="bookmarkbtn-icon-toggled"></div>
+                    : <div className="bookmarkbtn-icon"></div>
             }
 		</button>
 	);

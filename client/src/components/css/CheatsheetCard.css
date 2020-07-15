@@ -18,7 +18,15 @@
     top:-10px;
 }
 
-#bookmarkbtn-icon{
+.bookmarkbtn-container{
+    position:relative;
+    display:flex;
+    z-index: 10;
+    bottom:40px;
+    left:270px;
+}
+
+/* #bookmarkbtn-icon{
     position:relative;
     display:flex;
     z-index: 10;
@@ -32,7 +40,7 @@
     z-index: 10;
     bottom:40px;
     left:270px;
-}
+} */
 	
 #cheatsheetcard-author{
     display:flex;
