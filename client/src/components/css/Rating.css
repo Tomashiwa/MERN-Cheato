@@ -27,30 +27,30 @@
 	background-color: #ffda47;
 }
 
-#rating-up {
+.rating-up {
 	mask: url(../../icons/icon-uparrow.svg) no-repeat center / contain;
 	-webkit-mask: url(../../icons/icon-uparrow.svg) no-repeat center / contain;
 }
 
-#rating-down {
+.rating-down {
 	mask: url(../../icons/icon-downarrow.svg) no-repeat center / contain;
 	-webkit-mask: url(../../icons/icon-downarrow.svg) no-repeat center / contain;
 }
 
-#rating-container {
+.rating-container {
     display: flex;
 }
 
-#rating-btns {
+.rating-btns {
     display: flex;
     flex-direction: column;
     align-content: center;
 }
 
-#rating-btns .rating-btn {
+.rating-btns .rating-btn {
     margin-right: 5px;
 }
 
-#rating-counter {
+.rating-counter {
     align-self: center;
 }

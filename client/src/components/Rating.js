@@ -104,8 +104,8 @@ function Rating({ sheet }) {
 	};
 
 	return (
-		<div id="rating-container">
-			<div id="rating-btns">
+		<div className="rating-container">
+			<div className="rating-btns">
 				<button
 					className="rating-btn"
 					type="button"
@@ -113,9 +113,9 @@ function Rating({ sheet }) {
 					disabled={isLoading || userData.user === undefined}
 				>
 					{isUpToggled ? (
-						<div id="rating-up" className="rating-icon-toggled"></div>
+						<div className="rating-up rating-icon-toggled"></div>
 					) : (
-						<div id="rating-up" className="rating-icon"></div>
+						<div className="rating-up rating-icon"></div>
 					)}
 				</button>
 				<button
@@ -125,13 +125,13 @@ function Rating({ sheet }) {
 					disabled={isLoading || userData.user === undefined}
 				>
 					{isDownToggled ? (
-						<div id="rating-down" className="rating-icon-toggled"></div>
+						<div className="rating-down rating-icon-toggled"></div>
 					) : (
-						<div id="rating-down" className="rating-icon"></div>
+						<div className="rating-down rating-icon"></div>
 					)}
 				</button>
 			</div>
-			<div id="rating-counter">{voteCount}</div>
+			<div className="rating-counter">{voteCount}</div>
 		</div>
 	);
 }

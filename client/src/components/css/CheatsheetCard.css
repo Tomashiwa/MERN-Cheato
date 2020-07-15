@@ -1,4 +1,4 @@
-#cheatsheetCard{
+.sheetCard{
     width:300px;
     height:278px;
     padding:0px;
@@ -13,36 +13,20 @@
 }
 
 
-#cheatsheetcard-title > #rating-container{
+.sheetCard-title > .rating-container{
     position:relative;
     top:-10px;
 }
 
-.bookmarkbtn-container{
+.sheetCard-bookmarkBtn{
     position:relative;
     display:flex;
     z-index: 10;
     bottom:40px;
     left:270px;
 }
-
-/* #bookmarkbtn-icon{
-    position:relative;
-    display:flex;
-    z-index: 10;
-    bottom:40px;
-    left:270px;
-}
-
-#bookmarkbtn-icon-toggled {
-    position:relative;
-    display:flex;
-    z-index: 10;
-    bottom:40px;
-    left:270px;
-} */
 	
-#cheatsheetcard-author{
+.sheetCard-author{
     display:flex;
     position:relative;
     top:20px;
@@ -65,12 +49,12 @@
 
 }
 
-#cheatsheet-name{
+.sheetCard-name{
     display:flex;
     flex-grow:10;
 }
 
-#cheatsheetcard-title.card-header{
+.sheetCard-title.card-header{
     width:300px;
     height:65px;
     display:flex;
