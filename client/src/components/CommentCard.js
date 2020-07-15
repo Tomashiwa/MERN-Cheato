@@ -3,10 +3,10 @@ import dayjs from "dayjs";
 
 import { Comment, Form, Button } from "semantic-ui-react";
 
-import userIcon from "../icons/icon-user.svg";
 import UserContext from "../context/UserContext";
-
 import "./css/CommentCard.css";
+
+const URL_USERICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-user.svg";
 
 function CommentCard({ isStale, setIsStale, comment }) {
 	const { userData } = useContext(UserContext);
@@ -70,7 +70,7 @@ function CommentCard({ isStale, setIsStale, comment }) {
 			{isCommentPresent() ? (
 				!isVisible ? (
 					<Comment>
-						<Comment.Avatar src={userIcon}></Comment.Avatar>
+						<Comment.Avatar src={URL_USERICON}></Comment.Avatar>
 						<Comment.Content>
 							<Comment.Metadata>
 								<p>{comment.user}</p>

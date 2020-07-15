@@ -7,8 +7,9 @@ import DropdownMenu from "reactstrap/lib/DropdownMenu";
 import DropdownItem from "reactstrap/lib/DropdownItem";
 
 import UserContext from '../context/UserContext';
-import userIcon from "../icons/icon-user.svg";
 import "./css/UserDropdown.css"
+
+const URL_USERICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-user.svg";
 
 function UserDropdown() {
     const {userData, setUserData} = useContext(UserContext);
@@ -43,7 +44,7 @@ function UserDropdown() {
             <DropdownToggle caret color="warning">
                 <img
                     id="userdropdown-icon"
-                    src={userIcon} 
+                    src={URL_USERICON} 
                     width={`${iconSizeRef.current}px`}
                     height={`${iconSizeRef.current}px`}
                     alt="" />

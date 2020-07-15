@@ -205,9 +205,15 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 					<div></div>
 				)}
 				<div className="gallery">
-					{sheets.map((cs, index) => (
-						<CheatsheetCard key={index} sheet={cs} />
-					))}
+					{
+						injectedSheets.length > 0
+							? injectedSheets.map((cs, index) => (
+								<CheatsheetCard key={index} sheet={cs} />
+							))
+							: sheets.map((cs, index) => (
+								<CheatsheetCard key={index} sheet={cs} />
+							))
+					}
 				</div>
 				{hasPagination && (injectedSheets.length > 0 || sheetsCount > SHEETS_PER_PAGE) ? (
 					<Pagination

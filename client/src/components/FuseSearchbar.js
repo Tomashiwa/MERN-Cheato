@@ -6,15 +6,16 @@ import Fuse from "fuse.js";
 import Input from 'reactstrap/lib/Input';
 import Button from 'reactstrap/lib/Button';
 
-import sheetIcon from "../icons/icon-sheet.svg";
-import schoolIcon from "../icons/icon-school.svg";
-import moduleIcon from "../icons/icon-module.svg";
 import UserContext from '../context/UserContext';
 import "./css/FuseSearchbar.css"
 
 const SEARCHBAR_MAX_CHARS = 50;
 const SEARCHBAR_ICON_SIZE = 24;
 const SEARCHBAR_MAX_RESULTS = 5;
+
+const URL_SHEETICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-sheet.svg";
+const URL_SCHICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-school.svg";
+const URL_MODICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-module.svg";
 
 function FuseSearchbar() {
     const {userData} = useContext(UserContext);
@@ -151,10 +152,10 @@ function FuseSearchbar() {
                             <div>
                                 <img 
                                     src={result.type === "sheet" 
-                                            ? sheetIcon
+                                            ? URL_SHEETICON
                                         :result.type === "school"
-                                            ? schoolIcon 
-                                        : moduleIcon} 
+                                            ? URL_SCHICON 
+                                        : URL_MODICON} 
                                     width={`${SEARCHBAR_ICON_SIZE}px`} 
                                     height={`${SEARCHBAR_ICON_SIZE}px`} 
                                     alt=""

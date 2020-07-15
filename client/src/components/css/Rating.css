@@ -28,13 +28,13 @@
 }
 
 .rating-up {
-	mask: url(../../icons/icon-uparrow.svg) no-repeat center / contain;
-	-webkit-mask: url(../../icons/icon-uparrow.svg) no-repeat center / contain;
+	mask: url(https://d2conugba1evp1.cloudfront.net/icons/icon-uparrow.svg) no-repeat center / contain;
+	-webkit-mask: url(https://d2conugba1evp1.cloudfront.net/icons/icon-uparrow.svg) no-repeat center / contain;
 }
 
 .rating-down {
-	mask: url(../../icons/icon-downarrow.svg) no-repeat center / contain;
-	-webkit-mask: url(../../icons/icon-downarrow.svg) no-repeat center / contain;
+	mask: url(https://d2conugba1evp1.cloudfront.net/icons/icon-downarrow.svg) no-repeat center / contain;
+	-webkit-mask: url(https://d2conugba1evp1.cloudfront.net/icons/icon-downarrow.svg) no-repeat center / contain;
 }
 
 .rating-container {
