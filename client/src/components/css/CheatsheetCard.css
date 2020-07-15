@@ -21,7 +21,6 @@
 .sheetCard-bookmarkBtn{
     position:relative;
     display:flex;
-    z-index: 10;
     bottom:40px;
     left:270px;
 }

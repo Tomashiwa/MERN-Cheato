@@ -16,7 +16,7 @@ function Rating({ sheet }) {
 	const [voteCount, setVoteCount] = useState(
 		sheet.upvotedUsers.length - sheet.downvotedUsers.length
 	);
-
+	
 	useEffect(() => {
 		if (userData.user !== undefined) {
 			axios.get(`/api/users/${userData.user.id}`).then((res) => {
@@ -28,6 +28,9 @@ function Rating({ sheet }) {
 				} else if (fetchedUser.downvotedSheets.find((id) => id === sheet._id)) {
 					setIsUpToggled(false);
 					setIsDownToggled(true);
+				} else {
+					setIsUpToggled(false);
+					setIsDownToggled(false);
 				}
 			});
 		}

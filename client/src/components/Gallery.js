@@ -114,25 +114,19 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 				itemsPerPage: SHEETS_PER_PAGE
 			};
 
-			console.log('schFilter:', schFilter)
 			if(schFilter && schFilter.value) {
 				config.filter.school = schFilter.value;
 			}
 
-			console.log('modFilter:', modFilter)
 			if(modFilter && modFilter.value) {
 				config.filter.module = modFilter.value;
 			}
-
-			console.log('config:', config);
 	
 			axios.post("/api/cheatsheets/sheetCount", config).then((result) => {
-				console.log("result.data.count", result.data.count);
 				setSheetsCount(result.data.count);
 			});
 	
 			axios.post(`/api/cheatsheets/page/${currentPage}`, config).then((result) => {
-				console.log("result.data:", result.data);
 				setSheets(result.data);
 			});
 		}
