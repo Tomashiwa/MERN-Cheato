@@ -66,7 +66,7 @@ app.post("/backend/modules", (req, res) => {
 })
 
 app.get("/ping", (req, res) => {
-    res.status(200).json({msg: "Pinged !!"});
+    res.status(200).send("Ping success!");
 })
 
 //Serve static assets (frontend stuff) if in production
