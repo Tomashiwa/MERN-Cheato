@@ -6,6 +6,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "react": "^16.13.1",
+    "react-app-rewired": "^2.1.6",
     "react-dom": "^16.13.1",
     "react-konva": "^16.13.0-3",
     "react-router-dom": "^5.2.0",
@@ -51,7 +52,6 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "jest-canvas-mock": "^2.2.0",
     "jest-when": "^2.7.2",
-    "react-app-rewired": "^2.1.6",
     "scss-powertools": "^1.2.1",
     "source-map-explorer": "^2.4.2"
   }

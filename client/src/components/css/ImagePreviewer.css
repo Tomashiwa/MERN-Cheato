@@ -1,3 +1,7 @@
+.konvajs-content {
+    background-color: #334444;
+}
+
 #previewer-toolbar {
     display:flex;
     align-content: flex-start;
