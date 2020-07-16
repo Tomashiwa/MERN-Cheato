@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useContext} from 'react'
+import React, {useState, useEffect, useContext, useRef} from 'react'
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 import Fuse from "fuse.js";
@@ -14,8 +14,6 @@ const SEARCHBAR_ICON_SIZE = 24;
 const SEARCHBAR_MAX_RESULTS = 5;
 
 const URL_SHEETICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-sheet.svg";
-const URL_SCHICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-school.svg";
-const URL_MODICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-module.svg";
 
 function FuseSearchbar() {
     const {userData} = useContext(UserContext);
@@ -25,14 +23,7 @@ function FuseSearchbar() {
     const [results, setResults] = useState([]);
 
     const [isFocused, setIsFocused] = useState(false);
-
-    const optionsRef = useRef({
-        keys: [
-            "id",
-            "data.name",
-            "data.description"
-        ]
-    });
+    const indexRef = useRef(-1);
 
     const history = useHistory();
 
@@ -40,11 +31,21 @@ function FuseSearchbar() {
     useEffect(() => {
         const searchBar = document.querySelector("#searchbar-input");
                 
-        const changeSearchTerm = e => setTerm(e.target.value);
+        const changeSearchTerm = e => {
+            const list = document.querySelector("#searchbar-list");
+
+            if(indexRef.current >= 0 && indexRef.current < list.children.length) {
+                list.children[indexRef.current].classList.remove("searchHover");
+                indexRef.current = -1;
+            }
+
+            setTerm(e.target.value);
+        }
         const focus = e => setIsFocused(true);
         const blur = e => {
             if(isFocused && e.target !== searchBar) {
                 setIsFocused(false);
+                indexRef.current = -1;
             }
         };
 
@@ -86,7 +87,14 @@ function FuseSearchbar() {
     // Determine results when user provide a search term
     useEffect(() => {
         if(term.length > 0) {
-            const fuse = new Fuse(list, optionsRef.current);
+            const options = {
+                keys: [
+                    "id",
+                    "data.name",
+                    "data.description"
+                ]
+            };
+            const fuse = new Fuse(list, options);
             const results = fuse.search(term)
                 .slice(0, SEARCHBAR_MAX_RESULTS)
                 .map(result => result.item);
@@ -94,23 +102,47 @@ function FuseSearchbar() {
         } else {
             setResults([]);
         }
-    }, [term, list, optionsRef, setResults])
+    }, [term, list, setResults])
 
     // Search term upon pressing enter
     useEffect(() => {
         const searchBar = document.querySelector("#searchbar-input");
-        const search = e => {
-            if(e.key === "Enter" && term.length > 0) {
-                setIsFocused(false);
-                setResults([]);
-                document.querySelector("#searchbar-input").value = "";
-                
-                history.push(`/search/${term}`);
+        const list = document.querySelector("#searchbar-list");
+
+        const up = e => {
+            if(e.key === "ArrowUp" && results.length > 0) {
+                if(indexRef.current >= 0 && indexRef.current < list.children.length) {
+                    list.children[indexRef.current].classList.remove("searchHover");
+                }
+                indexRef.current = indexRef.current === 0 ? 0 : indexRef.current - 1;
+                list.children[indexRef.current].classList.add("searchHover");
+            }
+        }
+        const down = e => {
+            if(e.key === "ArrowDown" && results.length > 0) {
+                if(indexRef.current >= 0 && indexRef.current < list.children.length) {
+                    list.children[indexRef.current].classList.remove("searchHover");
+                }
+                indexRef.current = indexRef.current === results.length - 1 ? results.length - 1 : indexRef.current + 1;
+                list.children[indexRef.current].classList.add("searchHover")
+            }
+        }
+        const enter = e => {
+            if(e.key === "Enter" && indexRef.current >= 0 && indexRef.current < list.children.length) {
+                list.children[indexRef.current].click();
+                searchBar.blur();
             }
         }
 
-        searchBar.addEventListener("keydown", search);
-        return () => searchBar.removeEventListener("keydown", search);
+        searchBar.addEventListener("keydown", up);
+        searchBar.addEventListener("keydown", down);
+        searchBar.addEventListener("keydown", enter);
+
+        return () => {
+            searchBar.removeEventListener("keydown", up);
+            searchBar.removeEventListener("keydown", down);
+            searchBar.removeEventListener("keydown", enter);
+        }
     })
 
     const browse = result => {
@@ -119,16 +151,6 @@ function FuseSearchbar() {
             console.log(result);
 
             history.push(`/view/${result.id}`);
-        } else if(result.type === "school") {
-            console.log("Browsing a school");
-            console.log(result);
-
-            history.push(`/${result.id}`);
-        } else if(result.type === "module") {
-            console.log("Browsing a module");
-            console.log(result);
-
-            history.push(`/${result.id}`);
         }
 
         setIsFocused(false);
@@ -143,6 +165,7 @@ function FuseSearchbar() {
                 type="text"
                 placeholder="Search here..."
                 size={`${SEARCHBAR_MAX_CHARS}`}
+                autocomplete="off"
             />
 
             <div id="searchbar-list">
@@ -151,11 +174,7 @@ function FuseSearchbar() {
                         <Button key={result.id} onClick={() => browse(result)} color="light">
                             <div>
                                 <img 
-                                    src={result.type === "sheet" 
-                                            ? URL_SHEETICON
-                                        :result.type === "school"
-                                            ? URL_SCHICON 
-                                        : URL_MODICON} 
+                                    src={URL_SHEETICON} 
                                     width={`${SEARCHBAR_ICON_SIZE}px`} 
                                     height={`${SEARCHBAR_ICON_SIZE}px`} 
                                     alt=""

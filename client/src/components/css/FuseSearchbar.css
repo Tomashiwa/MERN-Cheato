@@ -44,3 +44,8 @@
 #searchbar-list .btn-light:last-child {
     border-bottom: none;
 }
+
+#searchbar-list button.searchHover {
+    background-color: #E2E6EA;
+    border-color: #E2E6EA;
+}
