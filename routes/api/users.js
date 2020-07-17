@@ -217,5 +217,13 @@ router.get("/vote/:userId", (req, res) => {
 		.catch((err) => res.status(404).json({ msg: err.msg }));
 });
 
+router.get("/:userId/hasBookmarked/:sheetId", (req, res) => {
+	User.findById(req.params.userId)
+		.then(user => {
+			res.status(200).json({bookmarked: user.bookmarks.includes(req.params.sheetId)});
+		})
+		.catch(err => res.status(404).json({msg: err.msg}));
+})
+
 //So other files can read what's in this file
 module.exports = router;

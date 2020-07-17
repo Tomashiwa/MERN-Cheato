@@ -48,11 +48,18 @@ function BookmarkButton({ sheet }) {
 
 	useEffect(() => {
 		if(userData.user !== undefined) {
-			axios
-				.get(`/api/users/${userData.user.id}`)
-				.then((res) => {
-					const fetchedUser = res.data;
-					setIsToggled(fetchedUser.bookmarks.includes(sheet._id));
+			// axios
+			// 	.get(`/api/users/${userData.user.id}`)
+			// 	.then((res) => {
+			// 		const fetchedUser = res.data;
+			// 		setIsToggled(fetchedUser.bookmarks.includes(sheet._id));
+			// 	})
+			// 	.catch((err) => console.log(`Fail to toggle button: ${err}`));
+
+			axios	
+				.get(`/${userData.user.id}/hasBookmarked/${sheet._id}`)
+				.then(res => {
+					setIsToggled(res.data.hasBookmarked);
 				})
 				.catch((err) => console.log(`Fail to toggle button: ${err}`));
 		}
