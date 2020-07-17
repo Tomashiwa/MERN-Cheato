@@ -12,28 +12,39 @@ function SuggestionGallery({ align = "vertical", limit = 3 }) {
 	const [suggestions, setSuggestions] = useState([]);
 
 	useEffect(() => {
-		const fetchSuggestions = async () => {
-			if(userData.isLoaded && userData.user) {
-				const result = await suggestTo(userData.user);
-	
-				console.log(`Suggestions for user ${userData.user.name}`);
-				console.log(result);
-	
-				if (result.length > 0) {
-					const suggestionIds = result.map((result) => result.id).slice(0, limit);
-					const sheetsRes = await Promise.allSettled(
-						suggestionIds.map((id) => axios.post(`/api/cheatsheets/${id}`, userData))
-					);
-					const sheets = sheetsRes.map((res) => res.value.data);	
-					setSuggestions(sheets);
-				}
-			} else {
-				const randomSheets = await random(limit);
-				setSuggestions(randomSheets);
-			}
-		};
+		if(userData.isLoaded && userData.user) {
+			axios.get(`/api/suggestions/toUser/${userData.user.id}/limit/${limit}`)
+				.then(results => setSuggestions(results.data))
+				.catch(err => console.log(`err`, err));
+		} else {
+			axios.post(`/api/suggestions/random/${limit}`, userData.user)
+				.then(results => setSuggestions(results.data))
+				.catch(err => console.log(`err`, err));
+		}
 
-		fetchSuggestions();
+
+		// const fetchSuggestions = async () => {
+		// 	if(userData.isLoaded && userData.user) {
+		// 		const result = await suggestTo(userData.user);
+	
+		// 		console.log(`Suggestions for user ${userData.user.name}`);
+		// 		console.log(result);
+	
+		// 		if (result.length > 0) {
+		// 			const suggestionIds = result.map((result) => result.id).slice(0, limit);
+		// 			const sheetsRes = await Promise.allSettled(
+		// 				suggestionIds.map((id) => axios.post(`/api/cheatsheets/${id}`, userData))
+		// 			);
+		// 			const sheets = sheetsRes.map((res) => res.value.data);	
+		// 			setSuggestions(sheets);
+		// 		}
+		// 	} else {
+		// 		const randomSheets = await random(limit);
+		// 		setSuggestions(randomSheets);
+		// 	}
+		// };
+
+		// fetchSuggestions();
 	}, [limit, userData]);
 
 	return (

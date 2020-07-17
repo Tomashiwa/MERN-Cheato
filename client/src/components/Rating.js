@@ -32,21 +32,6 @@ function Rating({ sheet }) {
 						setIsDownToggled(false);
 					}
 				})
-			
-			// axios.get(`/api/users/${userData.user.id}`).then((res) => {
-			// 	const fetchedUser = res.data;
-
-				// if (fetchedUser.upvotedSheets.find((id) => id === sheet._id)) {
-				// 	setIsUpToggled(true);
-				// 	setIsDownToggled(false);
-				// } else if (fetchedUser.downvotedSheets.find((id) => id === sheet._id)) {
-				// 	setIsUpToggled(false);
-				// 	setIsDownToggled(true);
-				// } else {
-				// 	setIsUpToggled(false);
-				// 	setIsDownToggled(false);
-				// }
-			// });
 		}
 	}, [sheet, userData]);
 

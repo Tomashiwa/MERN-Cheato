@@ -6,6 +6,9 @@ const engine = require("../../client/src/lib/SuggestionEngine/Engine");
 //Cheatsheet model
 const Cheatsheet = require("../../models/Cheatsheet");
 const User = require("../../models/User");
+const School = require("../../models/School");
+const Module = require("../../models/Module");
+
 const ObjectId = require("mongoose").Types.ObjectId;
 // @route GET api/cheatsheets
 // @descr Get all cheatsheets
@@ -185,15 +188,6 @@ router.post("/add", (req, res) => {
 // @descr Retrieving a specific cheatsheet with authentication
 // @access Public
 router.post("/:id", (req, res) => {
-	const ObjectId = require("mongoose").Types.ObjectId;
-
-	// req.body.id - User's id
-	// req.params.id - Cheatsheet's id
-
-	// When no authentication is given, the retrieved sheet must be public
-	// If its given,
-	//      User w/ admin right -> Retrieve the given sheet
-	//      User w/o admin right -> Retrieve the given sheet if the user id matches or it is public
 	if (!req.body.id) {
 		Cheatsheet.findById(req.params.id)
 			.then((cheatsheet) => {
@@ -429,6 +423,55 @@ router.get("/byUser/:userID", (req, res) => {
 			res.status(404).json({ msg: `Cheatsheet with ${req.params.userID} cannot be found` })
 		);
 });
+
+router.post("/view/:sheetId", (req, res) => {
+	Cheatsheet.findById(req.params.sheetId)
+		.then((cheatsheet) => {
+			if(!req.body.id && !cheatsheet.isPublic) {
+				res.status(404).json({ msg: `This cheatsheet is private` });
+			} else if(req.body.id && !cheatsheet.isPublic && cheatsheet.user.toString() !== req.body.id) {
+				res.status(404).json({ msg: `This cheatsheet is private` });
+			} else {
+				let sheet = {
+					id: cheatsheet._id,
+					name: cheatsheet.name,
+					file: cheatsheet.file,
+					author: "Anonymous",
+					school: "",
+					module: "",
+					description: cheatsheet.description,
+					upvotedUsers: cheatsheet.upvotedUsers,
+					downvotedUsers: cheatsheet.downvotedUsers,
+					rating: cheatsheet.rating
+				};
+
+				let names = [
+					School.findById(cheatsheet.school.toString()).exec(),
+					Module.findById(cheatsheet.module.toString()).exec()
+				];
+
+				if(!cheatsheet.isAnonymous) {
+					names.push(User.findById(cheatsheet.user.toString()).exec());
+				}
+
+				Promise.all(names)
+					.then(results => {
+						sheet = {
+							...sheet,
+							school: results[0].name,
+							module: results[1].name,
+						};
+
+						if(!cheatsheet.isAnonymous) {
+							sheet = {...sheet, author: results[2].name};
+						}
+
+						res.status(200).json(sheet);
+					});
+			}
+		})
+		.catch((err) => res.status(404).json({ msg: `No cheatsheet found` }));
+})
 
 //So other files can read what's in this file
 module.exports = router;

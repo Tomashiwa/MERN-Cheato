@@ -65,7 +65,7 @@ function App() {
 									<Route exact path="/create" component={Create} />
 									<Route exact path="/upload" component={Upload} />
 									<Route exact path="/view/:id" component={View} />
-									{userData.token === undefined && <Route exact path="/edit/:id" component={Edit} />}
+									{userData.token !== undefined && <Route exact path="/edit/:id" component={Edit} />}
 									{userData.token === undefined && <Route exact path="/register" component={Register} />}
 									{userData.token === undefined && <Route exact path="/login" component={Login} />}
 									<Route exact path="/profile/:userID" component={Profile} />

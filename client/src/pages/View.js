@@ -27,10 +27,6 @@ function View() {
 	const { id } = useParams();
 
 	const [sheet, setSheet] = useState(null);
-	const [school, setSchool] = useState(null);
-	const [module, setModule] = useState(null);
-	const [owner, setOwner] = useState(null);
-
 	const [errorMsg, setErrorMsg] = useState("");
 
 	const history = useHistory();
@@ -38,23 +34,13 @@ function View() {
 	// Fetch cheatsheet to be viewed
 	useEffect(() => {
 		if(userData.isLoaded) {
-			axios.post(`/api/cheatsheets/${id}`, userData.user)
-				.then(res => setSheet(res.data))
+			axios.post(`/api/cheatsheets/view/${id}`, userData.user)
+				.then(res => {
+					setSheet(res.data)
+				})
 				.catch(err => setErrorMsg(err.response.data.msg));
 		}
 	}, [id, userData]);
-
-	// Fetch the respective school and module of the sheet
-	useEffect(() => {
-		if(sheet) {
-			axios.get(`/api/schools/${sheet.school}`)
-				.then(res => setSchool(res.data));
-			axios.get(`/api/modules/${sheet.module}`)
-				.then(res => setModule(res.data));
-			axios.get(`/api/users/${sheet.user}`)
-				.then(res => setOwner(res.data));
-		}
-	}, [sheet]);
 
 	const goHome = () => {
 		history.push("/");
@@ -64,19 +50,19 @@ function View() {
 
 	return (
 		<div>
-			{sheet && school && module && (owner || sheet.isAnonymous) ? (
+			{sheet ? (
 				<Container id="view-container">
 					<div id="view-header">
 						<div id="view-description">
 							<h2>{sheet.name}</h2>
-							<h5>{`${school.name} - ${module.name}`}</h5>
-							<h5>{`Uploaded by: ${sheet.isAnonymous ? "Anonymous" : owner.name}`}</h5>
+							<h5>{`${sheet.school} - ${sheet.module}`}</h5>
+							<h5>{`Uploaded by: ${sheet.author}`}</h5>
 						</div>
 
 						<div id="view-feedback">
 							<Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
 								{
-									userData.isLoaded && userData.user && (userData.user.id === sheet.user || userData.user.isAdmin)
+									userData.isLoaded && userData.user && (userData.user.id === sheet.author || userData.user.isAdmin)
 									?	<EditButton sheet={sheet} />
 									:	<></>
 								}
