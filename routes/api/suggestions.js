@@ -47,7 +47,7 @@ router.get("/toUser/:userId/limit/:limit", (req, res) => {
 						.filter(cheatsheet => !cheatsheet.isAnonymous)
 						.map(cheatsheet => cheatsheet.user.toString());
 					authors = [...new Set(authors)];
-					
+
 					Promise.all(authors.map(author => User.findById(author).exec()))
 						.then(results => {
 							sheets.forEach(sheet => {
@@ -79,10 +79,6 @@ router.post("/random/:amount", (req, res) => {
 	Cheatsheet.countDocuments(filter, (err, count) => {
 		const random = Math.floor(Math.random() * count);
 
-		console.log('random:', random);
-		console.log('filter:', filter);
-		console.log('limit:', req.params.amount);
-
 		Cheatsheet.find(filter)
 			.skip(random)
 			.limit(parseInt(req.params.amount))
@@ -100,20 +96,15 @@ router.post("/random/:amount", (req, res) => {
 					};
 				});
 
-				console.log('sheets:', sheets);
-
 				let authors = cheatsheets
 					.filter(cheatsheet => !cheatsheet.isAnonymous)
 					.map(cheatsheet => cheatsheet.user.toString());
 				authors = [...new Set(authors)];
 
-				console.log('authors:', authors);
-
 				Promise.all(authors.map(author => User.findById(author).exec()))
 					.then(results => {
 						sheets.forEach(sheet => {
 							const at = results.findIndex(res => {
-								console.log('res:', res);
 								return res._id.toString() === sheet.author.toString();
 							});
 
@@ -121,8 +112,6 @@ router.post("/random/:amount", (req, res) => {
 								sheet.authorName = results[at].name;
 							}
 						})
-
-						console.log('updated sheets:', sheets);
 
 						res.status(200).json(sheets);
 					})
