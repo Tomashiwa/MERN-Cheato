@@ -5,6 +5,7 @@ const engine = require("../../client/src/lib/SuggestionEngine/Engine");
 
 //Cheatsheet model
 const Cheatsheet = require("../../models/Cheatsheet");
+const User = require("../../models/User");
 const ObjectId = require("mongoose").Types.ObjectId;
 // @route GET api/cheatsheets
 // @descr Get all cheatsheets
@@ -99,37 +100,61 @@ router.post("/page/:pageId", (req, res) => {
 		} else if (req.body.filter.module) {
 			filter = { module: mongoose.Types.ObjectId(req.body.filter.module) };
 		}
-
-		const sortBy = req.body.sortBy === "dateTime" ? { datetime: -1 } : { rating: -1 };
-
+		
 		if (!req.body.user) {
-			Cheatsheet.find({ isPublic: true, ...filter })
-				.sort(sortBy)
-				.skip((req.params.pageId - 1) * req.body.itemsPerPage)
-				.limit(req.body.itemsPerPage)
-				.then((cheatsheets) => res.json(cheatsheets));
+			filter = { isPublic: true, ...filter };
 		} else {
 			const { id, isAdmin } = req.body.user;
-
-			if (isAdmin) {
-				Cheatsheet.find(filter)
-					.sort(sortBy)
-					.skip((req.params.pageId - 1) * req.body.itemsPerPage)
-					.limit(req.body.itemsPerPage)
-					.then((cheatsheets) => res.json(cheatsheets));
-			} else {
-				Cheatsheet.find({
+			if(!isAdmin) {
+				filter = {
 					$or: [
 						{ user: new ObjectId(id), ...filter },
 						{ isPublic: true, ...filter },
 					],
-				})
-					.sort(sortBy)
-					.skip((req.params.pageId - 1) * req.body.itemsPerPage)
-					.limit(req.body.itemsPerPage)
-					.then((cheatsheets) => res.json(cheatsheets));
+				};
 			}
 		}
+
+		const sortBy = req.body.sortBy === "dateTime" ? { datetime: -1 } : { rating: -1 };
+
+		Cheatsheet.find(filter)
+			.sort(sortBy)
+			.skip((req.params.pageId - 1) * req.body.itemsPerPage)
+			.limit(req.body.itemsPerPage)
+			.then((cheatsheets) => {
+				let sheets = cheatsheets.map((cheatsheet) => {
+					return {
+						id: cheatsheet._id,
+						name: cheatsheet.name,
+						author: cheatsheet.user,
+						authorName: "",
+						thumbnail: cheatsheet.thumbnail,
+						upvotedUsers: cheatsheet.upvotedUsers,
+						downvotedUsers: cheatsheet.downvotedUsers,
+						rating: cheatsheet.rating
+					};
+				});
+
+				let authors = cheatsheets
+					.filter(cheatsheet => !cheatsheet.isAnonymous)
+					.map(cheatsheet => cheatsheet.user.toString());
+				authors = [...new Set(authors)];
+
+				Promise.all(authors.map(author => User.findById(author).exec()))
+					.then(results => {
+						sheets.forEach(sheet => {
+							const at = results.findIndex(res => {
+								return res._id.toString() === sheet.author.toString();
+							});
+
+							if(at >= 0) {
+								sheet.authorName = results[at].name;
+							}
+						})
+						res.status(200).json(sheets);
+					})
+					.catch(err => console.log("err", err));
+			});
 	}
 });
 
@@ -245,7 +270,10 @@ router.post("/vote/add/:sheetId", (req, res, next) => {
 				{ upvotedUsers, rating: upvotedUsers.length - cheatsheet.downvotedUsers.length }
 			)
 				.then((result) => {
-					res.status(200).json({ upvotedUsers, rating: upvotedUsers.length - cheatsheet.downvotedUsers.length });
+					res.status(200).json({
+						upvotedUsers,
+						rating: upvotedUsers.length - cheatsheet.downvotedUsers.length,
+					});
 					engine.update({ id: userId });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
@@ -260,7 +288,10 @@ router.post("/vote/add/:sheetId", (req, res, next) => {
 				{ downvotedUsers, rating: cheatsheet.upvotedUsers.length - downvotedUsers.length }
 			)
 				.then((result) => {
-					res.status(200).json({ downvotedUsers, rating: cheatsheet.upvotedUsers.length - downvotedUsers.length });
+					res.status(200).json({
+						downvotedUsers,
+						rating: cheatsheet.upvotedUsers.length - downvotedUsers.length,
+					});
 					engine.update({ id: userId });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
@@ -287,7 +318,10 @@ router.post("/vote/remove/:sheetId", (req, res, next) => {
 				{ upvotedUsers, rating: upvotedUsers.length - cheatsheet.downvotedUsers.length }
 			)
 				.then((result) => {
-					res.status(200).json({ upvotedUsers, rating: upvotedUsers.length - cheatsheet.downvotedUsers.length });
+					res.status(200).json({
+						upvotedUsers,
+						rating: upvotedUsers.length - cheatsheet.downvotedUsers.length,
+					});
 					engine.update({ id: userId });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));
@@ -302,7 +336,10 @@ router.post("/vote/remove/:sheetId", (req, res, next) => {
 				{ downvotedUsers, rating: cheatsheet.upvotedUsers.length - downvotedUsers.length }
 			)
 				.then((result) => {
-					res.status(200).json({ downvotedUsers, rating: cheatsheet.upvotedUsers.length - downvotedUsers.length });
+					res.status(200).json({
+						downvotedUsers,
+						rating: cheatsheet.upvotedUsers.length - downvotedUsers.length,
+					});
 					engine.update({ id: userId });
 				})
 				.catch((err) => res.status(404).json({ msg: err.msg }));

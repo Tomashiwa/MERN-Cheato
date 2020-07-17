@@ -207,11 +207,11 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 				<div className="gallery">
 					{
 						injectedSheets.length > 0
-							? injectedSheets.map((cs, index) => (
-								<CheatsheetCard key={index} sheet={cs} />
+							? injectedSheets.map((sheet, index) => (
+								<CheatsheetCard key={index} sheet={sheet} />
 							))
-							: sheets.map((cs, index) => (
-								<CheatsheetCard key={index} sheet={cs} />
+							: sheets.map((sheet, index) => (
+								<CheatsheetCard key={index} sheet={sheet} />
 							))
 					}
 				</div>

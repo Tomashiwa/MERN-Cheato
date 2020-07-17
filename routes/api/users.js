@@ -220,7 +220,21 @@ router.get("/vote/:userId", (req, res) => {
 router.get("/:userId/hasBookmarked/:sheetId", (req, res) => {
 	User.findById(req.params.userId)
 		.then(user => {
-			res.status(200).json({bookmarked: user.bookmarks.includes(req.params.sheetId)});
+			res.status(200).json({hasBookmarked: user.bookmarks.includes(req.params.sheetId)});
+		})
+		.catch(err => res.status(404).json({msg: err.msg}));
+})
+
+router.get("/:userId/hasVoted/:sheetId", (req, res) => {
+	User.findById(req.params.userId)
+		.then(user => {
+			if(user.upvotedSheets.includes(req.params.sheetId)) {
+				res.status(200).json({hasVoted: true, type: "upvote"});
+			} else if(user.downvotedSheets.includes(req.params.sheetId)) {
+				res.status(200).json({hasVoted: true, type: "downvote"});
+			} else {
+				res.status(200).json({hasVoted: false, type: "none"});
+			}
 		})
 		.catch(err => res.status(404).json({msg: err.msg}));
 })

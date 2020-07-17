@@ -19,20 +19,34 @@ function Rating({ sheet }) {
 	
 	useEffect(() => {
 		if (userData.user !== undefined) {
-			axios.get(`/api/users/${userData.user.id}`).then((res) => {
-				const fetchedUser = res.data;
+			axios.get(`/api/users/${userData.user.id}/hasVoted/${sheet.id}`)
+				.then(res => {
+					if(res.data.hasVoted && res.data.type === "upvote") {
+						setIsUpToggled(true);
+						setIsDownToggled(false);
+					} else if(res.data.hasVoted && res.data.type === "downvote") {
+						setIsUpToggled(false);
+						setIsDownToggled(true);
+					} else {
+						setIsUpToggled(false);
+						setIsDownToggled(false);
+					}
+				})
+			
+			// axios.get(`/api/users/${userData.user.id}`).then((res) => {
+			// 	const fetchedUser = res.data;
 
-				if (fetchedUser.upvotedSheets.find((id) => id === sheet._id)) {
-					setIsUpToggled(true);
-					setIsDownToggled(false);
-				} else if (fetchedUser.downvotedSheets.find((id) => id === sheet._id)) {
-					setIsUpToggled(false);
-					setIsDownToggled(true);
-				} else {
-					setIsUpToggled(false);
-					setIsDownToggled(false);
-				}
-			});
+				// if (fetchedUser.upvotedSheets.find((id) => id === sheet._id)) {
+				// 	setIsUpToggled(true);
+				// 	setIsDownToggled(false);
+				// } else if (fetchedUser.downvotedSheets.find((id) => id === sheet._id)) {
+				// 	setIsUpToggled(false);
+				// 	setIsDownToggled(true);
+				// } else {
+				// 	setIsUpToggled(false);
+				// 	setIsDownToggled(false);
+				// }
+			// });
 		}
 	}, [sheet, userData]);
 

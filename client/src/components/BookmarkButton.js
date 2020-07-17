@@ -21,21 +21,17 @@ function BookmarkButton({ sheet }) {
 
 					let isToggling = false;
 
-					if (newArray.filter((item) => item !== sheet._id).length !== newArray.length) {
-						let index = newArray.indexOf(sheet._id);
+					if (newArray.filter((item) => item !== sheet.id).length !== newArray.length) {
+						let index = newArray.indexOf(sheet.id);
 						newArray.splice(index, 1);
 					} else {
-						newArray.push(sheet._id);
+						newArray.push(sheet.id);
 						isToggling = true;
 					}
                     setIsToggled(isToggling);
 
 					axios
 						.put(`/api/users/${userID}`, { bookmarks: newArray })
-						.then((res) => {
-							// console.log("Successful");
-							// console.log(res.data);
-						})
 						.catch((err) => {
 							console.log(`Fail to bookmark: ${err}`);
 						});
@@ -48,16 +44,8 @@ function BookmarkButton({ sheet }) {
 
 	useEffect(() => {
 		if(userData.user !== undefined) {
-			// axios
-			// 	.get(`/api/users/${userData.user.id}`)
-			// 	.then((res) => {
-			// 		const fetchedUser = res.data;
-			// 		setIsToggled(fetchedUser.bookmarks.includes(sheet._id));
-			// 	})
-			// 	.catch((err) => console.log(`Fail to toggle button: ${err}`));
-
 			axios	
-				.get(`/${userData.user.id}/hasBookmarked/${sheet._id}`)
+				.get(`/api/users/${userData.user.id}/hasBookmarked/${sheet.id}`)
 				.then(res => {
 					setIsToggled(res.data.hasBookmarked);
 				})
