@@ -37,39 +37,23 @@ function View() {
 
 	// Fetch cheatsheet to be viewed
 	useEffect(() => {
-		const fetchSheet = async () => {
-			if (userData.isLoaded) {
-				try {
-					const response = await axios.post(`/api/cheatsheets/${id}`, userData.user);
-					setSheet(response.data);
-				} catch (err) {
-					setErrorMsg(err.response.data.msg);
-				}
-			}
-		};
-
-		fetchSheet();
+		if(userData.isLoaded) {
+			axios.post(`/api/cheatsheets/${id}`, userData.user)
+				.then(res => setSheet(res.data))
+				.catch(err => setErrorMsg(err.response.data.msg));
+		}
 	}, [id, userData]);
 
 	// Fetch the respective school and module of the sheet
 	useEffect(() => {
-		const fetchDetails = async () => {
-			if (sheet) {
-				try {
-					const schRes = await axios.get(`/api/schools/${sheet.school}`);
-					const modRes = await axios.get(`/api/modules/${sheet.module}`);
-					const ownerRes = await axios.get(`/api/users/${sheet.user}`);
-					setSchool(schRes.data);
-					setModule(modRes.data);
-					setOwner(ownerRes.data);
-				} catch (err) {
-					console.log("error:");
-					console.log(err);
-				}
-			}
-		};
-
-		fetchDetails();
+		if(sheet) {
+			axios.get(`/api/schools/${sheet.school}`)
+				.then(res => setSchool(res.data));
+			axios.get(`/api/modules/${sheet.module}`)
+				.then(res => setModule(res.data));
+			axios.get(`/api/users/${sheet.user}`)
+				.then(res => setOwner(res.data));
+		}
 	}, [sheet]);
 
 	const goHome = () => {
