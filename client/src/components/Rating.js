@@ -13,9 +13,7 @@ function Rating({ sheet }) {
 	const [isDownToggled, setIsDownToggled] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const [voteCount, setVoteCount] = useState(
-		sheet.upvotedUsers.length - sheet.downvotedUsers.length
-	);
+	const [voteCount, setVoteCount] = useState(sheet.rating);
 	
 	useEffect(() => {
 		if (userData.user !== undefined) {
@@ -31,6 +29,7 @@ function Rating({ sheet }) {
 						setIsUpToggled(false);
 						setIsDownToggled(false);
 					}
+					setVoteCount(res.data.rating);
 				})
 		}
 	}, [sheet, userData]);
@@ -38,7 +37,7 @@ function Rating({ sheet }) {
 	const upvote = () => {
 		setIsLoading(true);
 
-		axios.post(`/api/cheatsheets/${sheet._id}`, userData).then((res) => {
+		axios.post(`/api/cheatsheets/${sheet.id}`, userData).then((res) => {
 			const fetchedSheet = res.data;
 			const upvotedUsers = fetchedSheet.upvotedUsers;
 			const downvotedUsers = fetchedSheet.downvotedUsers;
@@ -73,7 +72,7 @@ function Rating({ sheet }) {
 	const downvote = () => {
 		setIsLoading(true);
 
-		axios.post(`/api/cheatsheets/${sheet._id}`, userData).then((res) => {
+		axios.post(`/api/cheatsheets/${sheet.id}`, userData).then((res) => {
 			const fetchedSheet = res.data;
 			const upvotedUsers = fetchedSheet.upvotedUsers;
 			const downvotedUsers = fetchedSheet.downvotedUsers;

@@ -12,7 +12,7 @@ const jwtSecret =
 
 //User model
 const User = require("../../models/User");
-const { response } = require("express");
+const Cheatsheet = require("../../models/Cheatsheet");
 
 // @route GET api/users
 // @descr Get all users
@@ -228,13 +228,19 @@ router.get("/:userId/hasBookmarked/:sheetId", (req, res) => {
 router.get("/:userId/hasVoted/:sheetId", (req, res) => {
 	User.findById(req.params.userId)
 		.then(user => {
+			let result = {hasVoted: false, type: "none"};
+
 			if(user.upvotedSheets.includes(req.params.sheetId)) {
-				res.status(200).json({hasVoted: true, type: "upvote"});
+				result = {...result, hasVoted: true, type: "upvote"};
 			} else if(user.downvotedSheets.includes(req.params.sheetId)) {
-				res.status(200).json({hasVoted: true, type: "downvote"});
-			} else {
-				res.status(200).json({hasVoted: false, type: "none"});
+				result = {...result, hasVoted: true, type: "downvote"};
 			}
+
+			Cheatsheet.findById(req.params.sheetId)
+				.then(sheet => {
+					result = {...result, rating: sheet.rating};
+					res.status(200).json(result);
+				})
 		})
 		.catch(err => res.status(404).json({msg: err.msg}));
 })

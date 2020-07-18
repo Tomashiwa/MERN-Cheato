@@ -74,17 +74,13 @@ function Upload() {
             .then(([axios, mongoose]) => {
                 axios.post("/upload", formData)
                     .then(res => {
-                        setForm({...form, ...{url: cloudfrontURL.concat(res.data.data.Key)}});
-                        console.log('res.data:', res.data);
-        
-                        if(thumbnailBlob) {
-                            console.log(`thumbnail blob found, saving it to S3`);
-        
+                        if(thumbnailBlob) {        
                             axios.post("/upload", thumbnailFormData)
                                 .then(thumbnailRes => {
-                                    console.log('thumbnailRes.data:', thumbnailRes.data);
-        
-                                    setForm({...form, ...{thumbnailUrl: cloudfrontURL.concat(thumbnailRes.data.data.Key)}});
+                                    setForm({...form, ...{
+                                        url: cloudfrontURL.concat(res.data.data.Key),
+                                        thumbnailUrl: cloudfrontURL.concat(thumbnailRes.data.data.Key)
+                                    }});
                                     const newSheet = {
                                         file: cloudfrontURL.concat(res.data.data.Key),
                                         thumbnail: cloudfrontURL.concat(thumbnailRes.data.data.Key), 
