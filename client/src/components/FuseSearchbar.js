@@ -165,7 +165,7 @@ function FuseSearchbar() {
                 type="text"
                 placeholder="Search here..."
                 size={`${SEARCHBAR_MAX_CHARS}`}
-                autocomplete="off"
+                autoComplete="off"
             />
 
             <div id="searchbar-list">

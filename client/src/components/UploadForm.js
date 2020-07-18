@@ -58,33 +58,30 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 	};
 
     // Fetching schools and modules from server
-	const fetchSchs = async (callback) => {
-		try {
-			const result = await axios.get("/api/schools");
-			setSchools(result.data);
-			callback();
-		} catch (err) {
-			console.log(`Fail to fetch schools: ${err}`);
-		}
-	};
+	const fetchSchs = callback => {
+        axios.get("/api/schools")
+            .then(res => {
+                setSchools(res.data);
+                callback();
+            })
+            .catch(err => {
+                console.log(`Fail to fetch Schools: ${err}`);
+            });
+    }
 
-	const fetchMods = async (callback) => {
-		try {
-			const result = await axios.get("/api/modules");
-			setModules(result.data);
-			callback();
-		} catch (err) {
-			console.log(`Fail to fetch modules: ${err}`);
-		}
+    const fetchModsBySchool = (schoolId, callback) => {
+		axios
+			.get(`/api/modules/bySchool/${schoolId}`)
+			.then((result) => {
+				setModules(result.data);
+				callback();
+			})
+			.catch((err) => console.log("err", err));
 	};
 
 	useEffect(() => {
-		const fetchSchsAndMods = async () => {
-			await fetchSchs();
-			await fetchMods();
-		};
-		fetchSchsAndMods();
-	}, []);
+        fetchSchs();
+    }, []);
 
 	// Create options based on fetched schools and modules
 	useEffect(() => {
@@ -106,6 +103,14 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 				})
 		);
 	}, [schools, modules, schState.selected]);
+
+	useEffect(() => {
+		if(!modState.isSynced && form.school.length > 0 && form.module.length === 0) {
+            fetchModsBySchool(form.school, () => {
+				setModState({ isLoading: false, isDisabled: false, isSynced: true, selected: null });
+			});
+		}
+    }, [modState, form.module, form.school]);
 
 	// Verify the name and save it to the form
 	const checkName = (e) => {
@@ -148,8 +153,11 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 				...schState,
 				...{ selected: { label: option.label, value: option.value } },
 			});
-			setModState({ ...modState, ...{ selected: null } });
-			setForm({ ...form, ...{ school: option.value } });
+			setModState({
+				...modState,
+				...{ isDisabled: true, isLoading: true, isSynced: false, selected: null },
+			});
+			setForm({ ...form, ...{ school: option.value, module: "" } });
 		}
 	};
 
@@ -189,15 +197,16 @@ function UploadForm({ form, setForm, setBlob, isAnonymous }) {
 	const addModule = (value) => {
 		const newModule = { school: schState.selected.value, name: value };
 
-		setModState({ ...modState, ...{ isDisabled: true, isLoading: true } });
+		setModState({ ...modState, ...{ isDisabled: true, isLoading: true, isSynced: false } });
 
 		axios
 			.post("/api/modules", newModule)
 			.then((res) => {
-				fetchMods(() => {
+				fetchModsBySchool(schState.selected.value, () => {
 					setModState({
 						isDisabled: false,
 						isLoading: false,
+						isSynced: true,
 						selected: { label: res.data.name, value: res.data._id },
 					});
 					setForm({ ...form, ...{ module: res.data._id } });

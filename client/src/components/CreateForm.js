@@ -59,21 +59,19 @@ function CreateForm({form, setForm, isAnonymous}) {
             });
     }
 
-    const fetchMods = callback => {
-        axios.get("/api/modules")
-            .then(res => {
-                setModules(res.data);
-                callback();
-            })
-            .catch(err => {
-                console.log(`Fail to fetch modules: ${err}`);
-            });
-    }
+    const fetchModsBySchool = (schoolId, callback) => {
+		axios
+			.get(`/api/modules/bySchool/${schoolId}`)
+			.then((result) => {
+				setModules(result.data);
+				callback();
+			})
+			.catch((err) => console.log("err", err));
+	};
 
     // Fetching schools and modules from server
     useEffect(() => {
         fetchSchs();
-        fetchMods();
     }, []);
 
     useEffect(() => {
@@ -83,6 +81,14 @@ function CreateForm({form, setForm, isAnonymous}) {
             .map(module => {return {label: module.name, value: module._id}}));
     }, [schools, modules, schState.selected])
 
+    useEffect(() => {
+		if(!modState.isSynced && form.school.length > 0 && form.module.length === 0) {
+            fetchModsBySchool(form.school, () => {
+				setModState({ isLoading: false, isDisabled: false, isSynced: true, selected: null });
+			});
+		}
+    }, [modState, form.module, form.school]);
+    
     // Load previous entires if avaliable
     useEffect(() => {
         const nameInput = document.querySelector("#createform-input-name");
@@ -116,6 +122,7 @@ function CreateForm({form, setForm, isAnonymous}) {
     const saveIsPublic = e => {
         setForm({...form, ...{isPublic: e.target.checked}});
     }
+    
     useEffect(() => {
         const isPublicInput = document.querySelector("#createform-input-public");
         if(isAnonymous && !form.isPublic) {
@@ -128,17 +135,26 @@ function CreateForm({form, setForm, isAnonymous}) {
     // Save a selected school to the form
     const saveSchool = option => {
         if(option) {
-            setSchState({...schState, ...{selected: {label: option.label, value: option.value}}});
-            setModState({...modState, ...{selected: null}})
-            setForm({...form, ...{school: option.value}})
+            setSchState({
+				...schState,
+				...{ selected: { label: option.label, value: option.value } },
+			});
+			setModState({
+				...modState,
+				...{ isDisabled: true, isLoading: true, isSynced: false, selected: null },
+			});
+			setForm({ ...form, ...{ school: option.value, module: "" } });
         }
     }
 
     // Save a selected module to the form
     const saveModule = option => {
         if(option) {
-            setModState({...modState, ...{selected: {label: option.label, value: option.value}}});
-            setForm({...form, ...{module: option.value}});
+            setModState({
+				...modState,
+				...{ selected: { label: option.label, value: option.value } },
+			});
+			setForm({ ...form, ...{ module: option.value } });
         }
     }
 
@@ -162,12 +178,12 @@ function CreateForm({form, setForm, isAnonymous}) {
     const addModule = value => {
         const newModule = {school: schState.selected.value, name: value}
 
-        setModState({...modState, ...{isDisabled: true, isLoading: true}});
+        setModState({...modState, ...{isDisabled: true, isLoading: true, isSynced: false}});
 
         axios.post("/api/modules", newModule)
             .then(res => {
-                fetchMods(() => {
-                    setModState({isDisabled: false, isLoading: false, selected: {label: res.data.name, value: res.data._id}});
+                fetchModsBySchool(schState.selected.value, () => {
+                    setModState({isDisabled: false, isLoading: false, isSynced: true, selected: {label: res.data.name, value: res.data._id}});
                     setForm({...form, ...{module: res.data._id}});
                 });
             })
