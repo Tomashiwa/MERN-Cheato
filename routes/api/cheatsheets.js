@@ -139,13 +139,6 @@ router.post("/page/:pageId", (req, res) => {
 					};
 				});
 
-				User.findById(req.body.user.id)
-					.then(user => {
-						sheets = sheets.map(sheet => {
-							return {...sheet, hasBookmarked: user.bookmarks.includes(sheet.id)}
-						})
-					})
-
 				let authors = cheatsheets
 					.filter(cheatsheet => !cheatsheet.isAnonymous)
 					.map(cheatsheet => cheatsheet.user.toString());
