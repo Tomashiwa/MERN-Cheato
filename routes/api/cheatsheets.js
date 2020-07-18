@@ -134,9 +134,17 @@ router.post("/page/:pageId", (req, res) => {
 						thumbnail: cheatsheet.thumbnail,
 						upvotedUsers: cheatsheet.upvotedUsers,
 						downvotedUsers: cheatsheet.downvotedUsers,
-						rating: cheatsheet.rating
+						rating: cheatsheet.rating,
+						hasBookmarked: false
 					};
 				});
+
+				User.findById(req.body.user.id)
+					.then(user => {
+						sheets = sheets.map(sheet => {
+							return {...sheet, hasBookmarked: user.bookmarks.includes(sheet.id)}
+						})
+					})
 
 				let authors = cheatsheets
 					.filter(cheatsheet => !cheatsheet.isAnonymous)
@@ -154,7 +162,18 @@ router.post("/page/:pageId", (req, res) => {
 								sheet.authorName = results[at].name;
 							}
 						})
-						res.status(200).json(sheets);
+
+						if(req.body.user) {
+							User.findById(req.body.user.id)
+								.then(user => {
+									sheets = sheets.map(sheet => {
+										return {...sheet, hasBookmarked: user.bookmarks.includes(sheet.id)}
+									})
+									res.status(200).json(sheets);
+								})
+						} else {
+							res.status(200).json(sheets);							
+						}
 					})
 					.catch(err => console.log("err", err));
 			});
@@ -458,7 +477,8 @@ router.post("/view/:sheetId", (req, res) => {
 					description: cheatsheet.description,
 					upvotedUsers: cheatsheet.upvotedUsers,
 					downvotedUsers: cheatsheet.downvotedUsers,
-					rating: cheatsheet.rating
+					rating: cheatsheet.rating,
+					hasBookmarked: false
 				};
 
 				let names = [
@@ -482,7 +502,15 @@ router.post("/view/:sheetId", (req, res) => {
 							sheet = {...sheet, author: results[2].name};
 						}
 
-						res.status(200).json(sheet);
+						if(req.body.id) {
+							User.findById(req.body.id)
+								.then(user => {
+									sheet = {...sheet, hasBookmarked: user.bookmarks.includes(sheet.id)};
+									res.status(200).json(sheet);
+								})
+						} else {
+							res.status(200).json(sheet);
+						}
 					});
 			}
 		})

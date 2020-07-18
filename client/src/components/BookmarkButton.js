@@ -43,15 +43,8 @@ function BookmarkButton({ sheet }) {
 	};
 
 	useEffect(() => {
-		if(userData.user !== undefined) {
-			axios	
-				.get(`/api/users/${userData.user.id}/hasBookmarked/${sheet.id}`)
-				.then(res => {
-					setIsToggled(res.data.hasBookmarked);
-				})
-				.catch((err) => console.log(`Fail to toggle button: ${err}`));
-		}
-	}, [sheet, userData]);
+		setIsToggled(sheet.hasBookmarked);
+	}, [sheet]);
 
 	return (
 		<button className="bookmarkbtn" type="button" onClick={bookmark} disabled={userData.user === undefined}>
