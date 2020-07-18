@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import Form from 'reactstrap/lib/Form';
-import FormGroup from 'reactstrap/lib/FormGroup';
-import Label from 'reactstrap/lib/Label';
-import FormFeedback from 'reactstrap/lib/FormFeedback';
-import FormText from 'reactstrap/lib/FormText';
-import Input from 'reactstrap/lib/Input';
-import Col from 'reactstrap/lib/Col';
+import Form from "reactstrap/lib/Form";
+import FormGroup from "reactstrap/lib/FormGroup";
+import Label from "reactstrap/lib/Label";
+import FormFeedback from "reactstrap/lib/FormFeedback";
+import FormText from "reactstrap/lib/FormText";
+import Input from "reactstrap/lib/Input";
+import Col from "reactstrap/lib/Col";
 
 import CreatableSelect from "react-select/creatable";
 import { createFilter } from "react-select";
@@ -59,32 +59,31 @@ function EditForm({ form, setForm, isAnonymous }) {
 	};
 
 	// Fetching schools and modules from server
-	const fetchSchs = async (callback) => {
-		try {
-			const result = await axios.get("/api/schools");
-			setSchools(result.data);
-			callback();
-		} catch (err) {
-			console.log(`Fail to fetch schools: ${err}`);
-		}
+	const fetchSchs = (callback) => {
+		axios
+			.get("/api/schools")
+			.then((result) => {
+				setSchools(result.data);
+				callback();
+			})
+			.catch((err) => console.log("err", err));
 	};
 
-	const fetchMods = async (callback) => {
-		try {
-			const result = await axios.get("/api/modules");
-			setModules(result.data);
-			callback();
-		} catch (err) {
-			console.log(`Fail to fetch modules: ${err}`);
-		}
+	const fetchModsBySchool = (schoolId, callback) => {
+		console.log("Fetching mods by school...");
+
+		axios
+			.get(`/api/modules/bySchool/${schoolId}`)
+			.then((result) => {
+				console.log('result.data:', result.data);
+				setModules(result.data);
+				callback();
+			})
+			.catch((err) => console.log("err", err));
 	};
 
 	useEffect(() => {
-		const fetchSchsAndMods = async () => {
-			await fetchSchs();
-			await fetchMods();
-		};
-		fetchSchsAndMods();
+		fetchSchs();
 	}, []);
 
 	// Create options based on fetched schools and modules
@@ -117,11 +116,14 @@ function EditForm({ form, setForm, isAnonymous }) {
 				isSynced: true,
 				selected: selectedSchool,
 			});
+			fetchModsBySchool(form.school, () => {
+				setModState({ isLoading: true, isDisabled: true, isSynced: false, selected: null });
+			});
 		}
 	}, [schState.isSynced, schoolOptions, form.school]);
 
 	useEffect(() => {
-		if (!modState.isSynced && moduleOptions.length > 0 && form.module.length > 0) {
+		if (!modState.isSynced) {
 			const selectedModule = moduleOptions.find((option) => option.value === form.module);
 			setModState({
 				isLoading: false,
@@ -164,8 +166,14 @@ function EditForm({ form, setForm, isAnonymous }) {
 				...schState,
 				...{ selected: { label: option.label, value: option.value } },
 			});
-			setModState({ ...modState, ...{ selected: null } });
+			setModState({
+				...modState,
+				...{ isDisabled: true, isLoading: true, isSynced: false, selected: null },
+			});
 			setForm({ ...form, ...{ school: option.value, module: "" } });
+			fetchModsBySchool(option.value, () => {
+				setModState({ isLoading: false, isDisabled: false, isSynced: true, selected: null });
+			});
 		}
 	};
 
@@ -210,7 +218,7 @@ function EditForm({ form, setForm, isAnonymous }) {
 		axios
 			.post("/api/modules", newModule)
 			.then((res) => {
-				fetchMods(() => {
+				fetchModsBySchool(schState.selected.value, () => {
 					setModState({
 						isDisabled: false,
 						isLoading: false,

@@ -3,8 +3,6 @@ import axios from "axios";
 import UserContext from "../context/UserContext";
 import CheatsheetCard from "./CheatsheetCard";
 
-import { suggestTo, random } from "../lib/SuggestionEngine/Api";
-
 import "./css/SuggestionGallery.css";
 
 function SuggestionGallery({ align = "vertical", limit = 3 }) {
