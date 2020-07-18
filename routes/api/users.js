@@ -236,11 +236,7 @@ router.get("/:userId/hasVoted/:sheetId", (req, res) => {
 				result = {...result, hasVoted: true, type: "downvote"};
 			}
 
-			Cheatsheet.findById(req.params.sheetId)
-				.then(sheet => {
-					result = {...result, rating: sheet.rating};
-					res.status(200).json(result);
-				})
+			res.status(200).json(result);
 		})
 		.catch(err => res.status(404).json({msg: err.msg}));
 })

@@ -29,10 +29,20 @@ function Rating({ sheet }) {
 						setIsUpToggled(false);
 						setIsDownToggled(false);
 					}
-					setVoteCount(res.data.rating);
 				})
+				.catch(err => console.log(err));
 		}
 	}, [sheet, userData]);
+
+	useEffect(() => {
+		if(sheet) {
+			axios.get(`/api/cheatsheets/rating/${sheet.id}`)
+				.then(res => {
+					setVoteCount(res.data.rating);
+				})
+				.catch(err => console.log(err));
+		}
+	}, [sheet])
 
 	const upvote = () => {
 		setIsLoading(true);

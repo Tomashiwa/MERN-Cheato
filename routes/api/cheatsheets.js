@@ -489,5 +489,13 @@ router.post("/view/:sheetId", (req, res) => {
 		.catch((err) => res.status(404).json({ msg: `No cheatsheet found` }));
 })
 
+router.get(`/rating/:sheetId`, (req, res) => {
+	Cheatsheet.findById(req.params.sheetId)
+		.then(sheet => {
+			res.status(200).json({rating: sheet.rating});
+		})
+		.catch((err) => res.status(404).json({ msg: `No cheatsheet found` }));
+})
+
 //So other files can read what's in this file
 module.exports = router;
