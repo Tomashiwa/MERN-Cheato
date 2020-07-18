@@ -16,33 +16,18 @@ function Rating({ sheet }) {
 	const [voteCount, setVoteCount] = useState(sheet.rating);
 	
 	useEffect(() => {
-		if (userData.user !== undefined) {
-			axios.get(`/api/users/${userData.user.id}/hasVoted/${sheet.id}`)
-				.then(res => {
-					if(res.data.hasVoted && res.data.type === "upvote") {
-						setIsUpToggled(true);
-						setIsDownToggled(false);
-					} else if(res.data.hasVoted && res.data.type === "downvote") {
-						setIsUpToggled(false);
-						setIsDownToggled(true);
-					} else {
-						setIsUpToggled(false);
-						setIsDownToggled(false);
-					}
-				})
-				.catch(err => console.log(err));
+		if(userData.user !== undefined && sheet.upvotedUsers.includes(userData.user.id)) {
+			setIsUpToggled(true);
+			setIsDownToggled(false);
+		} else if(userData.user !== undefined && sheet.downvotedUsers.includes(userData.user.id)) {
+			setIsUpToggled(false);
+			setIsDownToggled(true);
+		} else {
+			setIsUpToggled(false);
+			setIsDownToggled(false);
 		}
-	}, [sheet, userData]);
-
-	useEffect(() => {
-		if(sheet) {
-			axios.get(`/api/cheatsheets/rating/${sheet.id}`)
-				.then(res => {
-					setVoteCount(res.data.rating);
-				})
-				.catch(err => console.log(err));
-		}
-	}, [sheet])
+		setVoteCount(sheet.rating);
+	}, [sheet, userData.user]);
 
 	const upvote = () => {
 		setIsLoading(true);
