@@ -9,6 +9,9 @@ import DropdownItem from "reactstrap/lib/DropdownItem";
 import UserContext from '../context/UserContext';
 import "./css/UserDropdown.css"
 
+const URL_HOME = process.env.NODE_ENV !== "production"
+    ? "http://localhost:3000/"
+    : "https://cheato.herokuapp.com/";
 const URL_USERICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-user.svg";
 
 function UserDropdown() {
@@ -24,7 +27,12 @@ function UserDropdown() {
     const logout = () => {
         setUserData({...userData, ...{token: undefined, user: undefined}});
         localStorage.setItem("auth-token", "");
-        history.push("/");
+
+        if(URL_HOME === (window.location.href)) {
+            window.location.reload();
+        } else {
+            history.push("/");
+        }
     }
 
     const viewProfile = () => {
