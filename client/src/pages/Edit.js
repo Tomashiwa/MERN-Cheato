@@ -52,23 +52,24 @@ function Edit() {
 	};
 
 	useEffect(() => {
-		axios.post(`/api/cheatsheets/${id}`, userData.user)
-			.then((result) => {
-				const fetchedSheet = result.data;
-				setForm({
-					name: fetchedSheet.name,
-					school: fetchedSheet.school,
-					module: fetchedSheet.module,
-					description: fetchedSheet.description,
-					isPublic: fetchedSheet.isPublic,
-					isInvalid: false
-				});
+		axios.get(`/api/cheatsheets/details/${id}`)
+			.then(result => {
+				const fetchedDetails = result.data;
+				
+				if(userData.user && (userData.user.id !== fetchedDetails.author && !userData.user.isAdmin)) {
+					setErrorMsg("This cheatsheet is inaccessible");
+				} else {
+					setForm({
+						name: fetchedDetails.name,
+						school: fetchedDetails.school,
+						module: fetchedDetails.module,
+						description: fetchedDetails.description,
+						isPublic: fetchedDetails.isPublic,
+						isInvalid: false
+					});
+				}
 			})
-			.catch((err) => {
-				console.log("POST ERROR");
-				console.log("post err:", err);
-				setErrorMsg(err.response.data.msg);
-			});
+			.catch(err => setErrorMsg(err.response.data.msg));
 	}, [id, userData]);
 
 	return (

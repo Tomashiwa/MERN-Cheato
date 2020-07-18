@@ -62,7 +62,7 @@ function View() {
 						<div id="view-feedback">
 							<Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
 								{
-									userData.isLoaded && userData.user && (userData.user.id === sheet.author || userData.user.isAdmin)
+									userData.isLoaded && userData.user && (userData.user.name === sheet.author || userData.user.isAdmin)
 									?	<EditButton sheet={sheet} />
 									:	<></>
 								}

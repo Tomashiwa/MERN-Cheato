@@ -386,6 +386,22 @@ router.get("/withoutVotes/:userId", (req, res) => {
 		.catch((err) => res.status(404).json({ msg: err.msg }));
 });
 
+router.get("/details/:sheetId", (req, res) => {
+	Cheatsheet.findById(req.params.sheetId)
+		.then(cheatsheet => {
+			const details = {
+				name: cheatsheet.name,
+				author: cheatsheet.user,
+				school: cheatsheet.school,
+				module: cheatsheet.module,
+				description: cheatsheet.description,
+				isPublic: cheatsheet.isPublic,		
+			};
+			res.status(200).json(details);
+		})
+		.catch((err) => res.status(404).json({ msg: "No cheatsheet found" }));
+})
+
 router.post("/edit/:sheetId", (req, res) => {
 	const { user, form } = req.body;
 

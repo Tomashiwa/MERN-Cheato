@@ -7,7 +7,7 @@ function EditButton({sheet}) {
     const history = useHistory();
 
     const goEdit = () => {
-		history.push(`/edit/${sheet._id}`);
+		history.push(`/edit/${sheet.id}`);
     }
     
     return (
