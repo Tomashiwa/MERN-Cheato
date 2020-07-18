@@ -70,12 +70,9 @@ function EditForm({ form, setForm, isAnonymous }) {
 	};
 
 	const fetchModsBySchool = (schoolId, callback) => {
-		console.log("Fetching mods by school...");
-
 		axios
 			.get(`/api/modules/bySchool/${schoolId}`)
 			.then((result) => {
-				console.log('result.data:', result.data);
 				setModules(result.data);
 				callback();
 			})
@@ -123,7 +120,7 @@ function EditForm({ form, setForm, isAnonymous }) {
 	}, [schState.isSynced, schoolOptions, form.school]);
 
 	useEffect(() => {
-		if (!modState.isSynced) {
+		if (!modState.isSynced && moduleOptions.length > 0 && form.module.length > 0) {
 			const selectedModule = moduleOptions.find((option) => option.value === form.module);
 			setModState({
 				isLoading: false,
@@ -133,6 +130,14 @@ function EditForm({ form, setForm, isAnonymous }) {
 			});
 		}
 	}, [modState.isSynced, moduleOptions, form.module]);
+
+	useEffect(() => {
+		if(!modState.isSynced && form.module.length === 0) {
+			fetchModsBySchool(form.school, () => {
+				setModState({ isLoading: false, isDisabled: false, isSynced: true, selected: null });
+			});
+		}
+	}, [modState, form.module, form.school]);
 
 	// Verify the name and save it to the form
 	const checkName = (e) => {
@@ -171,9 +176,6 @@ function EditForm({ form, setForm, isAnonymous }) {
 				...{ isDisabled: true, isLoading: true, isSynced: false, selected: null },
 			});
 			setForm({ ...form, ...{ school: option.value, module: "" } });
-			fetchModsBySchool(option.value, () => {
-				setModState({ isLoading: false, isDisabled: false, isSynced: true, selected: null });
-			});
 		}
 	};
 
