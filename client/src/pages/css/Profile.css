@@ -16,8 +16,8 @@
 #viewUpload{
     display:flex;
     position:relative;
-    top:35px;
-    right:-320px;
+    /* top:35px;
+    right:-320px; */
 }
 
 #viewBookmark{
@@ -27,9 +27,35 @@
     right:-350px;
 }
 
-#username{
-    position:relative;
-    font-size:75px;
-    top:-150px;
-    right:-380px;
+.profile-name {
+    font-size: 50px;
+}
+
+.profile-title {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 3rem;
+    align-items: center;
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 0.5rem;
+}
+
+.profile-header > h5 {
+    flex-grow: 1;
+}
+
+.profile-divider {
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+}
+
+.profile-notFound {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
 }

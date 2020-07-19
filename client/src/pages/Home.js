@@ -1,5 +1,6 @@
 import React from "react";
 
+import Container from "reactstrap/lib/Container";
 import Gallery from "../components/Gallery";
 
 import "./css/Home.css";
@@ -7,8 +8,10 @@ import "./css/Home.css";
 function Home() {
 	return (
 		<div>
-			<Gallery />
-			<div id="dropdownMenu"></div>
+			<Container>
+				<h3>Browse Cheatsheet</h3>
+				<Gallery />
+			</Container>
 		</div>
 	);
 }

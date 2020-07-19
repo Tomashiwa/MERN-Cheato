@@ -6,6 +6,7 @@ import Button from "reactstrap/lib/Button";
 import Container from "reactstrap/lib/Container";
 
 import Gallery from "../components/Gallery";
+import SuggestionGallery from "../components/SuggestionGallery";
 import UserContext from "../context/UserContext";
 
 import "./css/Profile.css";
@@ -33,6 +34,10 @@ function Profile() {
 	const viewUpload = () => {
 		history.push(`/MyUpload/${userID}`);
 	};
+
+	useEffect(() => {
+		console.log("Rerender");
+	})
 
 	useEffect(() => {
 		axios
@@ -87,24 +92,29 @@ function Profile() {
 			<Container>
 				{isLoaded ? (
 					<div>
-						<img top width="250px" height="250px" src={URL_USERICON} alt="" />
-						<h3 id="username">{user.name}</h3>
+						<div className="profile-title">
+							<img top width="150px" height="150px" src={URL_USERICON} alt="" />
+							<h1 className="profile-name">{user.name}</h1>
+						</div>
 
 						<div>
-							<h3>
+							<div className="profile-header">
+								<h5>
+									{
+										user && userData.user !== undefined && user.name === userData.user.name 
+											? "My Uploads" 
+											: `${user.name}'s Uploads`
+									}
+								</h5>
 								{
-									user && userData.user !== undefined && user.name === userData.user.name 
-										? "My Uploads" 
-										: `${user.name}'s Uploads`
+									uploads.length > 3
+										?	<Button color="info" id="viewUpload" onClick={viewUpload}>
+												View All
+											</Button>
+										:	<></>
 								}
-							</h3>
-							{
-								uploads.length > 3
-									?	<Button color="info" id="viewUpload" onClick={viewUpload}>
-											View All
-										</Button>
-									:	<></>
-							}
+							</div>
+							<div className="profile-divider" />
 							{
 								uploads.length > 0
 									?<Gallery
@@ -112,25 +122,30 @@ function Profile() {
 										hasToolbar={false}
 										hasPagination={false}
 									/>
-									: <h5>No uploads found</h5>
+									: 	<div className="profile-notFound">
+											<h5>No uploads found</h5>
+										</div>
 							}
 						</div>
 
 						<div>
-							<h3>
+							<div className="profile-header">
+								<h5>
+									{
+										user && userData.user !== undefined && user.name === userData.user.name 
+											? "My Bookmarks" 
+											: `${user.name}'s Bookmarks`
+									}
+								</h5>
 								{
-									user && userData.user !== undefined && user.name === userData.user.name 
-										? "My Bookmarks" 
-										: `${user.name}'s Bookmarks`
-								}
-							</h3>
-							{
-								bookmarks.length > 3
-									?	<Button color="info" id="viewBookmark" onClick={viewBookmark}>
-											View All
-										</Button>
-									:	<></>
-							}
+									bookmarks.length > 3
+										?	<Button color="info" id="viewBookmark" onClick={viewBookmark}>
+												View All
+											</Button>
+										:	<></>
+								}							
+							</div>
+							<div className="profile-divider" />
 							{
 								bookmarks.length > 0
 									?<Gallery
@@ -138,8 +153,14 @@ function Profile() {
 										hasToolbar={false}
 										hasPagination={false}
 									/>
-									: <h5>No bookmarks found</h5>
+									: 	<div className="profile-notFound">
+											<h5>No bookmarks found</h5>
+										</div>
 							}
+						</div>
+
+						<div>
+							<SuggestionGallery align="horizontal" limit={3}/>
 						</div>
 					</div>
 				) : (

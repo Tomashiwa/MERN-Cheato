@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-
-import Gallery from "../components/Gallery";
-
 import axios from "axios";
 
+import Container from "reactstrap/lib/Container";
+
+import Gallery from "../components/Gallery";
 import UserContext from "../context/UserContext";
 
 import { useParams } from "react-router-dom";
@@ -59,12 +59,15 @@ function MyBookmark() {
 	return (
 		<div>
 			{isLoaded ? (
-				<Gallery
-					injectedSheets={display}
-					title={userData.user.id === userID ? "My Bookmarks" : `${user.name}'s Bookmarks`}
-					hasToolbar={false}
-					hasPagination={true}
-				/>
+				<Container>
+					<h3>...'s Bookmarks</h3>
+					<Gallery
+						injectedSheets={display}
+						// title={userData.user !== undefined && userData.user.id === userID ? "My Bookmarks" : `${user.name}'s Bookmarks`}
+						hasToolbar={false}
+						hasPagination={true}
+					/>
+				</Container>
 			) : (
 				<div></div>
 			)}

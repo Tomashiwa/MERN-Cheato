@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-
-import Gallery from "../components/Gallery";
-
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
-import { useParams } from "react-router-dom";
+import Container from "reactstrap/lib/Container";
 
+import Gallery from "../components/Gallery";
 import UserContext from '../context/UserContext';
 
 function MyUpload() {
@@ -45,12 +44,15 @@ function MyUpload() {
     return (
         <div>
 			{isLoaded ? (
-				<Gallery
-					injectedSheets={upload}
-					title={userData.user.id === userID ? "My Uploads" : `${user.name}'s Uploads`}
-					hasToolbar={false}
-					hasPagination={true}
-				/>
+                <Container>
+                    <h3>...'s Uploads</h3>
+                    <Gallery
+                        injectedSheets={upload}
+                        // title={userData.user !== undefined && userData.user.id === userID ? "My Uploads" : `${user.name}'s Uploads`}
+                        hasToolbar={false}
+                        hasPagination={true}
+                    />
+                </Container>
 			) : (
 				<div></div>
 			)}
