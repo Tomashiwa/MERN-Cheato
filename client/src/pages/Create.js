@@ -215,7 +215,7 @@ function Create() {
                             }
                         </div>
 
-                        <Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
+                        <Suspense fallback={<div className="center-screen stretch-height"><Spinner color="warning"/></div>}>
                             {
                                 formStep === CREATE_STEP_IMPORT
                                     ? <ImageCanvas form={form} setBlob={setBlob} />

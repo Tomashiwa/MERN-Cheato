@@ -93,7 +93,7 @@ function Profile() {
 						<div>
 							<h3>
 								{
-									user && userData.user !== undefined && user.id === userData.user.id 
+									user && userData.user !== undefined && user.name === userData.user.name 
 										? "My Uploads" 
 										: `${user.name}'s Uploads`
 								}
@@ -119,7 +119,7 @@ function Profile() {
 						<div>
 							<h3>
 								{
-									user && userData.user !== undefined && user.id === userData.user.id 
+									user && userData.user !== undefined && user.name === userData.user.name 
 										? "My Bookmarks" 
 										: `${user.name}'s Bookmarks`
 								}

@@ -62,7 +62,7 @@ function App() {
 					<div>
 						{
 							userData.isLoaded
-								? <Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
+								? <Suspense fallback={<div className="center-screen stretch-height"><Spinner color="warning"/></div>}>
 									<Switch>
 										<Route exact path="/create" component={Create} />
 										<Route exact path="/upload" component={Upload} />

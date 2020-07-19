@@ -192,7 +192,7 @@ function Upload() {
                     }
                 </div>
 
-                <Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
+                <Suspense fallback={<div className="center-screen stretch-height"><Spinner color="warning"/></div>}>
                     {
                         formStep === UPLOAD_STEP_FORM
                             ? <UploadForm form={form} setForm={setForm} setBlob={setUploadBlobs} isAnonymous={userData.isLoaded && userData.token === undefined}/>
