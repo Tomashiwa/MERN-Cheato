@@ -1,100 +1,44 @@
-.sheetCard{
-    width:300px;
-    height:278px;
-    padding:0px;
-    position:relative;
-    margin:20px;
-    top:0px;
-    right:0px;
-    background:#fff;
-    display:flex;
-    transition: .6s ease-out;
-    box-shadow:  0 10px 10px rbga(0,0,0),0.5;   
+.sheetCard {
+	margin: 20px;
 }
 
-
-.sheetCard-title > .rating-container{
-    position:relative;
-    top:-10px;
+.sheetCard-bookmarkBtn {
+	position: relative;
+	display: flex;
+	bottom: 40px;
+	left: 270px;
 }
 
-.sheetCard-bookmarkBtn{
-    position:relative;
-    display:flex;
+.sheetCard-author {
+	padding: 0rem;
 }
 
-.sheetCard-title > .rating-counter{
-   align-self:flex-end !important; 
-}
-
-#bookmarkbtn-icon{
-    position:relative;
-    display:flex;
-    z-index: 10;
-    bottom:40px;
-    left:270px;
-}
-
-#bookmarkbtn{
-    background-color:#FFBE7BFF;
-}
-
-
-#bookmarkbtn-icon-toggled {
-    position:relative;
-    display:flex;
-    z-index: 10;
-    bottom:40px;
-    left:270px;
-}
-	
-.sheetCard-author{
-    display:flex;
-}
-
-#cheatsheetcard-author{
-    position:relative;
-    top:15px;
-    right:150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space:nowrap;     
-}
-
-.card{
-    width:300px;
-    height:278px
+.card {
+	width: 300px;
+	height: 278px;
 }
 
 .card-img-top {
-    width:298px;
-    height:210.67px;
-    position:relative;
-    bottom:0px;
-    left:0px;
-    object-fit:cover;
-    cursor: pointer;
-
+	width: 298px;
+	height: 210.67px;
+	position: relative;
+	object-fit: cover;
 }
 
-.sheetCard-name{
-    display:flex;
-	flex-grow:10;
-	 
+.sheetCard-header {
+	display: flex;
+	flex-direction: row;
+	background-color: #eed971ff;
 }
 
-p{
+.sheetCard-header > .sheetCard-info {
+	flex-grow: 1;
+}
+
+.sheetCard-header .sheetCard-name {
+    font-size: large;
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 150px;
-}
-
-.sheetCard-title.card-header{
-    width:300px;
-    height:65px;
-    display:flex;
-    flex-direction:row;
-    justify-content:space-around;
-    background-color:#EED971FF;
 }

@@ -12,7 +12,6 @@ import CardHeader from "reactstrap/lib/CardHeader";
 import "./css/CheatsheetCard.css";
 
 function CheatsheetCard({ sheet }) {
-	// const { userData } = useContext(UserContext);
 	const history = useHistory();
 
 	const viewCheatsheet = () => {
@@ -26,23 +25,22 @@ function CheatsheetCard({ sheet }) {
 	return (
 		<div className="sheetCard">
 			<Card>
-				<CardHeader className="sheetCard-title">
-					<div className="sheetCard-name">
-						<p>{sheet.name}</p>
+				<CardHeader className="sheetCard-header">
+					<div className="sheetCard-info">
+						<div className="sheetCard-name">{sheet.name}</div>
+						{sheet.authorName ? (
+							<Button
+								className="sheetCard-author"
+								color="link"
+								size="sm"
+								onClick={viewAuthor}
+							>
+								{sheet.authorName}
+							</Button>
+						) : (
+							<></>
+						)}
 					</div>
-
-					{sheet.authorName ? (
-						<Button
-							className="sheetCard-author"
-							color="link"
-							size="sm"
-							onClick={viewAuthor}
-						>
-							{sheet.authorName}
-						</Button>
-					) : (
-						<div></div>
-					)}
 
 					<Rating sheet={sheet} />
 				</CardHeader>
