@@ -34,8 +34,8 @@ const Pagination = ({ currentPage, cheatsheetPerPage, totalCount, paginate, next
                         : <div></div>
                     }
                     {pages(pageNum)}
-                    {isNext
-                        ? (<Button variant="light" classname="page" onClick={() => nextPage()}>
+                    {isNext || (Math.ceil(totalCount / cheatsheetPerPage) === 1)
+                        ? (<Button variant="light" className="page" onClick={() => nextPage()}>
                             Next
                 </Button>)
                         : <div></div>
