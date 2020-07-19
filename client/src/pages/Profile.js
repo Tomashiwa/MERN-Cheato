@@ -36,10 +36,6 @@ function Profile() {
 	};
 
 	useEffect(() => {
-		console.log("Rerender");
-	})
-
-	useEffect(() => {
 		axios
 			.get(`/api/users/profile/${userID}`)
 			.then((res) => {
@@ -160,7 +156,7 @@ function Profile() {
 						</div>
 
 						<div>
-							<SuggestionGallery align="horizontal" limit={3}/>
+							<SuggestionGallery align="horizontal" limit={3} filter={[]}/>
 						</div>
 					</div>
 				) : (

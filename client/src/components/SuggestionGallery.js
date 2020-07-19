@@ -8,7 +8,7 @@ import "./css/SuggestionGallery.css";
 function SuggestionGallery({ align = "vertical", limit = 3, filter = [] }) {
 	const { userData } = useContext(UserContext);
 	const [suggestions, setSuggestions] = useState([]);
-
+	
 	useEffect(() => {
 		if(userData.isLoaded && userData.user) {
 			axios.post(`/api/suggestions/toUser/${userData.user.id}/limit/${limit + 1}`, userData.user)

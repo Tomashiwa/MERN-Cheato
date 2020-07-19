@@ -10,24 +10,24 @@ import UserContext from '../context/UserContext';
 function MyUpload() {
     const { userData } = useContext(UserContext);
 
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const [upload, setUpload] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
     const { userID } = useParams();
 
-    useEffect(() => {
-        if (userData.isLoaded && userData.token !== undefined) {
-            axios
-                .get(`/api/users/${userID}`)
-                .then((res) => {
-                    setUser(res.data);
-                })
-                .catch((err) => {
-                    console.log(`Fail to fetch user data: ${err}`);
-                });
-        }
-    }, [userData,userID]);
+    // useEffect(() => {
+    //     if (userData.isLoaded && userData.token !== undefined) {
+    //         axios
+    //             .get(`/api/users/${userID}`)
+    //             .then((res) => {
+    //                 setUser(res.data);
+    //             })
+    //             .catch((err) => {
+    //                 console.log(`Fail to fetch user data: ${err}`);
+    //             });
+    //     }
+    // }, [userData,userID]);
 
     useEffect(() => {
         axios
