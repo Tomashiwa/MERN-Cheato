@@ -15,14 +15,13 @@
 
 .card {
 	width: 300px;
-	height: 278px;
+	height: 300px;
 }
 
 .card-img-top {
-	width: 298px;
-	height: 210.67px;
-	position: relative;
-	object-fit: cover;
+    width: 100%;
+    height: 72.75%;
+	object-fit: contain;
 }
 
 .sheetCard-header {
