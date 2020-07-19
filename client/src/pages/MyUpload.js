@@ -56,8 +56,8 @@ function MyUpload() {
             {(isLoaded)
                 ? <div>
                     {isUser
-                        ? <Gallery cheatsheetArray={upload} text={textDisplay} dropdown={dropdownDisplay} numbering="false"/>
-                        : <Gallery cheatsheetArray={upload} text={uploadText} dropdown={dropdownDisplay} numbering="false"/>
+                        ? <Gallery cheatsheetArray={upload} text={textDisplay} dropdown={dropdownDisplay} />
+                        : <Gallery cheatsheetArray={upload} text={uploadText} dropdown={dropdownDisplay} />
                     }
                 </div>
                 : <div></div>

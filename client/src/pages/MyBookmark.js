@@ -12,20 +12,18 @@ import { useParams } from "react-router-dom";
 
 function MyBookmark() {
     const { userData, setUserData } = useContext(UserContext);
-    
+
     const [user, setUser] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [bookmarked, setBookmarked] = useState(null);
     const [display, setDisplay] = useState(null);
     const [bookmarkText, setBookmarkText] = useState("");
-    
+
     const { userID } = useParams();
-    
-    const cheatsheetObjectArray = [];
+
     const textDisplay = "My Bookmarks"
     const dropdownDisplay = false;
-    
-    
+
     const isUser = (userData.user.id === userID);
 
     useEffect(() => {
@@ -40,7 +38,7 @@ function MyBookmark() {
                     console.log(`Fail to fetch user data: ${err}`);
                 });
         }
-    }, [userData,userID]);
+    }, [userData, userID]);
 
     useEffect(() => {
         if (user !== null) {
@@ -51,21 +49,21 @@ function MyBookmark() {
 
     useEffect(() => {
         if (bookmarked !== null) {
-            for (var i = 0; i < bookmarked.length; i++) {
+            console.log(bookmarked)
+            Promise.all(bookmarked.map(bookmark =>
                 axios
-                    .post(`/api/cheatsheets/${bookmarked[i]}`, userData.user)
-                    .then((res) => {
-                        cheatsheetObjectArray.push(res.data)
-                        setDisplay(cheatsheetObjectArray)
-                        setIsLoaded(true);
-
+                    .post(`/api/cheatsheets/${bookmark}`, userData.user)))
+                .then(results => {
+                    let arr = [];
+                    results.forEach(result => {
+                        arr.push(result.data);
                     })
-                    .catch((err) => {
-                        console.log(`Fail to fetch cheatsheets: ${err}`);
-                    });
-            }
+                    setDisplay(arr);
+                    setIsLoaded(true);
+                })
         }
-    }, [bookmarked,userData]);
+    }, [bookmarked, userData]);
+
 
     console.log(user)
 
@@ -73,9 +71,9 @@ function MyBookmark() {
         <div>
             {isLoaded
                 ? <div>
-                    {isUser 
-                        ? <Gallery cheatsheetArray={display} text={textDisplay} dropdown={dropdownDisplay} numbering="false"/>
-                        : <Gallery cheatsheetArray={display} text={bookmarkText} dropdown={dropdownDisplay} numbering="false"/>
+                    {isUser
+                        ? <Gallery cheatsheetArray={display} text={textDisplay} dropdown={dropdownDisplay} />
+                        : <Gallery cheatsheetArray={display} text={bookmarkText} dropdown={dropdownDisplay} />
                     }
                 </div>
                 : <div></div>

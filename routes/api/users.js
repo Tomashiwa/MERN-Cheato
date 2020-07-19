@@ -26,6 +26,7 @@ router.get("/", (req, res) => {
 // @descr Create a user
 // @access Public
 router.post("/register", (req, res) => {
+<<<<<<< Updated upstream
     const {name, password, isAdmin} = req.body;
 
     if(!name || !password) {
@@ -66,6 +67,52 @@ router.post("/register", (req, res) => {
                 })
             })
         })
+=======
+	const { name, password, isAdmin } = req.body;
+
+	if (!name || !password) {
+		return res.status(400).json({ msg: "Please provide both name and password." });
+	}
+
+	//Check if there's an existing user with that name before creating it
+	User.findOne({ name }).then((user) => {
+		if (user) {
+			return res
+				.status(400)
+				.json({ msg: "This name is being used, please consider other possible names." });
+		}
+
+		const newUser = new User({
+			name: req.body.name,
+			password: req.body.password,
+			bookmarks: [],
+			isAdmin: req.body.isAdmin,
+			upvotedSheets: [],
+			downvotedSheets: []
+		});
+
+		//Hashes password and save the user to backend
+		bcrypt.genSalt(10, (err, salt) => {
+			bcrypt.hash(newUser.password, salt, (err, hash) => {
+				if (err) {
+					return res.status(400).json({ msg: "Error encountered when hashing password" });
+				}
+
+				newUser.password = hash;
+				newUser.save().then((user) => {
+					jwt.sign({ id: user.id }, jwtSecret, {}, (err, token) => {
+						res.status(200).json({
+							token,
+							user: { id: user.id, name: user.name, isAdmin: user.isAdmin },
+						});
+
+						engine.update({ id: user.id });
+					});
+				});
+			});
+		});
+	});
+>>>>>>> Stashed changes
 });
 
 router.post("/nameAvaliable", (req, res) => {
@@ -90,6 +137,7 @@ router.post("/nameAvaliable", (req, res) => {
 })
 
 router.post("/tokenIsValid", (req, res) => {
+<<<<<<< Updated upstream
     const token = req.header("x-auth-token");
     if(!token) {
         return res.json({isValid: false,  msg: "Token not found"});
@@ -112,6 +160,28 @@ router.post("/tokenIsValid", (req, res) => {
                 user: {id: user._id, name: user.name, isAdmin: user.isAdmin}
             }); 
         });
+=======
+	const token = req.header("x-auth-token");
+	if (!token) {
+		return res.status(200).json({ isValid: false, msg: "Token not found" });
+	}
+
+	const verified = jwt.verify(token, jwtSecret);
+	if (!verified) {
+		return res.status(200).json({ isValid: false, msg: "Invalid Token" });
+	}
+
+	User.findById(verified.id).then((user) => {
+		if (!user) {
+			return res.status(200).json({ isValid: false, msg: "No user found with the given id" });
+		}
+		return res.status(200).json({
+			isValid: true,
+			msg: "Token is valid",
+			user: { id: user._id, name: user.name, isAdmin: user.isAdmin },
+		});
+	});
+>>>>>>> Stashed changes
 });
 
 router.get("/:id", (req, res) => {

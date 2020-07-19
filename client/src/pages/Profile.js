@@ -19,8 +19,8 @@ import { Button } from 'reactstrap';
 
 
 function Profile() {
-    const { userData, setUserData } = useContext(UserContext);
-    
+    const { userData } = useContext(UserContext);
+
     const [user, setUser] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [upload, setUpload] = useState(null);
@@ -31,11 +31,7 @@ function Profile() {
     const [uploadText, setUploadText] = useState("");
     const [bookmarkText, setBookmarkText] = useState("");
 
-    console.log(user)
-    
     const { userID } = useParams();
-    
-    const cheatsheetObjectArray = [];
 
     const history = useHistory();
 
@@ -47,23 +43,19 @@ function Profile() {
         history.push(`/MyUpload/${userID}`);
     }
 
-    const isUser = (userData.user.id === userID);
-
     useEffect(() => {
-            axios
-                .get(`/api/users/${userID}`)
-                .then((res) => {
-                    setUser(res.data);
-                    setIsLoaded(true);
-                    console.log(user)
-                    console.log(isLoaded)
-                    setUploadText(`${user.name} Upload`);
-                    setBookmarkText(`${user.name} Bookmark`);
-                })
-                .catch((err) => {
-                    console.log(`Fail to fetch user data: ${err}`);
-                });
-    }, [userData, isLoaded, user, userID]);
+        axios
+            .get(`/api/users/${userID}`)
+            .then((res) => {
+                setUser(res.data);
+                setIsLoaded(true);
+                setUploadText(`${user.name} Upload`);
+                setBookmarkText(`${user.name} Bookmark`);
+            })
+            .catch((err) => {
+                console.log(`Fail to fetch user data: ${err}`);
+            });
+    }, [userData, isLoaded, userID]);
 
     useEffect(() => {
         axios
@@ -71,6 +63,7 @@ function Profile() {
             .then((res) => {
                 setUpload(res.data.slice(0, 3));
                 setIsSet(true);
+                console.log(upload)
             })
             .catch((err) => {
                 console.log(`Fail to fetch cheatsheets: ${err}`);
@@ -85,50 +78,55 @@ function Profile() {
 
     useEffect(() => {
         if (bookmarked !== null) {
-            for (var i = 0; i < bookmarked.length; i++) {
+            console.log(bookmarked)
+            Promise.all(bookmarked.map(bookmark =>
                 axios
-                    .post(`/api/cheatsheets/${bookmarked[i]}`, userData.user)
-                    .then((res) => {
-                        cheatsheetObjectArray.push(res.data)
-                        setDisplay(cheatsheetObjectArray.slice(0, 3))
-                        setIsPresent(true);
-
+                    .post(`/api/cheatsheets/${bookmark}`, userData.user)))
+                .then(results => {
+                    let arr = [];
+                    results.forEach(result => {
+                        arr.push(result.data);
                     })
-                    .catch((err) => {
-                        console.log(`Fail to fetch cheatsheets: ${err}`);
-                    });
-            }
+                    setDisplay(arr.slice(0, 3));
+                    setIsPresent(true);
+                    console.log(display)
+                })
         }
-    }, [bookmarked,userData]);
+    }, [bookmarked, userData]);
 
     return (
         <div>
             <Container>
                 {isLoaded
                     ? <div>
-                        <img top width="250px" height="250px" src={userIcon} alt=""/>
+                        <img top width="250px" height="250px" src={userIcon} alt="" />
                         <h3 id="username">{user.name}</h3>
-                        {isSet
-                            ? <div>
-                                <Button color="info" id="viewUpload" onClick={viewUpload}>View All</Button>
-                                {isUser
-                                    ? <Gallery cheatsheetArray={upload} text="My Upload" dropdown="false" numbering="false"/>
-                                    : <Gallery cheatsheetArray={upload} text={uploadText} dropdown="false" numbering="false"/>
-                                }
-                            </div>
-                            : <div></div>
+                        {upload !== null
+                            ? <div>{isSet
+                                ? <div>
+                                    <Button color="info" id="viewUpload" onClick={viewUpload}>View All</Button>
+                                    {(userData.user && (userData.user.id === userID))
+                                        ? <Gallery cheatsheetArray={upload} text="My Upload" dropdown="false" numbering="false" />
+                                        : <Gallery cheatsheetArray={upload} text={uploadText} dropdown="false" numbering="false" />
+                                    }
+                                </div>
+                                : <div></div>
+                            }</div>
+                            : <p>You have not uploaded any cheatsheets yet</p>
                         }
-                        {isPresent
-                            ? <div>
-                                <Button color="info" id="viewBookmark" onClick={viewBookmark}>View All</Button>
-                                {isUser
-                                    ? <Gallery cheatsheetArray={display} text="My Bookmark" dropdown="false" numbering="false"/>
-                                    : <Gallery cheatsheetArray={display} text={bookmarkText} dropdown="false" numbering="false"/>
-                                }
-                            </div>
-                            : <div></div>
-                        }
-                    </div>
+                        {display !== null
+                            ? <div>{isPresent
+                                ? <div>
+                                    <Button color="info" id="viewBookmark" onClick={viewBookmark}>View All</Button>
+                                    {(userData.user && (userData.user.id === userID))
+                                        ? <Gallery cheatsheetArray={display} text="My Bookmark" dropdown="false" numbering="false" />
+                                        : <Gallery cheatsheetArray={display} text={bookmarkText} dropdown="false" numbering="false" />
+                                    }
+                                </div>
+                                : <div></div>
+                            }</div>
+                            : <p>You have not bookmarked any cheatsheets yet</p>
+                        }</div>
                     : <div></div>
                 }
             </Container>

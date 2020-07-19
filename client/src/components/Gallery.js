@@ -26,8 +26,6 @@ export const SELECT_STYLE = {
 	}),
 };
 
-
-
 function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering = true }) {
 	const { userData } = useContext(UserContext);
 
@@ -35,7 +33,6 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 	const [schFilter, setSchFilter] = useState(null);
 	const [modFilter, setModfilter] = useState(null);
 
-	const [isLoaded, setIsLoaded] = useState(false);
 	const [sheets, setSheets] = useState([]);
 	const [displaySheets, setDisplaySheets] = useState([]);
 
@@ -46,7 +43,7 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 	const [modLoading, setModLoading] = useState(false);
 
 	const [currentPage, setCurrentPage] = useState(1);
-	const [cheatsheetPerPage, setCheatsheetPerPage] = useState(9);
+	const [cheatsheetPerPage] = useState(9);
 	const [prev, setPrev] = useState(true);
 	const [next, setNext] = useState(true);
 
@@ -58,8 +55,6 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 	const indexOfFirstCard = indexOfLastCard - cheatsheetPerPage;
 	const currentCard = displaySheets.slice(indexOfFirstCard, indexOfLastCard)
 
-	const pageNum = []
-
 	useEffect(() => {
 		const postConfig = { headers: { "Content-Type": "application/json" } };
 		const userInfo = userData.user !== undefined ? userData.user : null;
@@ -67,7 +62,6 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 			axios.post("/api/cheatsheets", userInfo, postConfig).then((res) => {
 				setSheets(res.data);
 				setDisplaySheets(res.data);
-				setIsLoaded(true);
 			});
 		} else {
 			setSheets(cheatsheetArray);
@@ -167,8 +161,6 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 	const nextPage = () => setCurrentPage(currentPage + 1);
 
 	const previousPage = () => setCurrentPage(currentPage - 1);
-
-	console.log(currentPage)
 
 	return (
 		<div>

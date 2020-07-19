@@ -2,29 +2,30 @@ import React from "react";
 
 import "./css/Pagination.css";
 
-import {
-    Card, CardImg, CardText, CardBody,
-    CardTitle, CardSubtitle, Button, CardLink, ButtonGroup, CardHeader, CardFooter
-} from 'reactstrap';
+import { Button, ButtonGroup } from 'reactstrap';
 
 const Pagination = ({ currentPage, cheatsheetPerPage, totalCount, paginate, nextPage, previousPage, isPrev, isNext }) => {
     const pageNum = [];
+    const totalPage = Math.ceil(totalCount / cheatsheetPerPage);
 
-    for (let i = 1; i <= Math.ceil(totalCount / cheatsheetPerPage); i++) {
-        const active = (currentPage === i ? "active" :"");
+    for (let i = 1; i <= totalPage; i++) {
+        const active = (currentPage === i ? "active" : "");
         pageNum.push(<Button className={`waves-effect ${active}`} key={i} onClick={() => paginate(i)}>{i}</Button>)
     }
-    console.log(pageNum)
-   /* {pageNum.map(number => (
-        <Button key={number} variant="light" className={`waves-effect ${active}`} onClick={() => paginate(number)}>
-            {number}
-        </Button>
-    ))}*/
+
+    const pages = (pageNum) => {
+        if ((currentPage >= 5) && (totalPage-currentPage >= 5)){
+            return pageNum.slice(currentPage - 5, currentPage + 5)
+        } else if (currentPage >= 1 && currentPage <= 5) {
+            return pageNum.slice(0, 10)
+        } else if (totalPage-currentPage <= 5) {
+            return pageNum.slice(totalPage-10,totalPage)
+        }
+    }
 
     return (
         <nav>
             <ul className="pagination justify-content-center">
-
                 <ButtonGroup>
                     {isPrev
                         ? (<Button variant="light" classname="page" onClick={() => previousPage()}>
@@ -32,7 +33,7 @@ const Pagination = ({ currentPage, cheatsheetPerPage, totalCount, paginate, next
                 </Button>)
                         : <div></div>
                     }
-                    {pageNum}
+                    {pages(pageNum)}
                     {isNext
                         ? (<Button variant="light" classname="page" onClick={() => nextPage()}>
                             Next
