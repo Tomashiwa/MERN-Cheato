@@ -241,5 +241,20 @@ router.get("/:userId/hasVoted/:sheetId", (req, res) => {
 		.catch(err => res.status(404).json({msg: err.msg}));
 })
 
+router.get("/profile/:userId", (req, res) => {
+	User.findById(req.params.userId)
+		.then(user => {
+			const profile = {
+				name: user.name,
+				bookmarks: user.bookmarks,
+				upvotedSheets: user.upvotedSheets,
+				downvotedSheets: user.downvotedSheets
+			}
+
+			res.status(200).json(profile);
+		})
+		.catch(err => res.status(404).json({msg: err.msg}));
+})
+
 //So other files can read what's in this file
 module.exports = router;

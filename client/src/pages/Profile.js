@@ -1,36 +1,26 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
-
-import Gallery from "../components/Gallery";
-
+import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 
+import Button from "reactstrap/lib/Button";
+import Container from "reactstrap/lib/Container";
+
+import Gallery from "../components/Gallery";
 import UserContext from "../context/UserContext";
 
 import "./css/Profile.css";
 
-import Container from "reactstrap/lib/Container";
-
-import { useHistory } from "react-router-dom";
-
-import { Button } from "reactstrap";
-
 const URL_USERICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-user.svg";
 
 function Profile() {
-	const { userData, setUserData } = useContext(UserContext);
-
-	const [user, setUser] = useState(null);
-	const [isLoaded, setIsLoaded] = useState(false);
-	const [upload, setUpload] = useState(null);
-	const [isSet, setIsSet] = useState(false);
-	const [isPresent, setIsPresent] = useState(false);
-	const [bookmarked, setBookmarked] = useState(null);
-	const [display, setDisplay] = useState(null);
-	const [uploadText, setUploadText] = useState("");
-	const [bookmarkText, setBookmarkText] = useState("");
-
+	const { userData } = useContext(UserContext);
 	const { userID } = useParams();
+	const [user, setUser] = useState(null);
+
+	const [isLoaded, setIsLoaded] = useState(false);
+
+	const [uploads, setUploads] = useState([]);
+	const [bookmarks, setBookmarks] = useState([]);
 
 	const cheatsheetObjectArray = [];
 
@@ -44,58 +34,53 @@ function Profile() {
 		history.push(`/MyUpload/${userID}`);
 	};
 
-	const isUser = userData.user.id === userID;
-
 	useEffect(() => {
 		axios
-			.get(`/api/users/${userID}`)
+			.get(`/api/users/profile/${userID}`)
 			.then((res) => {
 				setUser(res.data);
 				setIsLoaded(true);
-				console.log(user);
-				console.log(isLoaded);
-				setUploadText(`${user.name} Upload`);
-				setBookmarkText(`${user.name} Bookmark`);
 			})
 			.catch((err) => {
 				console.log(`Fail to fetch user data: ${err}`);
 			});
-	}, [userData, isLoaded, user, userID]);
+	}, [userID]);
 
 	useEffect(() => {
 		axios
 			.get(`/api/cheatsheets/byUser/${userID}`)
 			.then((res) => {
-				setUpload(res.data.slice(0, 3));
-				setIsSet(true);
+				setUploads(res.data);
+				// console.log('res.data.slice(0,3):', res.data.slice(0,3));
+				// setUploads(res.data.slice(0, 3));
 			})
 			.catch((err) => {
 				console.log(`Fail to fetch cheatsheets: ${err}`);
 			});
 	}, [userID]);
 
-	useEffect(() => {
-		if (user !== null) {
-			setBookmarked(user.bookmarks);
-		}
-	}, [user]);
+	// useEffect(() => {
+	// 	if (user !== null) {
+	// 		console.log(`user bookmarks:`, user.bookmarks);
+	// 		setBookmarks(user.bookmarks);
+	// 	}
+	// }, [user]);
 
-	useEffect(() => {
-		if (bookmarked !== null) {
-			for (var i = 0; i < bookmarked.length; i++) {
-				axios
-					.post(`/api/cheatsheets/${bookmarked[i]}`, userData.user)
-					.then((res) => {
-						cheatsheetObjectArray.push(res.data);
-						setDisplay(cheatsheetObjectArray.slice(0, 3));
-						setIsPresent(true);
-					})
-					.catch((err) => {
-						console.log(`Fail to fetch cheatsheets: ${err}`);
-					});
-			}
-		}
-	}, [bookmarked, userData]);
+	// useEffect(() => {
+	// 	if (bookmarks !== null) {
+	// 		for (var i = 0; i < bookmarks.length; i++) {
+	// 			axios
+	// 				.post(`/api/cheatsheets/${user.bookmarks[i]}`, userData.user)
+	// 				.then((res) => {
+	// 					cheatsheetObjectArray.push(res.data);
+	// 					setBookmarks(cheatsheetObjectArray);
+	// 				})
+	// 				.catch((err) => {
+	// 					console.log(`Fail to fetch cheatsheets: ${err}`);
+	// 				});
+	// 		}
+	// 	}
+	// }, [user.bookmarks, userData]);
 
 	return (
 		<div>
@@ -104,54 +89,58 @@ function Profile() {
 					<div>
 						<img top width="250px" height="250px" src={URL_USERICON} alt="" />
 						<h3 id="username">{user.name}</h3>
-						{isSet ? (
-							<div>
-								<Button color="info" id="viewUpload" onClick={viewUpload}>
-									View All
-								</Button>
-								{isUser ? (
-									<Gallery
-										injectedSheets={upload}
-										title="My Upload"
+
+						<div>
+							<h3>
+								{
+									user && userData.user !== undefined && user.id === userData.user.id 
+										? "My Uploads" 
+										: `${user.name}'s Uploads`
+								}
+							</h3>
+							{
+								uploads.length > 3
+									?	<Button color="info" id="viewUpload" onClick={viewUpload}>
+											View All
+										</Button>
+									:	<></>
+							}
+							{
+								uploads.length > 0
+									?<Gallery
+										injectedSheets={uploads.slice(0,3)}
 										hasToolbar={false}
 										hasPagination={false}
 									/>
-								) : (
-									<Gallery
-										injectedSheets={upload}
-										title={uploadText}
+									: <h5>No uploads found</h5>
+							}
+						</div>
+
+						<div>
+							<h3>
+								{
+									user && userData.user !== undefined && user.id === userData.user.id 
+										? "My Bookmarks" 
+										: `${user.name}'s Bookmarks`
+								}
+							</h3>
+							{
+								bookmarks.length > 3
+									?	<Button color="info" id="viewBookmark" onClick={viewBookmark}>
+											View All
+										</Button>
+									:	<></>
+							}
+							{
+								bookmarks.length > 0
+									?<Gallery
+										injectedSheets={bookmarks}
 										hasToolbar={false}
 										hasPagination={false}
 									/>
-								)}
-							</div>
-						) : (
-							<div></div>
-						)}
-						{isPresent ? (
-							<div>
-								<Button color="info" id="viewBookmark" onClick={viewBookmark}>
-									View All
-								</Button>
-								{isUser ? (
-									<Gallery
-										injectedSheets={display}
-										title="My Bookmark"
-										hasToolbar={false}
-										hasPagination={false}
-									/>
-								) : (
-									<Gallery
-										injectedSheets={display}
-										title={bookmarkText}
-										hasToolbar={false}
-										hasPagination={false}
-									/>
-								)}
-							</div>
-						) : (
-							<div></div>
-						)}
+									: <h5>No bookmarks found</h5>
+							}
+						</div>
 					</div>
 				) : (
 					<div></div>

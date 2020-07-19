@@ -63,7 +63,7 @@ function MyBookmark() {
 					injectedSheets={display}
 					title={userData.user.id === userID ? "My Bookmarks" : `${user.name}'s Bookmarks`}
 					hasToolbar={false}
-					hasPagination={false}
+					hasPagination={true}
 				/>
 			) : (
 				<div></div>

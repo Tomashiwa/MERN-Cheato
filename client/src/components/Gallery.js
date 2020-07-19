@@ -68,27 +68,29 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 
 	// Fetch school upon page start
 	useEffect(() => {
-		setSchLoading(true);
-		axios
-			.get("/api/schools")
-			.then((res) => {
-				const schools = res.data;
-				const options = schools.map((school) => {
-					return { label: school.name, value: school._id };
+		if(hasToolbar) {
+			setSchLoading(true);
+			axios
+				.get("/api/schools")
+				.then((res) => {
+					const schools = res.data;
+					const options = schools.map((school) => {
+						return { label: school.name, value: school._id };
+					});
+					options.unshift({ label: "Select...", value: null });
+	
+					setSchOpts(options);
+					setSchLoading(false);
+				})
+				.catch((err) => {
+					console.log(`Fail to fetch Schools: ${err}`);
 				});
-				options.unshift({ label: "Select...", value: null });
-
-				setSchOpts(options);
-				setSchLoading(false);
-			})
-			.catch((err) => {
-				console.log(`Fail to fetch Schools: ${err}`);
-			});
-	}, []);
+		}
+	}, [hasToolbar]);
 
 	// Fetch modules upon selecting a school
 	useEffect(() => {
-		if (schFilter && schFilter.value !== null) {
+		if (hasToolbar && schFilter && schFilter.value !== null) {
 			setModLoading(true);
 
 			axios.get(`/api/modules/bySchool/${schFilter.value}`).then((res) => {
@@ -103,7 +105,7 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 		} else {
 			setModOpts([]);
 		}
-	}, [schFilter]);
+	}, [schFilter, hasToolbar]);
 
 	useEffect(() => {
 		if(injectedSheets.length === 0) {
@@ -151,7 +153,7 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 	return (
 		<div>
 			<Container>
-				<h3>{title}</h3>
+				{/* <h3>{title}</h3> */}
 
 				{hasToolbar ? (
 					<div id="gallery-toolbar">

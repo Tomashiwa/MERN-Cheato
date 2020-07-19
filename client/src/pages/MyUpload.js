@@ -49,7 +49,7 @@ function MyUpload() {
 					injectedSheets={upload}
 					title={userData.user.id === userID ? "My Uploads" : `${user.name}'s Uploads`}
 					hasToolbar={false}
-					hasPagination={false}
+					hasPagination={true}
 				/>
 			) : (
 				<div></div>

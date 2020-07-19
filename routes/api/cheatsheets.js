@@ -518,5 +518,9 @@ router.get(`/rating/:sheetId`, (req, res) => {
 		.catch((err) => res.status(404).json({ msg: `No cheatsheet found` }));
 })
 
+// router.get(`/cardsFor/:userId`, (req, res) => {
+// 	Cheatsheet.find({"_id"})
+// })
+
 //So other files can read what's in this file
 module.exports = router;
