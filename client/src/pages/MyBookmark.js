@@ -32,6 +32,23 @@ function MyBookmark() {
 				});
 		}
 	}, [userData, userID]);
+    useEffect(() => {
+        if (bookmarked !== null) {
+            console.log(bookmarked)
+            Promise.all(bookmarked.map(bookmark =>
+                axios
+                    .post(`/api/cheatsheets/${bookmark}`, userData.user)))
+                .then(results => {
+                    let arr = [];
+                    results.forEach(result => {
+                        arr.push(result.data);
+                    })
+                    setDisplay(arr);
+                    setIsLoaded(true);
+                })
+        }
+    }, [bookmarked, userData]);
+
 
 	useEffect(() => {
 		if (user !== null) {
@@ -39,7 +56,7 @@ function MyBookmark() {
 		}
 	}, [user]);
 
-	useEffect(() => {
+	/*useEffect(() => {
 		if (bookmarked !== null) {
 			for (var i = 0; i < bookmarked.length; i++) {
 				axios
@@ -55,6 +72,18 @@ function MyBookmark() {
 			}
 		}
 	}, [bookmarked, userData]);
+    return (
+        <div>
+            {isLoaded
+                ? <div>
+                    {isUser
+                        ? <Gallery cheatsheetArray={display} text={textDisplay} dropdown={dropdownDisplay} />
+                        : <Gallery cheatsheetArray={display} text={bookmarkText} dropdown={dropdownDisplay} />
+                    }
+                </div>
+                : <div></div>
+            }
+        </div>*/
 
 	return (
 		<div>

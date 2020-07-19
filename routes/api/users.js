@@ -29,6 +29,51 @@ router.get("/", (req, res) => {
 // @descr Create a user
 // @access Public
 router.post("/register", (req, res) => {
+// <<<<<<< HEAD
+// =======
+// <<<<<<< Updated upstream
+    const {name, password, isAdmin} = req.body;
+
+    if(!name || !password) {
+        return res.status(400).json({msg: "Please provide both name and password."});
+    }
+    
+    //Check if there's an existing user with that name before creating it
+    User.findOne({name})
+        .then(user => {
+            if(user) {
+                return res.status(400).json({msg: "This name is being used, please consider other possible names."});
+            }
+            
+            const newUser = new User({
+                name: req.body.name,
+                password: req.body.password,
+                bookmarks: [],
+                isAdmin: req.body.isAdmin
+            });
+            
+            //Hashes password and save the user to backend
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(newUser.password, salt, (err, hash) => {
+                    if(err) {
+                        return res.status(400).json({msg: "Error encountered when hashing password"});
+                    }
+
+                    newUser.password = hash;
+                    newUser
+                        .save()
+                        .then(user => {
+                            jwt.sign({id: user.id}, jwtSecret, {}, 
+                                (err, token) => {
+                                    res.json({token, user: {id: user.id, name: user.name, isAdmin: user.isAdmin}});
+                                }
+                            );
+                        })
+                })
+            })
+        })
+// =======
+// >>>>>>> Profile
 	const { name, password, isAdmin } = req.body;
 
 	if (!name || !password) {
@@ -67,13 +112,21 @@ router.post("/register", (req, res) => {
 							user: { id: user.id, name: user.name, isAdmin: user.isAdmin },
 						});
 
-						engine.update({id: user.id});
+// <<<<<<< HEAD
+// 						engine.update({id: user.id});
+// =======
+// 						engine.update({ id: user.id });
+// >>>>>>> Profile
 					});
 				});
 			});
 		});
 	});
-});
+// <<<<<<< HEAD
+// =======
+// >>>>>>> Stashed changes
+// >>>>>>> Profile
+// });
 
 router.post("/nameAvaliable", (req, res) => {
 	const { name } = req.body;
@@ -94,6 +147,33 @@ router.post("/nameAvaliable", (req, res) => {
 });
 
 router.post("/tokenIsValid", (req, res) => {
+// <<<<<<< HEAD
+// =======
+// <<<<<<< Updated upstream
+    const token = req.header("x-auth-token");
+    if(!token) {
+        return res.json({isValid: false,  msg: "Token not found"});
+    }
+
+    const verified = jwt.verify(token, jwtSecret);
+    if(!verified) {
+        return res.json({isValid: false, msg: "Invalid Token"});
+    }
+
+    User.findById(verified.id)
+        .then(user => {
+            if(!user) {
+                return res.json({isValid: false, msg: "No user found with the given id"});
+            }
+
+            return res.json({
+                isValid: true, 
+                msg: "Token is valid", 
+                user: {id: user._id, name: user.name, isAdmin: user.isAdmin}
+            }); 
+        });
+// =======
+// >>>>>>> Profile
 	const token = req.header("x-auth-token");
 	if (!token) {
 		return res.status(200).json({ isValid: false, msg: "Token not found" });
@@ -108,13 +188,20 @@ router.post("/tokenIsValid", (req, res) => {
 		if (!user) {
 			return res.status(200).json({ isValid: false, msg: "No user found with the given id" });
 		}
+// <<<<<<< HEAD
 
+// =======
+// >>>>>>> Profile
 		return res.status(200).json({
 			isValid: true,
 			msg: "Token is valid",
 			user: { id: user._id, name: user.name, isAdmin: user.isAdmin },
 		});
 	});
+// <<<<<<< HEAD
+// =======
+// >>>>>>> Stashed changes
+// >>>>>>> Profile
 });
 
 router.get("/:id", (req, res) => {
