@@ -5,55 +5,47 @@ import CheatsheetCard from "./CheatsheetCard";
 
 import "./css/SuggestionGallery.css";
 
-function SuggestionGallery({ align = "vertical", limit = 3 }) {
+function SuggestionGallery({ align = "vertical", limit = 3, filter = [] }) {
 	const { userData } = useContext(UserContext);
 	const [suggestions, setSuggestions] = useState([]);
 
 	useEffect(() => {
 		if(userData.isLoaded && userData.user) {
-			axios.get(`/api/suggestions/toUser/${userData.user.id}/limit/${limit}`)
-				.then(results => setSuggestions(results.data))
+			axios.post(`/api/suggestions/toUser/${userData.user.id}/limit/${limit + 1}`, userData.user)
+				.then(results => {
+					let givenSuggestions = results.data
+						.filter(suggestion => !filter.includes(suggestion.id))
+						.slice(0, limit);
+					setSuggestions(givenSuggestions);
+				})
 				.catch(err => console.log(`err`, err));
 		} else {
-			axios.post(`/api/suggestions/random/${limit}`, userData.user)
-				.then(results => setSuggestions(results.data))
+			axios.post(`/api/suggestions/random/${limit + 1}`, userData.user)
+				.then(results => {
+					let givenSuggestions = results.data
+						.filter(suggestion => !filter.includes(suggestion.id))
+						.slice(0, limit);
+					setSuggestions(givenSuggestions)
+				})
 				.catch(err => console.log(`err`, err));
 		}
-
-
-		// const fetchSuggestions = async () => {
-		// 	if(userData.isLoaded && userData.user) {
-		// 		const result = await suggestTo(userData.user);
-	
-		// 		console.log(`Suggestions for user ${userData.user.name}`);
-		// 		console.log(result);
-	
-		// 		if (result.length > 0) {
-		// 			const suggestionIds = result.map((result) => result.id).slice(0, limit);
-		// 			const sheetsRes = await Promise.allSettled(
-		// 				suggestionIds.map((id) => axios.post(`/api/cheatsheets/${id}`, userData))
-		// 			);
-		// 			const sheets = sheetsRes.map((res) => res.value.data);	
-		// 			setSuggestions(sheets);
-		// 		}
-		// 	} else {
-		// 		const randomSheets = await random(limit);
-		// 		setSuggestions(randomSheets);
-		// 	}
-		// };
-
-		// fetchSuggestions();
-	}, [limit, userData]);
+	}, [limit, filter, userData]);
 
 	return (
 		<div id="suggestion-gallery">
-			<h5>Suggestions</h5>
-			<div id="suggestion-gallery-line"/>
-			<div id={`suggestion-gallery-${align}`}>
-				{suggestions.map((suggestion, index) => (
-					<CheatsheetCard key={index} sheet={suggestion} />
-				))}
-			</div>
+			{
+				suggestions.length > 0
+				?	<div> 
+						<h5>Suggestions</h5>
+							<div id="suggestion-gallery-line"/>
+							<div id={`suggestion-gallery-${align}`}>
+							{suggestions.map((suggestion, index) => (
+								<CheatsheetCard key={index} sheet={suggestion} />
+							))}
+						</div>
+					</div>
+				: 	<></>
+			}
 		</div>
 	);
 }

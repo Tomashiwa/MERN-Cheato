@@ -68,7 +68,6 @@ function ImagePreviewer({imageURL}) {
 
     //Load image onto previewer and adjust previewer's scaling to fit the image's dimension
     useEffect(() => {
-        console.log(imageURL);
         if(displayImage !== null) {
             var img = new Image();
             img.onload = () => {

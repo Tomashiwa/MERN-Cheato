@@ -20,7 +20,7 @@ router.post("/toUser/:userId", (req, res) => {
 		.catch((err) => res.status(404).json({ msg: err.msg }));
 });
 
-router.get("/toUser/:userId/limit/:limit", (req, res) => {
+router.post("/toUser/:userId/limit/:limit", (req, res) => {
 	Suggestion.findOne({ user: mongoose.Types.ObjectId(req.params.userId) })
 		.then((result) => {
 			const suggestions = result.suggestions.slice(0, req.params.limit);
@@ -30,7 +30,7 @@ router.get("/toUser/:userId/limit/:limit", (req, res) => {
 				.then(results => {
 					const cheatsheets = results;
 
-					const sheets = cheatsheets.map(cheatsheet => {
+					let sheets = cheatsheets.map(cheatsheet => {
 						return {
 							id: cheatsheet._id,
 							name: cheatsheet.name,
@@ -39,7 +39,8 @@ router.get("/toUser/:userId/limit/:limit", (req, res) => {
 							thumbnail: cheatsheet.thumbnail,
 							upvotedUsers: cheatsheet.upvotedUsers,
 							downvotedUsers: cheatsheet.downvotedUsers,
-							rating: cheatsheet.rating
+							rating: cheatsheet.rating,
+							hasBookmarked: false
 						};
 					});
 
@@ -59,7 +60,18 @@ router.get("/toUser/:userId/limit/:limit", (req, res) => {
 									sheet.authorName = results[at].name;
 								}
 							})
-							res.status(200).json(sheets);
+
+							if(req.body.id) {
+								User.findById(req.body.id)
+									.then(user => {
+										sheets = sheets.map(sheet => {
+											return {...sheet, hasBookmarked: user.bookmarks.includes(sheet.id)}
+										})
+										res.status(200).json(sheets);
+									})
+							} else {
+								res.status(200).json(sheets);							
+							}
 						})
 						.catch(err => console.log("err", err));
 				})

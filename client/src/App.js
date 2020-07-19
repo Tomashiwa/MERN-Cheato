@@ -11,6 +11,7 @@ import "./output/_mixins.css";
 import "./output/_compiled.css";
 // import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
+import ScrollToView from './components/ScrollToView';
 
 const Home = React.lazy(() => import("./pages/Home"));
 const Create = React.lazy(() => import("./pages/Create"));
@@ -55,30 +56,32 @@ function App() {
 
 	return (
 		<BrowserRouter>
-			<UserContext.Provider value={{ userData, setUserData }}>
-				<AppNavbar />
-				<div>
-					{
-						userData.isLoaded
-							? <Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
-								<Switch>
-									<Route exact path="/create" component={Create} />
-									<Route exact path="/upload" component={Upload} />
-									<Route exact path="/view/:id" component={View} />
-									{userData.token !== undefined && <Route exact path="/edit/:id" component={Edit} />}
-									{userData.token === undefined && <Route exact path="/register" component={Register} />}
-									{userData.token === undefined && <Route exact path="/login" component={Login} />}
-									<Route exact path="/profile/:userID" component={Profile} />
-									<Route exact path="/MyUpload/:userID" component={MyUpload} />
-									<Route exact path="/MyBookmark/:userID" component={MyBookmark} />
-									<Route exact path="/" component={Home} />
-									<Route exact path="*" component={NotFound} />
-								</Switch>
-							</Suspense>
-							: <div></div>
-					}
-				</div>
-			</UserContext.Provider>
+			<ScrollToView>
+				<UserContext.Provider value={{ userData, setUserData }}>
+					<AppNavbar />
+					<div>
+						{
+							userData.isLoaded
+								? <Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
+									<Switch>
+										<Route exact path="/create" component={Create} />
+										<Route exact path="/upload" component={Upload} />
+										<Route exact path="/view/:id" component={View} />
+										{userData.token !== undefined && <Route exact path="/edit/:id" component={Edit} />}
+										{userData.token === undefined && <Route exact path="/register" component={Register} />}
+										{userData.token === undefined && <Route exact path="/login" component={Login} />}
+										<Route exact path="/profile/:userID" component={Profile} />
+										<Route exact path="/MyUpload/:userID" component={MyUpload} />
+										<Route exact path="/MyBookmark/:userID" component={MyBookmark} />
+										<Route exact path="/" component={Home} />
+										<Route exact path="*" component={NotFound} />
+									</Switch>
+								</Suspense>
+								: <div></div>
+						}
+					</div>
+				</UserContext.Provider>
+			</ScrollToView>
 		</BrowserRouter>
 	);
 }

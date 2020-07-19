@@ -12,6 +12,7 @@ import CardHeader from "reactstrap/lib/CardHeader";
 import "./css/CheatsheetCard.css";
 
 function CheatsheetCard({ sheet }) {
+	// const { userData } = useContext(UserContext);
 	const history = useHistory();
 
 	const viewCheatsheet = () => {
@@ -49,6 +50,13 @@ function CheatsheetCard({ sheet }) {
 				<div className="sheetCard-bookmarkBtn">
 					<BookmarkButton sheet={sheet} />
 				</div>
+				{/* {
+					userData.isLoaded && userData.user !== undefined
+						?	<div className="sheetCard-bookmarkBtn">
+								<BookmarkButton sheet={sheet} />
+							</div>
+						:	<></>
+				} */}
 			</Card>
 		</div>
 	);

@@ -91,7 +91,7 @@ function View() {
 						</div>
 
 						<div id="view-similars">
-							<SuggestionGallery align="vertical" limit={5} />
+							<SuggestionGallery align="vertical" limit={5} filter={[id]}/>
 						</div>
 					</div>
 				</Container>
