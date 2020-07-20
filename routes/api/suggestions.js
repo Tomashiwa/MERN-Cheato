@@ -89,7 +89,7 @@ router.post("/random/:amount", (req, res) => {
 			: {$or: [{isPublic: true}, {user: mongoose.Types.ObjectId(req.body.id)}]};
 
 	Cheatsheet.countDocuments(filter, (err, count) => {
-		const random = Math.floor(Math.random() * count);
+		const random = Math.floor(Math.random() * (count - req.params.amount));
 
 		Cheatsheet.find(filter)
 			.skip(random)

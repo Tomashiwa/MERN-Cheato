@@ -55,7 +55,6 @@ function Profile() {
 			.then(res => {
 				setUploads(res.data.sheets);
 				setTotalUploads(res.data.total);
-				console.log('uploads:', res.data);
 			})
 			.catch(err => console.log("Fail to fetch uploads", err));
 
@@ -64,7 +63,6 @@ function Profile() {
 			.then(res => {
 				setBookmarks(res.data.sheets);
 				setTotalBookmarks(res.data.total);
-				console.log('bookmarks:', res.data);
 			})
 			.catch(err => console.log("Fail to fetch bookmarks", err));
 	}, [userID, userData.user]);
@@ -75,7 +73,7 @@ function Profile() {
 				{isLoaded ? (
 					<div>
 						<div className="profile-title">
-							<img top width="150px" height="150px" src={URL_USERICON} alt="" />
+							<img width="150px" height="150px" src={URL_USERICON} alt="" />
 							<h1 className="profile-name">{user.name}</h1>
 						</div>
 
