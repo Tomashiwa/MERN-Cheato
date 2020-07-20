@@ -13,6 +13,7 @@ const jwtSecret =
 //User model
 const User = require("../../models/User");
 const Cheatsheet = require("../../models/Cheatsheet");
+const { Mongoose } = require("mongoose");
 
 // @route GET api/users
 // @descr Get all users
@@ -254,6 +255,144 @@ router.get("/profile/:userId", (req, res) => {
 			res.status(200).json(profile);
 		})
 		.catch(err => res.status(404).json({msg: err.msg}));
+})
+
+router.post("/uploads/:userId", (req, res) => {
+	let sheetsQuery = Cheatsheet.find(req.body.user && req.body.user.id === req.params.userId
+			? {user: mongoose.Types.ObjectId(req.params.userId)}
+			: {user: mongoose.Types.ObjectId(req.params.userId), isPublic: true});
+
+	if(req.body.limit) {
+		sheetsQuery = sheetsQuery.limit(req.body.limit);
+	}
+
+	sheetsQuery
+		.then(cheatsheets => {
+			let sheets = cheatsheets.map((cheatsheet) => {
+				return {
+					id: cheatsheet._id,
+					name: cheatsheet.name,
+					author: cheatsheet.user,
+					authorName: "",
+					thumbnail: cheatsheet.thumbnail,
+					upvotedUsers: cheatsheet.upvotedUsers,
+					downvotedUsers: cheatsheet.downvotedUsers,
+					rating: cheatsheet.rating,
+					hasBookmarked: false
+				};
+			});
+
+			let authors = cheatsheets
+					.filter(cheatsheet => !cheatsheet.isAnonymous)
+					.map(cheatsheet => cheatsheet.user.toString());
+			authors = [...new Set(authors)];
+
+			Promise.all(authors.map(author => User.findById(author).exec()))
+				.then(results => {
+					sheets.forEach(sheet => {
+						const at = results.findIndex(res => {
+							return res._id.toString() === sheet.author.toString();
+						});
+
+						if(at >= 0) {
+							sheet.authorName = results[at].name;
+						}
+					})
+
+					let countQuery = Cheatsheet.countDocuments(req.body.user && req.body.user.id === req.params.userId
+						? {user: mongoose.Types.ObjectId(req.params.userId)}
+						: {user: mongoose.Types.ObjectId(req.params.userId), isPublic: true});
+
+					countQuery.then(total => {
+						if(req.body.user) {
+							User.findById(req.body.user.id)
+								.then(user => {
+									sheets = sheets.map(sheet => {
+										return {...sheet, hasBookmarked: user.bookmarks.includes(sheet.id)}
+									})
+									res.status(200).json({sheets, total});
+								})
+						} else {
+							res.status(200).json({sheets, total});
+						}
+					})
+					.catch(err => console.log("err", err));
+				})
+				.catch(err => console.log("err", err));
+		})
+		.catch(err => res.status(404).json({msg: err.msg}));
+})
+
+router.post("/bookmarks/:userId", (req, res) => {
+	User.findById(req.params.userId)
+		.then(user => {
+			const bookmarkIds = user.bookmarks.map(id => mongoose.Types.ObjectId(id));
+			let query = Cheatsheet.find({_id: {$in: bookmarkIds}});
+
+			if(req.body.limit) {
+				query = query.limit(req.body.limit);
+			}
+
+			query
+				.then(cheatsheets => {
+					let sheets = cheatsheets.map((cheatsheet) => {
+						return {
+							id: cheatsheet._id,
+							name: cheatsheet.name,
+							author: cheatsheet.user,
+							authorName: "",
+							thumbnail: cheatsheet.thumbnail,
+							upvotedUsers: cheatsheet.upvotedUsers,
+							downvotedUsers: cheatsheet.downvotedUsers,
+							rating: cheatsheet.rating,
+							hasBookmarked: false
+						};
+					});
+		
+					let authors = cheatsheets
+							.filter(cheatsheet => !cheatsheet.isAnonymous)
+							.map(cheatsheet => cheatsheet.user.toString());
+					authors = [...new Set(authors)];
+		
+					Promise.all(authors.map(author => User.findById(author).exec()))
+						.then(results => {
+							sheets.forEach(sheet => {
+								const at = results.findIndex(res => {
+									return res._id.toString() === sheet.author.toString();
+								});
+		
+								if(at >= 0) {
+									sheet.authorName = results[at].name;
+								}
+							})
+		
+							let countQuery = Cheatsheet.countDocuments({_id: {$in: bookmarkIds}});
+
+							countQuery.then(total => {
+								if(req.body.user) {
+									User.findById(req.body.user.id)
+										.then(user => {
+											sheets = sheets.map(sheet => {
+												return {...sheet, hasBookmarked: user.bookmarks.includes(sheet.id)}
+											})
+											res.status(200).json({sheets, total});
+										})
+								} else {
+									res.status(200).json({sheets, total});
+								}
+							})
+							.catch(err => console.log("err", err));
+						})
+						.catch(err => console.log("err", err));
+				})
+				.catch(err => res.status(404).json({msg: err.msg}));
+		})
+})
+
+router.get("/name/:userId", (req, res) => {
+	User.findById(req.params.userId)
+		.then(user => res.status(200).json({name: user.name}))
+		.catch(err => console.log("err", err));
 })
 
 //So other files can read what's in this file

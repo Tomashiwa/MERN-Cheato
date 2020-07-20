@@ -12,6 +12,7 @@ import UserContext from "../context/UserContext";
 import "./css/Profile.css";
 
 const URL_USERICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-user.svg";
+const PREVIEW_LIMIT = 3;
 
 function Profile() {
 	const { userData } = useContext(UserContext);
@@ -21,9 +22,10 @@ function Profile() {
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	const [uploads, setUploads] = useState([]);
-	const [bookmarks, setBookmarks] = useState([]);
+	const [totalUploads, setTotalUploads] = useState(0);
 
-	const cheatsheetObjectArray = [];
+	const [bookmarks, setBookmarks] = useState([]);
+	const [totalBookmarks, setTotalBookmarks] = useState(0);
 
 	const history = useHistory();
 
@@ -49,39 +51,23 @@ function Profile() {
 
 	useEffect(() => {
 		axios
-			.get(`/api/cheatsheets/byUser/${userID}`)
-			.then((res) => {
-				setUploads(res.data);
-				// console.log('res.data.slice(0,3):', res.data.slice(0,3));
-				// setUploads(res.data.slice(0, 3));
+			.post(`/api/users/uploads/${userID}`, {user: userData.user, limit: PREVIEW_LIMIT})
+			.then(res => {
+				setUploads(res.data.sheets);
+				setTotalUploads(res.data.total);
+				console.log('uploads:', res.data);
 			})
-			.catch((err) => {
-				console.log(`Fail to fetch cheatsheets: ${err}`);
-			});
-	}, [userID]);
+			.catch(err => console.log("Fail to fetch uploads", err));
 
-	// useEffect(() => {
-	// 	if (user !== null) {
-	// 		console.log(`user bookmarks:`, user.bookmarks);
-	// 		setBookmarks(user.bookmarks);
-	// 	}
-	// }, [user]);
-
-	// useEffect(() => {
-	// 	if (bookmarks !== null) {
-	// 		for (var i = 0; i < bookmarks.length; i++) {
-	// 			axios
-	// 				.post(`/api/cheatsheets/${user.bookmarks[i]}`, userData.user)
-	// 				.then((res) => {
-	// 					cheatsheetObjectArray.push(res.data);
-	// 					setBookmarks(cheatsheetObjectArray);
-	// 				})
-	// 				.catch((err) => {
-	// 					console.log(`Fail to fetch cheatsheets: ${err}`);
-	// 				});
-	// 		}
-	// 	}
-	// }, [user.bookmarks, userData]);
+		axios
+			.post(`/api/users/bookmarks/${userID}`, {user: userData.user, limit: PREVIEW_LIMIT})
+			.then(res => {
+				setBookmarks(res.data.sheets);
+				setTotalBookmarks(res.data.total);
+				console.log('bookmarks:', res.data);
+			})
+			.catch(err => console.log("Fail to fetch bookmarks", err));
+	}, [userID, userData.user]);
 
 	return (
 		<div>
@@ -103,8 +89,8 @@ function Profile() {
 									}
 								</h5>
 								{
-									uploads.length > 3
-										?	<Button color="info" id="viewUpload" onClick={viewUpload}>
+									totalUploads > PREVIEW_LIMIT
+										?	<Button color="secondary" className="profile-viewBtn" onClick={viewUpload}>
 												View All
 											</Button>
 										:	<></>
@@ -134,8 +120,8 @@ function Profile() {
 									}
 								</h5>
 								{
-									bookmarks.length > 3
-										?	<Button color="info" id="viewBookmark" onClick={viewBookmark}>
+									totalBookmarks > PREVIEW_LIMIT
+										?	<Button color="secondary" className="profile-viewBtn" onClick={viewBookmark}>
 												View All
 											</Button>
 										:	<></>

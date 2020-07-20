@@ -13,18 +13,9 @@
     
 }
 
-#viewUpload{
+.profile-viewBtn {
     display:flex;
     position:relative;
-    /* top:35px;
-    right:-320px; */
-}
-
-#viewBookmark{
-    display:flex;
-    position:relative;
-    top:35px;
-    right:-975px;
 }
 
 .profile-name {

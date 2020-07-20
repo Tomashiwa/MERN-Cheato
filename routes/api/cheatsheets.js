@@ -464,7 +464,8 @@ router.post("/view/:sheetId", (req, res) => {
 					id: cheatsheet._id,
 					name: cheatsheet.name,
 					file: cheatsheet.file,
-					author: "Anonymous",
+					author: cheatsheet.user,
+					authorName: "Anonymous",
 					school: "",
 					module: "",
 					description: cheatsheet.description,
@@ -492,7 +493,7 @@ router.post("/view/:sheetId", (req, res) => {
 						};
 
 						if(!cheatsheet.isAnonymous) {
-							sheet = {...sheet, author: results[2].name};
+							sheet = {...sheet, authorName: results[2].name};
 						}
 
 						if(req.body.id) {

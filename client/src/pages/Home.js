@@ -10,6 +10,7 @@ function Home() {
 		<div>
 			<Container>
 				<h3>Browse Cheatsheet</h3>
+				<div className="home-divider" />
 				<Gallery />
 			</Container>
 		</div>

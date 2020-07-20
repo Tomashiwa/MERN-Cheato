@@ -5,59 +5,50 @@ import axios from "axios";
 import Container from "reactstrap/lib/Container";
 
 import Gallery from "../components/Gallery";
-import UserContext from '../context/UserContext';
+import UserContext from "../context/UserContext";
+
+import "./css/My.css";
 
 function MyUpload() {
-    const { userData } = useContext(UserContext);
+	const { userData } = useContext(UserContext);
+	const { userID } = useParams();
 
-    // const [user, setUser] = useState(null);
-    const [upload, setUpload] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
+	const [uploads, setUploads] = useState(null);
+	const [isLoaded, setIsLoaded] = useState(false);
+	const [name, setName] = useState("");
 
-    const { userID } = useParams();
-
-    // useEffect(() => {
-    //     if (userData.isLoaded && userData.token !== undefined) {
-    //         axios
-    //             .get(`/api/users/${userID}`)
-    //             .then((res) => {
-    //                 setUser(res.data);
-    //             })
-    //             .catch((err) => {
-    //                 console.log(`Fail to fetch user data: ${err}`);
-    //             });
-    //     }
-    // }, [userData,userID]);
-
-    useEffect(() => {
-        axios
-            .get(`/api/cheatsheets/byUser/${userID}`)
-            .then((res) => {
-                setUpload(res.data);
+	useEffect(() => {
+		axios
+			.post(`/api/users/uploads/${userID}`, { user: userData.user })
+			.then((res) => {
+				setUploads(res.data.sheets);
                 setIsLoaded(true);
-            })
-            .catch((err) => {
-                console.log(`Fail to fetch cheatsheets: ${err}`);
-            });
-    }, [userID]);
+                console.log("res.data.sheets:", res.data.sheets);
+			})
+			.catch((err) => console.log("err", err));
 
-    return (
-        <div>
+		if (!userData.user || userData.user.id !== userID) {
+			axios
+				.get(`/api/users/name/${userID}`)
+				.then((res) => {
+					setName(res.data.name);
+					console.log("res.data.name:", res.data.name);
+				})
+				.catch((err) => console.log("err", err));
+		}
+	}, [userID, userData]);
+
+	return (
+		<Container>
+			<h3>{userData.user && userData.user.id === userID ? `My Uploads` : `${name ? name + "'s ": ""}Uploads`}</h3>
+            <div className="my-divider" />
 			{isLoaded ? (
-                <Container>
-                    <h3>...'s Uploads</h3>
-                    <Gallery
-                        injectedSheets={upload}
-                        // title={userData.user !== undefined && userData.user.id === userID ? "My Uploads" : `${user.name}'s Uploads`}
-                        hasToolbar={false}
-                        hasPagination={true}
-                    />
-                </Container>
+				<Gallery injectedSheets={uploads} hasToolbar={false} hasPagination={true} />
 			) : (
 				<div></div>
 			)}
-		</div>
-    )
+		</Container>
+	);
 }
 
 export default MyUpload;

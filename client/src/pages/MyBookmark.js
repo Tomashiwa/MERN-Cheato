@@ -8,99 +8,47 @@ import UserContext from "../context/UserContext";
 
 import { useParams } from "react-router-dom";
 
+import "./css/My.css";
+
 function MyBookmark() {
-	const { userID } = useParams();
 	const { userData } = useContext(UserContext);
+	const { userID } = useParams();
 
-	const [user, setUser] = useState(null);
+	const [bookmarks, setBookmarks] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
-	const [bookmarked, setBookmarked] = useState(null);
-	const [display, setDisplay] = useState(null);
-
-	const cheatsheetObjectArray = [];
+	const [name, setName] = useState("");
 
 	useEffect(() => {
-		if (userData.isLoaded && userData.token !== undefined) {
-			console.log("hi");
+		axios
+			.post(`/api/users/bookmarks/${userID}`, { user: userData.user })
+			.then((res) => {
+				setBookmarks(res.data.sheets);
+                setIsLoaded(true);
+                console.log("res.data.sheets:", res.data.sheets);
+			})
+			.catch((err) => console.log("err", err));
+
+		if (!userData.user || userData.user.id !== userID) {
 			axios
-				.get(`/api/users/${userID}`)
+				.get(`/api/users/name/${userID}`)
 				.then((res) => {
-					setUser(res.data);
+					setName(res.data.name);
+					console.log("res.data.name:", res.data.name);
 				})
-				.catch((err) => {
-					console.log(`Fail to fetch user data: ${err}`);
-				});
+				.catch((err) => console.log("err", err));
 		}
-	}, [userData, userID]);
-    useEffect(() => {
-        if (bookmarked !== null) {
-            console.log(bookmarked)
-            Promise.all(bookmarked.map(bookmark =>
-                axios
-                    .post(`/api/cheatsheets/${bookmark}`, userData.user)))
-                .then(results => {
-                    let arr = [];
-                    results.forEach(result => {
-                        arr.push(result.data);
-                    })
-                    setDisplay(arr);
-                    setIsLoaded(true);
-                })
-        }
-    }, [bookmarked, userData]);
-
-
-	useEffect(() => {
-		if (user !== null) {
-			setBookmarked(user.bookmarks);
-		}
-	}, [user]);
-
-	/*useEffect(() => {
-		if (bookmarked !== null) {
-			for (var i = 0; i < bookmarked.length; i++) {
-				axios
-					.post(`/api/cheatsheets/${bookmarked[i]}`, userData.user)
-					.then((res) => {
-						cheatsheetObjectArray.push(res.data);
-						setDisplay(cheatsheetObjectArray);
-						setIsLoaded(true);
-					})
-					.catch((err) => {
-						console.log(`Fail to fetch cheatsheets: ${err}`);
-					});
-			}
-		}
-	}, [bookmarked, userData]);
-    return (
-        <div>
-            {isLoaded
-                ? <div>
-                    {isUser
-                        ? <Gallery cheatsheetArray={display} text={textDisplay} dropdown={dropdownDisplay} />
-                        : <Gallery cheatsheetArray={display} text={bookmarkText} dropdown={dropdownDisplay} />
-                    }
-                </div>
-                : <div></div>
-            }
-        </div>*/
+	}, [userID, userData]);
 
 	return (
-		<div>
+		<Container>
+			<h3>{userData.user && userData.user.id === userID ? `My Bookmarks` : `${name ? name + "'s ": ""}Bookmarks`}</h3>
+			<div className="my-divider" />
 			{isLoaded ? (
-				<Container>
-					<h3>...'s Bookmarks</h3>
-					<Gallery
-						injectedSheets={display}
-						// title={userData.user !== undefined && userData.user.id === userID ? "My Bookmarks" : `${user.name}'s Bookmarks`}
-						hasToolbar={false}
-						hasPagination={true}
-					/>
-				</Container>
+				<Gallery injectedSheets={bookmarks} hasToolbar={false} hasPagination={true} />
 			) : (
 				<div></div>
 			)}
-		</div>
+		</Container>
 	);
 }
 

@@ -56,13 +56,13 @@ function View() {
 						<div id="view-description">
 							<h2>{sheet.name}</h2>
 							<h5>{`${sheet.school} - ${sheet.module}`}</h5>
-							<h5>{`Uploaded by: ${sheet.author}`}</h5>
+							<h5>{`Uploaded by: ${sheet.authorName}`}</h5>
 						</div>
 
 						<div id="view-feedback">
 							<Suspense fallback={<div className="center-screen"><Spinner color="warning"/></div>}>
 								{
-									userData.isLoaded && userData.user && (userData.user.name === sheet.author || userData.user.isAdmin)
+									userData.isLoaded && userData.user && (userData.user.name === sheet.authorName || userData.user.isAdmin)
 									?	<EditButton sheet={sheet} />
 									:	<></>
 								}
