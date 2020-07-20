@@ -1,5 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
+
+import Container from "reactstrap/lib/Container";
+
 import UserContext from "../context/UserContext";
 import CheatsheetCard from "./CheatsheetCard";
 
@@ -32,7 +35,7 @@ function SuggestionGallery({ align = "vertical", limit = 3, filter = [] }) {
 	}, [limit, filter, userData]);
 
 	return (
-		<div id="suggestion-gallery">
+		<Container id="suggestion-gallery">
 			{
 				suggestions.length > 0
 				?	<div> 
@@ -46,7 +49,7 @@ function SuggestionGallery({ align = "vertical", limit = 3, filter = [] }) {
 					</div>
 				: 	<></>
 			}
-		</div>
+		</Container>
 	);
 }
 
