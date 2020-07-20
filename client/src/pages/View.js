@@ -30,6 +30,11 @@ function View() {
 	const [errorMsg, setErrorMsg] = useState("");
 
 	const history = useHistory();
+	
+	const loginLink = <a href={"/login"}>here</a>;
+
+	const goHome = () => history.push("/");
+	const goProfile = () => history.push(`/profile/${sheet.author}`);
 
 	// Fetch cheatsheet to be viewed
 	useEffect(() => {
@@ -42,12 +47,6 @@ function View() {
 		}
 	}, [id, userData]);
 
-	const goHome = () => {
-		history.push("/");
-	};
-
-	const loginLink = <a href={"/login"}>here</a>;
-
 	return (
 		<div>
 			{sheet ? (
@@ -56,7 +55,8 @@ function View() {
 						<div id="view-description">
 							<h2>{sheet.name}</h2>
 							<h5>{`${sheet.school} - ${sheet.module}`}</h5>
-							<h5>{`Uploaded by: ${sheet.authorName}`}</h5>
+							<Button id="view-author" color="link" onClick={goProfile}>{sheet.authorName}</Button>
+							{/* <h5>{`Uploaded by: ${sheet.authorName}`}</h5> */}
 						</div>
 
 						<div id="view-feedback">
