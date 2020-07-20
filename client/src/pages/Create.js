@@ -85,12 +85,19 @@ function Create() {
         formData.append("file", blobRef.current, `${form.name}-${hashcode}.png`);
         thumbnailFormData.append("file", thumbnailBlobRef.current, `thumbnail-${form.name}-${hashcode}.png`);
         
+        const config = {
+            onUploadProgress: progressEvent => {
+                let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+                console.log(`Uploading... ${percentCompleted}%`);
+            }
+        }
+
         Promise.all([import("axios"), import("mongoose")])
             .then(([axios, mongoose]) => {
-                axios.post("/upload", formData)
+                axios.post("/upload", formData, config)
                     .then(res => {
                         if(thumbnailBlobRef.current) {                            
-                            axios.post("/upload", thumbnailFormData)
+                            axios.post("/upload", thumbnailFormData, config)
                                 .then(thumbnailRes => {
                                     setForm({...form, ...{
                                         url: cloudfrontURL.concat(res.data.data.Key),
@@ -116,7 +123,7 @@ function Create() {
                                 
                                     console.log("Submitting cheatsheet", newCheatsheet);
                                 
-                                    axios.post("/api/cheatsheets/add", newCheatsheet)
+                                    axios.post("/api/cheatsheets/add", newCheatsheet, config)
                                         .then(sheet => {
                                             setSheetId(sheet.data._id);
                                         })
