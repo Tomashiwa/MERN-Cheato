@@ -18,7 +18,7 @@ const Module = require("./models/Module");
 
 var modUpdateJob = require("./APIScheduler");
 
-// app.use(sslRedirect());
+app.use(sslRedirect());
 app.use(express.json({limit: '50mb'}));
 app.use(compression());
 

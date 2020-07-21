@@ -19,7 +19,8 @@ export const UPLOAD_STEP_FORM = 1;
 export const UPLOAD_STEP_PREVIEW = 2;
 export const STEP_CIRCLE_SIZE = 40;
 
-export const cloudfrontURL = "https://d2conugba1evp1.cloudfront.net/";
+export const URL_S3 = "https://cheato.s3.amazonaws.com/";
+export const URL_CLOUDFRONT = "https://d2conugba1evp1.cloudfront.net/";
 
 function Upload() {
     const { userData } = useContext(UserContext);
@@ -81,16 +82,26 @@ function Upload() {
             .then(([axios, mongoose]) => {
                 axios.post("/upload", formData, config)
                     .then(res => {
+                        console.log('res.data.url:', res.data.url);
+                        console.log('URL_S3:', URL_S3);
+                        console.log('URL_CLOUDFRONT:', URL_CLOUDFRONT);
+
+                        const sheetUrl = res.data.url.replace(URL_S3, URL_CLOUDFRONT);
+                        console.log('sheetUrl:', sheetUrl);
+
                         if(thumbnailBlob) {        
                             axios.post("/upload", thumbnailFormData, config)
                                 .then(thumbnailRes => {
+                                    const thumbnailUrl = thumbnailRes.data.url.replace(URL_S3, URL_CLOUDFRONT);
+                                    console.log('thumbnailUrl:', thumbnailUrl);
+
                                     setForm({...form, ...{
-                                        url: cloudfrontURL.concat(res.data.data.Key),
-                                        thumbnailUrl: cloudfrontURL.concat(thumbnailRes.data.data.Key)
+                                        url: sheetUrl,
+                                        thumbnailUrl: thumbnailUrl
                                     }});
                                     const newSheet = {
-                                        file: cloudfrontURL.concat(res.data.data.Key),
-                                        thumbnail: cloudfrontURL.concat(thumbnailRes.data.data.Key), 
+                                        file: sheetUrl,
+                                        thumbnail: thumbnailUrl, 
                                         user: userData.isLoaded && userData.token === undefined
                                             ? mongoose.Types.ObjectId(-1)
                                             : mongoose.Types.ObjectId(userData.user.id),
