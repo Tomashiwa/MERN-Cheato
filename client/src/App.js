@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react'
-import { BrowserRouter, Switch, Route } from "react-router-dom"
+import { Switch, Route } from "react-router-dom"
 import axios from "axios"
 
 import Spinner from 'reactstrap/lib/Spinner';
@@ -55,7 +55,6 @@ function App() {
 	}, []);
 
 	return (
-		<BrowserRouter>
 			<ScrollToView>
 				<UserContext.Provider value={{ userData, setUserData }}>
 					<AppNavbar />
@@ -82,7 +81,6 @@ function App() {
 					</div>
 				</UserContext.Provider>
 			</ScrollToView>
-		</BrowserRouter>
 	);
 }
 
