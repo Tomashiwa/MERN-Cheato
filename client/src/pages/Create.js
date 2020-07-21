@@ -7,6 +7,7 @@ import Resizer from "react-image-file-resizer";
 import Container from "reactstrap/lib/Container";
 import Button from "reactstrap/lib/Button";
 import Spinner from 'reactstrap/lib/Spinner';
+import Progress from 'reactstrap/lib/Progress';
 
 import ImageCanvas from "../components/ImageCanvas";
 import {CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT} from "../components/ImageCanvas"
@@ -53,6 +54,10 @@ function Create() {
 
     const [sheetId, setSheetId] = useState(undefined);
     
+    const [hasCreated, setHasCreated] = useState(false);
+    const [percentage, setPercentage] = useState("0");
+    const [msg, setMsg] = useState("");
+    
     const blobRef = useRef(null);
     const thumbnailBlobRef = useRef(null);
 
@@ -90,25 +95,22 @@ function Create() {
             onUploadProgress: progressEvent => {
                 let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
                 console.log(`Creating... ${percentCompleted}%`);
+                setPercentage(percentCompleted);
             }
         }
 
         Promise.all([import("axios"), import("mongoose")])
             .then(([axios, mongoose]) => {
+                setMsg("Creating...");
                 axios.post("/upload", formData, config)
                     .then(res => {
-                        console.log('res.data.url:', res.data.url);
-                        console.log('URL_S3:', URL_S3);
-                        console.log('URL_CLOUDFRONT:', URL_CLOUDFRONT);
-
                         const sheetUrl = res.data.url.replace(URL_S3, URL_CLOUDFRONT);
-                        console.log('sheetUrl:', sheetUrl);
+                        setMsg("Cleaning up...");
 
                         if(thumbnailBlobRef.current) {                            
                             axios.post("/upload", thumbnailFormData, config)
                                 .then(thumbnailRes => {
                                     const thumbnailUrl = thumbnailRes.data.url.replace(URL_S3, URL_CLOUDFRONT);
-                                    console.log('thumbnailUrl:', thumbnailUrl);
 
                                     setForm({...form, ...{
                                         url: sheetUrl,
@@ -137,6 +139,8 @@ function Create() {
                                     axios.post("/api/cheatsheets/add", newCheatsheet, config)
                                         .then(sheet => {
                                             setSheetId(sheet.data._id);
+                                            setHasCreated(true);
+                                            setMsg("");
                                         })
                                         .catch(err => console.log(err));
                                     
@@ -239,7 +243,12 @@ function Create() {
                                     ? <ImageCanvas form={form} setBlob={setBlob} />
                                 : formStep === CREATE_STEP_FORM
                                     ? <CreateForm form={form} setForm={setForm} isAnonymous={userData.isLoaded && userData.token === undefined}/>
-                                : formStep === CREATE_STEP_PREVIEW
+                                : formStep === CREATE_STEP_PREVIEW && !hasCreated
+                                    ? <div>
+                                        <Progress animated bar color="warning" value={percentage}/>
+                                        <h4 id="create-progress-msg">{msg}</h4>
+                                    </div>
+                                : formStep === CREATE_STEP_PREVIEW && hasCreated
                                     ? <ImagePreviewer imageURL={form.url} />
                                 : <div></div>
                             }

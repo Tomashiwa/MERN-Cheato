@@ -272,7 +272,7 @@ function ImagePreviewer({imageURL}) {
                 <Button id="previewer-btn-download">Download</Button>
             </span>
 
-            { hasLoaded ? "" : <Spinner id="previewer-spinner" color="light"/> }
+            { hasLoaded ? "" : <Spinner id="previewer-spinner" color="warning"/> }
         </div>
     )
 }

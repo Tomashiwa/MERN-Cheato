@@ -21,3 +21,11 @@
 #create-title-nav #create-title-text {
     color: #555555
 }
+
+.progress-bar {
+    height: 15px;
+}
+
+#create-progress-msg {
+    text-align: center;
+}

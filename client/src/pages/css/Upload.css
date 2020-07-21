@@ -21,3 +21,11 @@
 #upload-title-nav #upload-title-text {
     color: #555555
 }
+
+.progress-bar {
+    height: 15px;
+}
+
+#upload-progress-msg {
+    text-align: center;
+}

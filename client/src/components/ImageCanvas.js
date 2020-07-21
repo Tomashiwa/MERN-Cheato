@@ -577,7 +577,7 @@ function ImageCanvas({setBlob}) {
                     <Layer ref={dragLayerRef}></Layer>
                 </Stage>
 
-                { isLoading ? <Spinner id="canvas-spinner" color="light" /> : ""}
+                { isLoading ? <Spinner id="canvas-spinner" color="warning" /> : ""}
             </div>
 
             <div id="canvas-import-menu" ref={importMenuRef}>

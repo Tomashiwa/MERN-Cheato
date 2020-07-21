@@ -7,6 +7,7 @@ import Resizer from "react-image-file-resizer";
 import Container from "reactstrap/lib/Container";
 import Button from "reactstrap/lib/Button";
 import Spinner from 'reactstrap/lib/Spinner';
+import Progress from 'reactstrap/lib/Progress';
 
 import UploadForm from "../components/UploadForm"
 
@@ -39,6 +40,10 @@ function Upload() {
 
     const [blob, setBlob] = useState(undefined);
     const [thumbnailBlob, setThumbnailBlob] = useState(undefined);
+
+    const [hasUploaded, setHasUploaded] = useState(false);
+    const [percentage, setPercentage] = useState("0");
+    const [msg, setMsg] = useState("");
 
     const history = useHistory();
 
@@ -75,25 +80,23 @@ function Upload() {
             onUploadProgress: progressEvent => {
                 let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
                 console.log(`Uploading... ${percentCompleted}%`);
+                setPercentage(percentCompleted);
             }
         }
 
         Promise.all([import("axios"), import("mongoose")])
             .then(([axios, mongoose]) => {
+                setMsg("Uploading...");
                 axios.post("/upload", formData, config)
                     .then(res => {
-                        console.log('res.data.url:', res.data.url);
-                        console.log('URL_S3:', URL_S3);
-                        console.log('URL_CLOUDFRONT:', URL_CLOUDFRONT);
-
                         const sheetUrl = res.data.url.replace(URL_S3, URL_CLOUDFRONT);
-                        console.log('sheetUrl:', sheetUrl);
+                        
+                        setMsg("Cleaning up...");
 
                         if(thumbnailBlob) {        
                             axios.post("/upload", thumbnailFormData, config)
                                 .then(thumbnailRes => {
                                     const thumbnailUrl = thumbnailRes.data.url.replace(URL_S3, URL_CLOUDFRONT);
-                                    console.log('thumbnailUrl:', thumbnailUrl);
 
                                     setForm({...form, ...{
                                         url: sheetUrl,
@@ -121,6 +124,8 @@ function Upload() {
                                     axios.post("/api/cheatsheets/add", newSheet, config)
                                         .then(sheet => {
                                             setSheetId(sheet.data._id);
+                                            setHasUploaded(true);
+                                            setMsg("");
                                         })
                                         .catch(err => console.log(err));
                                     
@@ -210,11 +215,18 @@ function Upload() {
                     }
                 </div>
 
+                {/* <Progress animated bar color="warning" value="50" /> */}
+
                 <Suspense fallback={<div className="center-screen stretch-height"><Spinner color="warning"/></div>}>
                     {
                         formStep === UPLOAD_STEP_FORM
                             ? <UploadForm form={form} setForm={setForm} setBlob={setUploadBlobs} isAnonymous={userData.isLoaded && userData.token === undefined}/>
-                        : formStep === UPLOAD_STEP_PREVIEW
+                        : formStep === UPLOAD_STEP_PREVIEW && !hasUploaded
+                            ? <div>
+                                <Progress animated bar color="warning" value={percentage}/>
+                                <h6 id="upload-progress-msg">{msg}</h6>
+                            </div>
+                        : formStep === UPLOAD_STEP_PREVIEW && hasUploaded 
                             ? <ImagePreviewer imageURL={form.url} />
                         : <div></div>
                     }

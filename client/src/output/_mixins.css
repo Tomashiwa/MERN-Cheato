@@ -2,6 +2,10 @@
 	background-color: #343a40 !important;
 }
 
+.bg-warning {
+    background-color: #ffc107!important;
+}
+
 a.bg-dark:hover,
 a.bg-dark:focus,
 button.bg-dark:hover,
