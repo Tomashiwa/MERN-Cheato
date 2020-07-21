@@ -11,7 +11,7 @@ import Spinner from 'reactstrap/lib/Spinner';
 import UploadForm from "../components/UploadForm"
 
 import UserContext from '../context/UserContext';
-import "./css/Upload.css";
+import "./css/Upload.css"; 
 
 const ImagePreviewer = React.lazy(() => import("../components/ImagePreviewer"));
 
