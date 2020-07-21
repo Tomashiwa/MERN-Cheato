@@ -246,7 +246,7 @@ function Create() {
                                 : formStep === CREATE_STEP_PREVIEW && !hasCreated
                                     ? <div>
                                         <Progress animated bar color="warning" value={percentage}/>
-                                        <h4 id="create-progress-msg">{msg}</h4>
+                                        <h6 id="create-progress-msg">{`${msg} (${percentage}%)`}</h6>
                                     </div>
                                 : formStep === CREATE_STEP_PREVIEW && hasCreated
                                     ? <ImagePreviewer imageURL={form.url} />

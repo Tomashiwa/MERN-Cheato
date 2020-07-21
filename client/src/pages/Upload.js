@@ -224,7 +224,7 @@ function Upload() {
                         : formStep === UPLOAD_STEP_PREVIEW && !hasUploaded
                             ? <div>
                                 <Progress animated bar color="warning" value={percentage}/>
-                                <h6 id="upload-progress-msg">{msg}</h6>
+                                <h6 id="upload-progress-msg">{`${msg} (${percentage}%)`}</h6>
                             </div>
                         : formStep === UPLOAD_STEP_PREVIEW && hasUploaded 
                             ? <ImagePreviewer imageURL={form.url} />
