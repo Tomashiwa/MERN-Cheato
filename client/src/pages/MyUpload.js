@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import Container from "reactstrap/lib/Container";
+import Spinner from 'reactstrap/lib/Spinner';
 
 import Gallery from "../components/Gallery";
 import UserContext from "../context/UserContext";
@@ -57,7 +58,7 @@ function MyUpload() {
 					}
 				</>
 			) : (
-				<div></div>
+				<div className="my-spinner"><Spinner color="warning" /></div>
 			)}
 		</Container>
 	);

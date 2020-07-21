@@ -5,3 +5,11 @@
 .my-msg {
     text-align: center;
 }
+
+.my-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
