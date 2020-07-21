@@ -1,10 +1,10 @@
 const s3 = require("../config/s3.config.js");
-const env = require("../config/s3.env.js");
 const s3BrowserDirectUpload = require("s3-browser-direct-upload");
 const { config } = require("aws-sdk");
 
 let s3clientOptions = {};
 if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+	const env = require("../config/s3.env.js");
 	s3clientOptions = {
 		accessKeyId: env.AWS_ACCESS_KEY,
 		secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
