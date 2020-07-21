@@ -4,6 +4,7 @@ import axios from "axios";
 
 import Button from "reactstrap/lib/Button";
 import Container from "reactstrap/lib/Container";
+import Spinner from 'reactstrap/lib/Spinner';
 
 import Gallery from "../components/Gallery";
 import SuggestionGallery from "../components/SuggestionGallery";
@@ -19,13 +20,15 @@ function Profile() {
 	const { userID } = useParams();
 	const [user, setUser] = useState(null);
 
-	const [isLoaded, setIsLoaded] = useState(false);
+	const [hasUserLoad, setHasUserLoad] = useState(false);
 
 	const [uploads, setUploads] = useState([]);
 	const [totalUploads, setTotalUploads] = useState(0);
+	const [hasUploadLoad, setHasUploadLoad] = useState(false);
 
 	const [bookmarks, setBookmarks] = useState([]);
 	const [totalBookmarks, setTotalBookmarks] = useState(0);
+	const [hasBookmarkLoad, setHasBookmarkLoad] = useState(false);
 
 	const history = useHistory();
 
@@ -42,7 +45,7 @@ function Profile() {
 			.get(`/api/users/profile/${userID}`)
 			.then((res) => {
 				setUser(res.data);
-				setIsLoaded(true);
+				setHasUserLoad(true);
 			})
 			.catch((err) => {
 				console.log(`Fail to fetch user data: ${err}`);
@@ -55,6 +58,7 @@ function Profile() {
 			.then(res => {
 				setUploads(res.data.sheets);
 				setTotalUploads(res.data.total);
+				setHasUploadLoad(true);
 			})
 			.catch(err => console.log("Fail to fetch uploads", err));
 
@@ -63,6 +67,7 @@ function Profile() {
 			.then(res => {
 				setBookmarks(res.data.sheets);
 				setTotalBookmarks(res.data.total);
+				setHasBookmarkLoad(true);
 			})
 			.catch(err => console.log("Fail to fetch bookmarks", err));
 	}, [userID, userData.user]);
@@ -70,7 +75,7 @@ function Profile() {
 	return (
 		<div>
 			<Container>
-				{isLoaded ? (
+				{hasUserLoad ? (
 					<div>
 						<div className="profile-title">
 							<img width="150px" height="150px" src={URL_USERICON} alt="" />
@@ -96,14 +101,16 @@ function Profile() {
 							</div>
 							<div className="profile-divider" />
 							{
-								uploads.length > 0
-									?<Gallery
-										injectedSheets={uploads.slice(0,3)}
-										hasToolbar={false}
-										hasPagination={false}
-									/>
+								!hasUploadLoad
+									?	<div className="profile-spinner"><Spinner color="warning" /></div>
+								: uploads.length > 0
+									?	<Gallery
+											injectedSheets={uploads.slice(0,3)}
+											hasToolbar={false}
+											hasPagination={false}
+										/>
 									: 	<div className="profile-notFound">
-											<h5>No uploads found</h5>
+											<h5>No upload found</h5>
 										</div>
 							}
 						</div>
@@ -127,14 +134,16 @@ function Profile() {
 							</div>
 							<div className="profile-divider" />
 							{
-								bookmarks.length > 0
-									?<Gallery
-										injectedSheets={bookmarks}
-										hasToolbar={false}
-										hasPagination={false}
-									/>
+								!hasBookmarkLoad
+									?	<div className="profile-spinner"><Spinner color="warning" /></div>
+								: bookmarks.length > 0
+									?	<Gallery
+											injectedSheets={bookmarks}
+											hasToolbar={false}
+											hasPagination={false}
+										/>
 									: 	<div className="profile-notFound">
-											<h5>No bookmarks found</h5>
+											<h5>No bookmark found</h5>
 										</div>
 							}
 						</div>

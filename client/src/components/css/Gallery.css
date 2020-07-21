@@ -41,3 +41,8 @@
     top:0px;
     right:0px;
 }
+
+#gallery-nosheets {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}

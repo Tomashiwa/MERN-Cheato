@@ -43,7 +43,7 @@
     border-bottom: 1px solid rgba(34, 36, 38, 0.15);
 }
 
-.profile-notFound {
+.profile-notFound, .profile-spinner {
     display: flex;
     flex-direction: column;
     align-items: center;

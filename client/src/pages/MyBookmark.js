@@ -14,7 +14,7 @@ function MyBookmark() {
 	const { userData } = useContext(UserContext);
 	const { userID } = useParams();
 
-	const [bookmarks, setBookmarks] = useState(null);
+	const [bookmarks, setBookmarks] = useState([]);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [name, setName] = useState("");
 
@@ -39,12 +39,23 @@ function MyBookmark() {
 		}
 	}, [userID, userData]);
 
+	const bookmarkIcon = <img src="https://d2conugba1evp1.cloudfront.net/icons/icon-bookmark.svg" width="24px" height="24px" alt="bookmark"/>;
+
 	return (
 		<Container>
 			<h3>{userData.user && userData.user.id === userID ? `My Bookmarks` : `${name ? name + "'s ": ""}Bookmarks`}</h3>
 			<div className="my-divider" />
 			{isLoaded ? (
-				<Gallery injectedSheets={bookmarks} hasToolbar={false} hasPagination={true} />
+				<>
+					<Gallery injectedSheets={bookmarks} hasToolbar={false} hasPagination={true} />
+					{
+						bookmarks.length === 0 
+							? userData.user && userData.user.id === userID
+								? <h5 className="my-msg">You may bookmark cheatsheets by pressing on the {bookmarkIcon} icon</h5>
+								: <h5 className="my-msg">This user has yet to bookmark any cheatsheets</h5>
+							: <></>
+					}
+				</>
 			) : (
 				<div></div>
 			)}

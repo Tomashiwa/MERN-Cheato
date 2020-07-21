@@ -29,7 +29,7 @@ export const SELECT_STYLE = {
 
 export const SHEETS_PER_PAGE = 9;
 
-function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPagination = true, injectedSheets = [] }) {
+function Gallery({ hasToolbar = true, hasPagination = true, injectedSheets = undefined }) {
 	const { userData } = useContext(UserContext);
 
 	const [sortOrder, setSortOrder] = useState("dateTime");
@@ -108,7 +108,7 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 	}, [schFilter, hasToolbar]);
 
 	useEffect(() => {
-		if(injectedSheets.length === 0) {
+		if(injectedSheets === undefined) {
 			let config = {
 				user: userData.user !== undefined ? userData.user : null,
 				filter: {},
@@ -132,7 +132,7 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 				setSheets(result.data);
 			});
 		}
-	}, [schFilter, modFilter, sortOrder, userData.user, currentPage, injectedSheets.length]);
+	}, [schFilter, modFilter, sortOrder, userData.user, currentPage, injectedSheets]);
 
 	useEffect(() => {
 		if (currentPage === 1) {
@@ -153,8 +153,6 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 	return (
 		<div>
 			<Container>
-				{/* <h3>{title}</h3> */}
-
 				{hasToolbar ? (
 					<div id="gallery-toolbar">
 						<div className="gallery-tool-group">
@@ -208,16 +206,18 @@ function Gallery({ title = "Browse Cheatsheets", hasToolbar = true, hasPaginatio
 				)}
 				<div className="gallery">
 					{
-						injectedSheets.length > 0
+						injectedSheets === undefined
+							? sheets.map((sheet, index) => (
+								<CheatsheetCard key={index} sheet={sheet} />
+							))
+						: injectedSheets !== undefined && injectedSheets.length > 0
 							? injectedSheets.map((sheet, index) => (
 								<CheatsheetCard key={index} sheet={sheet} />
 							))
-							: sheets.map((sheet, index) => (
-								<CheatsheetCard key={index} sheet={sheet} />
-							))
+						: <h5 id="gallery-nosheets">No sheets found</h5>
 					}
 				</div>
-				{hasPagination && (injectedSheets.length > 0 || sheetsCount > SHEETS_PER_PAGE) ? (
+				{hasPagination && ((injectedSheets !== undefined && injectedSheets.length > 0) || sheetsCount > SHEETS_PER_PAGE) ? (
 					<Pagination
 						cheatsheetPerPage={SHEETS_PER_PAGE}
 						totalCount={sheetsCount}
