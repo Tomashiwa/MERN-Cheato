@@ -22,7 +22,8 @@ export const CREATE_STEP_FORM = 2;
 export const CREATE_STEP_PREVIEW = 3;
 export const STEP_CIRCLE_SIZE = 40;
 
-export const cloudfrontURL = "https://d2conugba1evp1.cloudfront.net/";
+export const URL_S3 = "https://cheato.s3.amazonaws.com/";
+export const URL_CLOUDFRONT = "https://d2conugba1evp1.cloudfront.net/";
 
 export const ImagesContext = React.createContext(null);
 export const ConfigContext = React.createContext(null);
@@ -88,7 +89,7 @@ function Create() {
         const config = {
             onUploadProgress: progressEvent => {
                 let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-                console.log(`Uploading... ${percentCompleted}%`);
+                console.log(`Creating... ${percentCompleted}%`);
             }
         }
 
@@ -96,17 +97,27 @@ function Create() {
             .then(([axios, mongoose]) => {
                 axios.post("/upload", formData, config)
                     .then(res => {
+                        console.log('res.data.url:', res.data.url);
+                        console.log('URL_S3:', URL_S3);
+                        console.log('URL_CLOUDFRONT:', URL_CLOUDFRONT);
+
+                        const sheetUrl = res.data.url.replace(URL_S3, URL_CLOUDFRONT);
+                        console.log('sheetUrl:', sheetUrl);
+
                         if(thumbnailBlobRef.current) {                            
                             axios.post("/upload", thumbnailFormData, config)
                                 .then(thumbnailRes => {
+                                    const thumbnailUrl = thumbnailRes.data.url.replace(URL_S3, URL_CLOUDFRONT);
+                                    console.log('thumbnailUrl:', thumbnailUrl);
+
                                     setForm({...form, ...{
-                                        url: cloudfrontURL.concat(res.data.data.Key),
-                                        thumbnailUrl: cloudfrontURL.concat(thumbnailRes.data.data.Key)
+                                        url: sheetUrl,
+                                        thumbnailUrl: thumbnailUrl
                                     }});
 
                                     const newCheatsheet = {
-                                        file: cloudfrontURL.concat(res.data.data.Key),
-                                        thumbnail: cloudfrontURL.concat(thumbnailRes.data.data.Key), 
+                                        file: sheetUrl,
+                                        thumbnail: thumbnailUrl, 
                                         user: userData.isLoaded && userData.token === undefined
                                             ? mongoose.Types.ObjectId(-1)
                                             : mongoose.Types.ObjectId(userData.user.id),
