@@ -254,13 +254,18 @@ router.get("/profile/:userId", (req, res) => {
 
 			res.status(200).json(profile);
 		})
-		.catch(err => res.status(404).json({msg: err.msg}));
+		.catch(err => res.status(404).json({msg: "No user found"}));
 })
 
 router.post("/uploads/:userId", (req, res) => {
+	if(!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+		res.status(404).json({msg: "User ID is invalid"});
+		return;
+	}
+
 	let sheetsQuery = Cheatsheet.find(req.body.user && req.body.user.id === req.params.userId
 			? {user: mongoose.Types.ObjectId(req.params.userId)}
-			: {user: mongoose.Types.ObjectId(req.params.userId), isPublic: true});
+			: {user: mongoose.Types.ObjectId(req.params.userId), isPublic: true})
 
 	if(req.body.limit) {
 		sheetsQuery = sheetsQuery.limit(req.body.limit);
@@ -312,18 +317,26 @@ router.post("/uploads/:userId", (req, res) => {
 									})
 									res.status(200).json({sheets, total});
 								})
+								.catch(err => res.status(404).json({msg: "User cannot be found"}));
 						} else {
 							res.status(200).json({sheets, total});
 						}
 					})
-					.catch(err => console.log("err", err));
+					.catch(err => res.status(404).json({msg: "Problem encountered when finding user's cheatsheets"}));
 				})
-				.catch(err => console.log("err", err));
+				.catch(err => {
+					res.status(404).json({msg: "Problem encountered when finding cheatsheets' author"})
+				});
 		})
-		.catch(err => res.status(404).json({msg: err.msg}));
+		.catch(err => res.status(404).json({msg: "Problem encountered when finding user's cheatsheets"}));
 })
 
 router.post("/bookmarks/:userId", (req, res) => {
+	if(!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+		res.status(404).json({msg: "User ID is invalid"});
+		return;
+	}
+
 	User.findById(req.params.userId)
 		.then(user => {
 			const bookmarkIds = user.bookmarks.map(id => mongoose.Types.ObjectId(id));
@@ -377,16 +390,19 @@ router.post("/bookmarks/:userId", (req, res) => {
 											})
 											res.status(200).json({sheets, total});
 										})
+										.catch(err => console.log("Problem encountered when checking whether is bookmarked"));
 								} else {
 									res.status(200).json({sheets, total});
 								}
 							})
-							.catch(err => console.log("err", err));
+							.catch(err => console.log("Problem encountered when counting amount of bookmarked sheets"));
 						})
-						.catch(err => console.log("err", err));
+						.catch(err => console.log("Problem encountered when finding authors"));
 				})
-				.catch(err => res.status(404).json({msg: err.msg}));
+				.catch(err => res.status(404).json({msg: "Bookmarks cannot be found"}));
 		})
+		.catch(err => res.status(404).json({msg: "This user cannot be found"}));
+
 })
 
 router.get("/name/:userId", (req, res) => {

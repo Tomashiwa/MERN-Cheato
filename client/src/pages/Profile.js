@@ -5,6 +5,10 @@ import axios from "axios";
 import Button from "reactstrap/lib/Button";
 import Container from "reactstrap/lib/Container";
 import Spinner from 'reactstrap/lib/Spinner';
+import Card from "reactstrap/lib/Card";
+import CardHeader from "reactstrap/lib/CardHeader";
+import CardBody from "reactstrap/lib/CardBody";
+import CardText from "reactstrap/lib/CardText";
 
 import Gallery from "../components/Gallery";
 import SuggestionGallery from "../components/SuggestionGallery";
@@ -30,7 +34,12 @@ function Profile() {
 	const [totalBookmarks, setTotalBookmarks] = useState(0);
 	const [hasBookmarkLoad, setHasBookmarkLoad] = useState(false);
 
+	const [errorMsg, setErrorMsg] = useState("");
+
 	const history = useHistory();
+
+	const createLink = <a href={"/create"}>create</a>;
+	const uploadLink = <a href={"/upload"}>upload</a>;
 
 	const viewBookmark = () => {
 		history.push(`/MyBookmark/${userID}`);
@@ -40,6 +49,9 @@ function Profile() {
 		history.push(`/MyUpload/${userID}`);
 	};
 
+	const goHome = () => history.push("/");
+	const bookmarkIcon = <img src="https://d2conugba1evp1.cloudfront.net/icons/icon-bookmark.svg" width="24px" height="24px" alt="bookmark"/>;
+
 	useEffect(() => {
 		axios
 			.get(`/api/users/profile/${userID}`)
@@ -48,7 +60,7 @@ function Profile() {
 				setHasUserLoad(true);
 			})
 			.catch((err) => {
-				console.log(`Fail to fetch user data: ${err}`);
+				setErrorMsg(err.response.data.msg)			
 			});
 	}, [userID]);
 
@@ -74,88 +86,117 @@ function Profile() {
 
 	return (
 		<div>
-			<Container>
-				{hasUserLoad ? (
-					<div>
-						<div className="profile-title">
-							<img width="150px" height="150px" src={URL_USERICON} alt="" />
-							<h1 className="profile-name">{user.name}</h1>
-						</div>
-
-						<div>
-							<div className="profile-header">
-								<h5>
-									{
-										user && userData.user !== undefined && user.name === userData.user.name 
-											? "My Uploads" 
-											: `${user.name}'s Uploads`
-									}
-								</h5>
-								{
-									totalUploads > PREVIEW_LIMIT
-										?	<Button color="secondary" className="profile-viewBtn" onClick={viewUpload}>
-												View All
-											</Button>
-										:	<></>
-								}
-							</div>
-							<div className="profile-divider" />
-							{
-								!hasUploadLoad
-									?	<div className="profile-spinner"><Spinner color="warning" /></div>
-								: uploads.length > 0
-									?	<Gallery
-											injectedSheets={uploads.slice(0,3)}
-											hasToolbar={false}
-											hasPagination={false}
-										/>
-									: 	<div className="profile-notFound">
-											<h5>No upload found</h5>
+			{
+				errorMsg.length === 0
+					?	<Container>
+							{hasUserLoad ? (
+								<div>
+									<div className="profile-title">
+										<img width="150px" height="150px" src={URL_USERICON} alt="" />
+										<h1 className="profile-name">{user.name}</h1>
+									</div>
+							
+									<div>
+										<div className="profile-header">
+											<h5>
+												{
+													user && userData.user !== undefined && user.name === userData.user.name 
+														? "My Uploads" 
+														: `${user.name}'s Uploads`
+												}
+											</h5>
+											{
+												totalUploads > PREVIEW_LIMIT
+													?	<Button color="secondary" className="profile-viewBtn" onClick={viewUpload}>
+															View All
+														</Button>
+													:	<></>
+											}
 										</div>
-							}
-						</div>
-
-						<div>
-							<div className="profile-header">
-								<h5>
-									{
-										user && userData.user !== undefined && user.name === userData.user.name 
-											? "My Bookmarks" 
-											: `${user.name}'s Bookmarks`
-									}
-								</h5>
-								{
-									totalBookmarks > PREVIEW_LIMIT
-										?	<Button color="secondary" className="profile-viewBtn" onClick={viewBookmark}>
-												View All
-											</Button>
-										:	<></>
-								}							
-							</div>
-							<div className="profile-divider" />
-							{
-								!hasBookmarkLoad
-									?	<div className="profile-spinner"><Spinner color="warning" /></div>
-								: bookmarks.length > 0
-									?	<Gallery
-											injectedSheets={bookmarks}
-											hasToolbar={false}
-											hasPagination={false}
-										/>
-									: 	<div className="profile-notFound">
-											<h5>No bookmark found</h5>
+										<div className="profile-divider" />
+										{
+											!hasUploadLoad
+												?	<div className="profile-spinner"><Spinner color="warning" /></div>
+												: 	<>
+														<Gallery
+															injectedSheets={uploads}
+															hasToolbar={false}
+															hasPagination={false}
+														/>
+														{
+															uploads.length === 0 
+																? userData.user && userData.user.id === userID
+																	? <h5 className="profile-msg">You may start to {createLink} or {uploadLink} your cheatsheet</h5>
+																	: <h5 className="profile-msg">This user has yet to upload any cheatsheets</h5>
+																: <></>
+														}
+													</>
+										}
+									</div>
+									
+									<div>
+										<div className="profile-header">
+											<h5>
+												{
+													user && userData.user !== undefined && user.name === userData.user.name 
+														? "My Bookmarks" 
+														: `${user.name}'s Bookmarks`
+												}
+											</h5>
+											{
+												totalBookmarks > PREVIEW_LIMIT
+													?	<Button color="secondary" className="profile-viewBtn" onClick={viewBookmark}>
+															View All
+														</Button>
+													:	<></>
+											}							
 										</div>
-							}
-						</div>
+										<div className="profile-divider" />
+										{
+											!hasBookmarkLoad
+												?	<div className="profile-spinner"><Spinner color="warning" /></div>
+												: 	<>
+														<Gallery
+															injectedSheets={bookmarks}
+															hasToolbar={false}
+															hasPagination={false}
+														/>
+														{
+															bookmarks.length === 0 
+																? userData.user && userData.user.id === userID
+																	? <h5 className="profile-msg">You may bookmark cheatsheets by pressing {bookmarkIcon} on the card</h5>
+																	: <h5 className="profile-msg">This user has yet to bookmark any cheatsheets</h5>
+																: <></>
+														}
+													</>
+										}
+									</div>
+									
+									<div>
+										<SuggestionGallery align="horizontal" limit={3} filter={[]}/>
+									</div>
+								</div>
+							) : (
+								<div></div>
+							)}
+						</Container>
+					: 	<Container id="profile-container-error">
+							<Card>
+								<CardHeader tag="h3">{errorMsg}</CardHeader>
+								<CardBody>
+									<CardText>
+										{
+											errorMsg === "No user found" 
+												? "The user you trying to view does not exist, please try again later."
+												: ""
+										}
+									</CardText>
 
-						<div>
-							<SuggestionGallery align="horizontal" limit={3} filter={[]}/>
-						</div>
-					</div>
-				) : (
-					<div></div>
-				)}
-			</Container>
+									<Button onClick={goHome}>Back to Home</Button>
+								</CardBody>
+							</Card>
+						</Container>
+			}
 		</div>
 	);
 }
