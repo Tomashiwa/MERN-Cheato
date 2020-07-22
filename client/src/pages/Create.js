@@ -65,9 +65,6 @@ function Create() {
 
     const setBlob = blob => {
         blobRef.current = blob
-        console.log(`blob set`);
-
-        console.log("resizing blob to 300x300 png");
         Resizer.imageFileResizer(
             blob, //is the file of the new image that can now be uploaded...
             300, // is the maxWidth of the  new image
@@ -75,10 +72,7 @@ function Create() {
             "PNG", // is the compressFormat of the  new image
             100, // is the quality of the new image
             0, // is the degree of clockwise rotation to apply to the image. 
-            blob => { 
-                thumbnailBlobRef.current = blob
-                console.log("resizing completed");
-            },  // is the callBack function of the new image URI
+            blob => thumbnailBlobRef.current = blob,// is the callBack function of the new image URI
             "blob"  // is the output type of the new image
         );
     };
@@ -94,7 +88,6 @@ function Create() {
         const config = {
             onUploadProgress: progressEvent => {
                 let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-                console.log(`Creating... ${percentCompleted}%`);
                 setPercentage(percentCompleted);
             }
         }
@@ -105,7 +98,6 @@ function Create() {
                 axios.post("/upload", formData, config)
                     .then(res => {
                         const sheetUrl = res.data.url.replace(URL_S3, URL_CLOUDFRONT);
-                        setMsg("Cleaning up...");
 
                         if(thumbnailBlobRef.current) {                            
                             axios.post("/upload", thumbnailFormData, config)
@@ -133,20 +125,16 @@ function Create() {
                                         isPublic: form.isPublic,
                                         isAnonymous: userData.isLoaded && userData.token === undefined
                                     }
-                                
-                                    console.log("Submitting cheatsheet", newCheatsheet);
-                                
+                                                                
                                     axios.post("/api/cheatsheets/add", newCheatsheet, config)
                                         .then(sheet => {
                                             setSheetId(sheet.data._id);
                                             setHasCreated(true);
                                             setMsg("");
                                         })
-                                        .catch(err => console.log(err));
-                                    
-                                        console.log("RESIZED HAS BEEN SAVED TO S3");
+                                        .catch(err => console.log(err));                                    
                                 })
-                                .catch(err => console.log("RESIZED SAVING FAILED WITH ERROR", err));
+                                .catch(err => console.log("err", err));
                         }
                     });
             });
@@ -211,18 +199,18 @@ function Create() {
                             defaultBarColor="#555555"
                             completeBarColor="#ccaa44"
                             circleFontColor="#555555"
-                            steps={[{title: "Create"}, {title: "Details"}, {title: "Preview"}]}
+                            steps={[{title: "Import"}, {title: "Details"}, {title: "View"}]}
                             activeStep={formStep - 1}
                         />
                         <div id="create-title-nav">
                             <h2 id="create-title-text">
                                 {
                                     formStep === CREATE_STEP_IMPORT
-                                        ? "Import your cheatsheets"
+                                        ? "Import your images"
                                     : formStep === CREATE_STEP_FORM
                                         ? "Fill in details"
                                     : formStep === CREATE_STEP_PREVIEW
-                                        ? "Preview"
+                                        ? "View"
                                     : ""
                                 }
                             </h2>

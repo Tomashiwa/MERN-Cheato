@@ -55,7 +55,11 @@ function View() {
 						<div id="view-description">
 							<h2>{sheet.name}</h2>
 							<h5>{`${sheet.school} - ${sheet.module}`}</h5>
-							<Button id="view-author" color="link" onClick={goProfile}>{sheet.authorName}</Button>
+							{
+								sheet.authorName !== "Anonymous"
+									? <Button id="view-author" color="link" onClick={goProfile}>{sheet.authorName}</Button>
+									: <h5>Anonymous</h5>
+							}
 						</div>
 
 						<div id="view-feedback">

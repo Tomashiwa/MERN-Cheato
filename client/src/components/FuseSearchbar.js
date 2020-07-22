@@ -147,9 +147,6 @@ function FuseSearchbar() {
 
     const browse = result => {
         if(result.type === "sheet") {
-            console.log("Browsing a sheet");
-            console.log(result);
-
             history.push(`/view/${result.id}`);
         }
 

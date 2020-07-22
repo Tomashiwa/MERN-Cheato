@@ -11,6 +11,11 @@
 
 .sheetCard-author {
 	padding: 0rem;
+	color: #555555;
+}
+
+.sheetCard-author:hover {
+	color: #665544;
 }
 
 .sheetCard .card {
@@ -27,7 +32,7 @@
 .sheetCard-header {
 	display: flex;
 	flex-direction: row;
-	background-color: #eed971ff;
+	background-color: #f8e473;
 }
 
 .sheetCard-header > .sheetCard-info {

@@ -92,7 +92,7 @@ function Profile() {
 							{hasUserLoad ? (
 								<div>
 									<div className="profile-title">
-										<img width="150px" height="150px" src={URL_USERICON} alt="" />
+										<img className="profile-avatar" width="150px" height="150px" src={URL_USERICON} alt="" />
 										<h1 className="profile-name">{user.name}</h1>
 									</div>
 							

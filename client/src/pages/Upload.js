@@ -49,9 +49,6 @@ function Upload() {
 
     const setUploadBlobs = blob => {
         setBlob(blob);
-        console.log(`blob set`);
-
-        console.log(`Resizing blob to 300x300 png`);
         Resizer.imageFileResizer(
             blob,
             300, 
@@ -59,10 +56,7 @@ function Upload() {
             "PNG",
             100,
             0,
-            newBlob => { 
-                setThumbnailBlob(newBlob);
-                console.log("resizing completed");
-            },  
+            newBlob => setThumbnailBlob(newBlob),  
             "blob"
         );
     }
@@ -79,7 +73,6 @@ function Upload() {
         const config = {
             onUploadProgress: progressEvent => {
                 let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-                console.log(`Uploading... ${percentCompleted}%`);
                 setPercentage(percentCompleted);
             }
         }
@@ -119,8 +112,6 @@ function Upload() {
                                         isAnonymous: userData.isLoaded && userData.token === undefined
                                     };
         
-                                    console.log('newSheet:', newSheet);
-        
                                     axios.post("/api/cheatsheets/add", newSheet, config)
                                         .then(sheet => {
                                             setSheetId(sheet.data._id);
@@ -128,8 +119,6 @@ function Upload() {
                                             setMsg("");
                                         })
                                         .catch(err => console.log(err));
-                                    
-                                    console.log("RESIZED HAS BEEN SAVED TO S3");
                                 })
                         }
                     })
@@ -189,7 +178,7 @@ function Upload() {
                     defaultBarColor="#555555"
                     completeBarColor="#ccaa44"
                     circleFontColor="#555555"
-                    steps={[{ title: "Upload" }, { title: "Preview" }]}
+                    steps={[{ title: "Upload" }, { title: "View" }]}
                     activeStep={formStep - 1}
                 />
 
@@ -199,7 +188,7 @@ function Upload() {
                             formStep === UPLOAD_STEP_FORM
                                 ? "Upload your cheatsheet"
                                 : formStep === UPLOAD_STEP_PREVIEW
-                                    ? "Preview"
+                                    ? "View"
                                     : ""
                         }
                     </h2>

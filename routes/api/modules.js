@@ -29,8 +29,6 @@ router.get("/bySchool/:schoolId", (req, res) => {
         .sort({name: 1})
         .then(modules => res.json(modules))
         .catch(err => {
-            console.log("error");
-            console.log(err);
             res.status(404).json({msg: err});
         })
 })

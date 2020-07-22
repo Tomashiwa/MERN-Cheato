@@ -36,7 +36,6 @@ function MyBookmark() {
 			.then((res) => {
 				setBookmarks(res.data.sheets);
                 setIsLoaded(true);
-                console.log("res.data.sheets:", res.data.sheets);
 			})
 			.catch((err) => setErrorMsg(err.response.data.msg));
 
@@ -45,7 +44,6 @@ function MyBookmark() {
 				.get(`/api/users/name/${userID}`)
 				.then((res) => {
 					setName(res.data.name);
-					console.log("res.data.name:", res.data.name);
 				})
 				.catch((err) => console.log("err", err));
 		}

@@ -13,6 +13,8 @@
 	width: 24px;
 	height: 24px;
 	margin-top: 4px;
+	box-shadow: 0 0 0.1rem black;
+    border-radius: 1rem;
 	background-color: #555555;
 }
 .rating-icon:hover {
@@ -23,10 +25,12 @@
 	width: 24px;
 	height: 24px;
 	margin-top: 4px;
+	box-shadow: 0 0 0.1rem black;
+    border-radius: 1rem;
 	background-color: #ffcc00;
 }
 .rating-icon-toggled:hover {
-	background-color: #ffda47;
+	background-color: #ccaa44;
 }
 
 .rating-up {

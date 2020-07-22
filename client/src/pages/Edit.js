@@ -45,8 +45,6 @@ function Edit() {
 				history.push(`/view/${id}`);
 			})
 			.catch((err) => {
-				console.log("POST ERROR");
-				console.log("post err:", err);
 				setErrorMsg(err.response.data.msg);
 			});
 	};

@@ -38,6 +38,11 @@
 #view-author {
 	padding: 0rem;
 	font-size: 20px;
+	color: #555555;
+}
+
+#view-author:hover {
+	color: #665544;
 }
 
 #view-desc-comment {

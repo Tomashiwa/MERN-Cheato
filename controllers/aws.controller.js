@@ -29,33 +29,12 @@ exports.doUpload = (req, res) => {
 		acl: 'public-read' // optional
 	};
 
-	// console.log('s3.uploadParams:', s3.uploadParams);
-	// console.log("s3 uploadOptions", uploadOptions);
-
 	client.upload(uploadOptions, (err, url) => {
 		if(err) {
-			console.log("ERROR");
 			res.status(500).json({error: `Error -> ${err}`});
 		} else {
-			console.log("SUCCESS");
 			res.status(200).json({message: `File uploaded successfully!`, url: url});
 			return res;
 		}
 	});
 }
-
-// exports.doUpload = (req, res) => {
-//   const s3Client = s3.s3Client;
-//   const params = s3.uploadParams;
-
-//   params.Key = req.file.originalname;
-//   params.Body = req.file.buffer;
-
-//   s3Client.upload(params, (err, data) => {
-//     if (err) {
-//       res.status(500).json({error:"Error -> " + err});
-//     }
-//     res.json({message: 'File uploaded successfully! -> keyname = ' + req.originalname, data: data});
-//     return res;
-//   });
-// }

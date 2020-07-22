@@ -29,6 +29,10 @@
     align-items: center;
 }
 
+.profile-avatar {
+    margin-right: 2rem;
+}
+
 .profile-header {
     display: flex;
     flex-direction: row;

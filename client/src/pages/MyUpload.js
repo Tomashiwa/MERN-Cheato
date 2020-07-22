@@ -47,7 +47,6 @@ function MyUpload() {
 				.get(`/api/users/name/${userID}`)
 				.then((res) => {
 					setName(res.data.name);
-					console.log("res.data.name:", res.data.name);
 				})
 				.catch((err) => console.log("err", err));
 		}

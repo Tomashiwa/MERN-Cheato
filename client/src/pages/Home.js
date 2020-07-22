@@ -9,7 +9,7 @@ function Home() {
 	return (
 		<div>
 			<Container>
-				<h3>Browse Cheatsheet</h3>
+				<h3>Browse Cheatsheets</h3>
 				<div className="home-divider" />
 				<Gallery />
 			</Container>
