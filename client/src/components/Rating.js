@@ -2,6 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import UserContext from "../context/UserContext";
 
+import Tooltip from "reactstrap/lib/Tooltip";
+
 import "./css/Rating.css";
 
 import { vote, unvote } from "../lib/SuggestionEngine/Api";
@@ -13,13 +15,19 @@ function Rating({ sheet }) {
 	const [isDownToggled, setIsDownToggled] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
+	const [isUpHover, setIsUpHover] = useState(false);
+	const [isDownHover, setIsDownHover] = useState(false);
+
 	const [voteCount, setVoteCount] = useState(sheet.rating);
-	
+
+	const toggleUpHover = () => setIsUpHover(!isUpHover);
+	const toggleDownHover = () => setIsDownHover(!isDownHover);
+
 	useEffect(() => {
-		if(userData.user !== undefined && sheet.upvotedUsers.includes(userData.user.id)) {
+		if (userData.user !== undefined && sheet.upvotedUsers.includes(userData.user.id)) {
 			setIsUpToggled(true);
 			setIsDownToggled(false);
-		} else if(userData.user !== undefined && sheet.downvotedUsers.includes(userData.user.id)) {
+		} else if (userData.user !== undefined && sheet.downvotedUsers.includes(userData.user.id)) {
 			setIsUpToggled(false);
 			setIsDownToggled(true);
 		} else {
@@ -104,28 +112,49 @@ function Rating({ sheet }) {
 			<div className="rating-btns">
 				<button
 					className="rating-btn"
+					id={`rating-up-${sheet.id}`}
 					type="button"
 					onClick={upvote}
 					disabled={isLoading || userData.user === undefined}
 				>
 					{isUpToggled ? (
-						<div className="rating-up rating-icon-toggled"></div>
+						<div className="rating-up rating-icon-toggled" />
 					) : (
-						<div className="rating-up rating-icon"></div>
+						<div className="rating-up rating-icon" />
 					)}
 				</button>
+				<Tooltip
+					target={`rating-up-${sheet.id}`}
+					placement="right"
+					isOpen={isUpHover}
+					autohide={false}
+					toggle={toggleUpHover}
+				> 
+					{isUpToggled ? "Unvote" : "Upvote"}
+				</Tooltip>
+
 				<button
 					className="rating-btn"
+					id={`rating-down-${sheet.id}`}
 					type="button"
 					onClick={downvote}
 					disabled={isLoading || userData.user === undefined}
 				>
 					{isDownToggled ? (
-						<div className="rating-down rating-icon-toggled"></div>
+						<div className="rating-down rating-icon-toggled" />
 					) : (
-						<div className="rating-down rating-icon"></div>
+						<div className="rating-down rating-icon" />
 					)}
 				</button>
+				<Tooltip
+					target={`rating-down-${sheet.id}`}
+					placement="right"
+					isOpen={isDownHover}
+					autohide={false}
+					toggle={toggleDownHover}
+				> 
+					{isDownToggled ? "Unvote" : "Downvote"}
+				</Tooltip>
 			</div>
 			<div className="rating-counter">{voteCount}</div>
 		</div>
