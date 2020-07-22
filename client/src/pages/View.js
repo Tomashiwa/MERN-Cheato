@@ -72,7 +72,7 @@ function View() {
 					</div>
 
 					<div className="view-section-line" />
-
+					
 					<ImagePreviewer imageURL={sheet.file} />
 
 					<div className="view-section-line" />

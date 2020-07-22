@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import Button from 'reactstrap/lib/Button';
 import Spinner from 'reactstrap/lib/Spinner';
+import UncontrolledAlert from "reactstrap/lib/UncontrolledAlert";
 
 import Konva from "konva";
 import { Stage, Layer } from "react-konva";
@@ -12,6 +13,10 @@ export const PREVIEWER_VIEW_WIDTH = 1123;
 export const PREVIEWER_VIEW_HEIGHT = 794;
 export const PREVIEWER_BASE_WIDTH = 3508;
 export const PREVIEWER_BASE_HEIGHT = 2480;
+
+export const URL_MOUSELEFT = "https://d2conugba1evp1.cloudfront.net/icons/icon-leftclick.png";
+export const URL_MOUSESCROLL = "https://d2conugba1evp1.cloudfront.net/icons/icon-scroll.png";
+export const URL_CTRL = "https://d2conugba1evp1.cloudfront.net/icons/icon-ctrl.png";
 
 function ImagePreviewer({imageURL}) {
     const stageRef = useRef(null);
@@ -26,6 +31,11 @@ function ImagePreviewer({imageURL}) {
     const widthRef = useRef(PREVIEWER_BASE_WIDTH);
     const heightRef = useRef(PREVIEWER_BASE_HEIGHT);
     const scaleRatioRef = useRef({x: PREVIEWER_VIEW_WIDTH/widthRef.current, y: PREVIEWER_VIEW_HEIGHT/heightRef.current});
+
+    const mouseLeft = <img src={URL_MOUSELEFT} width="24px" height="24px" alt="mouseLeft"/>;
+	const mouseScroll = <img src={URL_MOUSESCROLL} width="24px" height="24px" alt="mouseScroll"/>;
+	const ctrl = <img src={URL_CTRL} width="35px" height="35px" alt="ctrl"/>; 
+
 
     // Set dimension and resolution of canvases
     useEffect(()=> {
@@ -263,6 +273,10 @@ function ImagePreviewer({imageURL}) {
 
     return (
         <div id="previewer">
+            <UncontrolledAlert color="warning">
+				You may drag the cheatsheet via {mouseLeft} and zoom-in/zoom-out the cheatsheet via {ctrl} + {mouseScroll}.
+			</UncontrolledAlert>
+    
             <Stage ref={stageRef} draggable>
                 <Layer ref={layerRef}></Layer>
             </Stage>

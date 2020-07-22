@@ -7,9 +7,9 @@ import Spinner from 'reactstrap/lib/Spinner';
 import UserContext from "./context/UserContext";
 import AppNavbar from './components/AppNavbar';
 
-import "./output/_mixins.css";
-import "./output/_compiled.css";
-// import "bootstrap/dist/css/bootstrap.min.css"
+// import "./output/_mixins.css";
+// import "./output/_compiled.css";
+import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
 import ScrollToView from './components/ScrollToView';
 
