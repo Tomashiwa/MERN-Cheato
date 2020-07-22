@@ -43,3 +43,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.sheetCard-img {
+	cursor: default;
+}
+
+.sheetCard-img:hover {
+	cursor: pointer;
+}

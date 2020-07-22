@@ -28,10 +28,7 @@
 
 #view-footer #view-comments {
 	flex-grow: 1;
-}
-
-#view-feedback > #bookmarkbtn {
-	/* margin-right: 30px; */
+	padding-top: 1rem;
 }
 
 #view-similars {
@@ -41,4 +38,8 @@
 #view-author {
 	padding: 0rem;
 	font-size: 20px;
+}
+
+#view-desc-comment {
+	flex-grow: 1;
 }

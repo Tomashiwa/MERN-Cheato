@@ -56,7 +56,6 @@ function View() {
 							<h2>{sheet.name}</h2>
 							<h5>{`${sheet.school} - ${sheet.module}`}</h5>
 							<Button id="view-author" color="link" onClick={goProfile}>{sheet.authorName}</Button>
-							{/* <h5>{`Uploaded by: ${sheet.authorName}`}</h5> */}
 						</div>
 
 						<div id="view-feedback">
@@ -78,18 +77,20 @@ function View() {
 
 					<div className="view-section-line" />
 
-					<div>
-						<h5>Description</h5>
-						<h6>{sheet.description}</h6>
-					</div>
-
-					<div className="view-section-line" />
-
 					<div id="view-footer">
-						<div id="view-comments">
-							<CommentGallery sheetID={id} />
-						</div>
+						<div id="view-desc-comment">
+							<div>
+								<h5>Description</h5>
+								<h6>{sheet.description}</h6>
+							</div>
 
+							<div className="view-section-line" />
+
+							<div id="view-comments">
+								<CommentGallery sheetID={id} />
+							</div>
+						</div>
+					
 						<div id="view-similars">
 							<SuggestionGallery align="vertical" limit={5} filter={[id]}/>
 						</div>
