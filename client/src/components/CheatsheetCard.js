@@ -48,13 +48,6 @@ function CheatsheetCard({ sheet }) {
 				<div className="sheetCard-bookmarkBtn">
 					<BookmarkButton sheet={sheet} />
 				</div>
-				{/* {
-					userData.isLoaded && userData.user !== undefined
-						?	<div className="sheetCard-bookmarkBtn">
-								<BookmarkButton sheet={sheet} />
-							</div>
-						:	<></>
-				} */}
 			</Card>
 		</div>
 	);

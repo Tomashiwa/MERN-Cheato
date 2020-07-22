@@ -36,7 +36,9 @@
 
 .sheetCard-header .sheetCard-name {
     font-size: large;
-    font-weight: 600;
+	font-weight: 600;
+	
+	width: 200px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
