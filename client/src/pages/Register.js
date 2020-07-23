@@ -80,6 +80,7 @@ function Register() {
 							});
 						})
 						.catch((err) => {
+							console.log("Register fail:", err);
 							setInvalidMsg(err.response.data.msg);
 							setFieldsInvalid({ name: true, pass: false, check: false });
 						});

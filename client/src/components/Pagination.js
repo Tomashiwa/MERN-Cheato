@@ -49,8 +49,6 @@ function Pagination({
 	}, [totalCount, cheatsheetPerPage])
 
 	useEffect(() => {
-		console.log('totalPages:', totalPages);
-
 		const selectPage = (pageNum) => {
 			paginate(pageNum);
 			resetView();

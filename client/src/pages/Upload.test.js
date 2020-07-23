@@ -160,7 +160,7 @@ test("Filling upload form and accessing previewer", async () => {
 	await wrapper.update();
 
 	expect(axiosGetSpy).toBeCalledWith("/api/schools");
-	expect(axiosGetSpy).toBeCalledWith("/api/modules");
+	expect(axiosGetSpy).toBeCalledWith("/api/modules/bySchool/1");
 
 	expect(schoolSelector.html().includes("SCHOOL_1")).toBe(true);
 	expect(moduleSelector.html().includes("MODULE_1")).toBe(true);

@@ -29,8 +29,8 @@ afterEach(() => {
 
 // Mocking history.push
 const mockHistoryPush = jest.fn();
-jest.mock(`react-router-dom`, () => ({
-	...jest.requireActual("react-router-dom"),
+jest.mock(`react-router-dom/cjs/react-router-dom.min`, () => ({
+	...jest.requireActual("react-router-dom/cjs/react-router-dom.min"),
 	useHistory: () => ({
 		push: mockHistoryPush,
 	}),

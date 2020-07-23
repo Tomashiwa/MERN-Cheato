@@ -2,6 +2,7 @@ import React, { useState as useStateMock } from "react";
 import mount from "enzyme/build/mount";
 import Register from "./Register";
 import UserContext from "../context/UserContext";
+import axios from "axios";
 
 import { server, rest } from "../mockServer";
 
@@ -15,8 +16,8 @@ const setUserData = (newToken, newUser, newIsLoaded) => ({
 
 // Mocking history.push
 const mockHistoryPush = jest.fn();
-jest.mock(`react-router-dom`, () => ({
-	...jest.requireActual("react-router-dom"),
+jest.mock(`react-router-dom/cjs/react-router-dom.min`, () => ({
+	...jest.requireActual(`react-router-dom/cjs/react-router-dom.min`),
 	useHistory: () => ({
 		push: mockHistoryPush,
 	}),
@@ -57,13 +58,13 @@ test("Redirecting to login page", () => {
 });
 
 test("Successful register", async () => {
-	const account = { username: "user123", password: "password" };
+	const account = { name: "user123", password: "password", isAdmin: false };
 
 	const wrapper = mount(
 		<UserContext.Provider value={{ userData, setUserData }}>
 			<Register />
 		</UserContext.Provider>,
-		{ attachTo: document.getElementById('mockContainer') }
+		{ attachTo: document.getElementById("mockContainer") }
 	);
 
 	const nameInput = wrapper.find("#register-input-name").hostNodes().getDOMNode();
@@ -71,9 +72,25 @@ test("Successful register", async () => {
 	const confirmInput = wrapper.find("#register-input-confirmPass").hostNodes().getDOMNode();
 	const form = wrapper.find("#register-form").hostNodes();
 
-	nameInput.value = account.username;
+	nameInput.value = account.name;
 	passInput.value = account.password;
 	confirmInput.value = account.password;
+
+	const axiosPostSpy = jest.spyOn(axios, "post")
+		.mockResolvedValueOnce({
+			status: 200,
+			data: {
+				token: "0123456789",
+				user: { id: "abcdefgh", name: account.name, isAdmin: account.isAdmin },
+			},
+		})
+		.mockResolvedValueOnce({
+			status: 200,
+			data: {
+				token: "0123456789",
+				user: { id: "abcdefgh", name: account.name, isAdmin: account.isAdmin },
+			}
+		})
 
 	return form
 		.prop("onSubmit")({ preventDefault: jest.fn() })

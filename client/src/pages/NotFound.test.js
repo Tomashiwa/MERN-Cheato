@@ -25,15 +25,15 @@ test("Message exists and is correct", () => {
 
 	const text = cardText.text();
 	expect(text).toBe(
-		"The page you trying to acccess does not exist. Please try again or return to home."
+		"The page you trying to access does not exist. Please try again or return to home."
 	);
 });
 
 // Does clicking back-to-home button goes to home page
 const mockHistoryPush = jest.fn();
 
-jest.mock(`react-router-dom`, () => ({
-	...jest.requireActual("react-router-dom"),
+jest.mock(`react-router-dom/cjs/react-router-dom.min`, () => ({
+	...jest.requireActual("react-router-dom/cjs/react-router-dom.min"),
 	useHistory: () => ({
 		push: mockHistoryPush,
 	}),
