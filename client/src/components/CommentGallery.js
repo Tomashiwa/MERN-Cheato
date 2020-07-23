@@ -62,9 +62,8 @@ function CommentGallery({ sheetID }) {
 						<Button
 							id="submitBtn"
 							content="Submit Comment"
-							labelPosition="left"
 							icon="edit"
-							primary
+							color="yellow"
 							onClick={submitComment}
 						/>
 					</Form>

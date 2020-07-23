@@ -1,3 +1,7 @@
 #userdropdown-icon {
     margin-right: 5px;
 }
+
+#userdropdown{
+    min-width:10rem;
+}

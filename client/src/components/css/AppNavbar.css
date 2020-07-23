@@ -1,3 +1,7 @@
 #searchbar {
   text-align: center;
 }
+
+.nav{
+  flex-wrap:nowrap !important;
+}

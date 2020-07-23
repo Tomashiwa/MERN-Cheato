@@ -145,6 +145,8 @@ function Gallery({ hasToolbar = true, hasPagination = true, injectedSheets = und
 	useEffect(() => {
 		if (currentPage === Math.ceil(sheetsCount / SHEETS_PER_PAGE)) {
 			setNext(false);
+		} else if (Math.ceil(sheetsCount / SHEETS_PER_PAGE) === 0) {
+			setNext(false);
 		} else {
 			setNext(true);
 		}

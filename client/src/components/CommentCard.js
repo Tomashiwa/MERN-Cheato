@@ -94,9 +94,8 @@ function CommentCard({ isStale, setIsStale, comment }) {
 							<Button
 								id="submitBtn"
 								content="Edit Comment"
-								labelPosition="left"
 								icon="edit"
-								primary
+								color="yellow"
 								onClick={editComment}
 							/>
 						</Form>
