@@ -272,6 +272,7 @@ router.post("/uploads/:userId", (req, res) => {
 	}
 
 	sheetsQuery
+		.sort({ datetime: -1 })
 		.then(cheatsheets => {
 			let sheets = cheatsheets.map((cheatsheet) => {
 				return {
@@ -347,6 +348,7 @@ router.post("/bookmarks/:userId", (req, res) => {
 			}
 
 			query
+				.sort({ datetime: -1 })
 				.then(cheatsheets => {
 					let sheets = cheatsheets.map((cheatsheet) => {
 						return {

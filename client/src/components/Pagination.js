@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import Button from "reactstrap/lib/Button";
 import ButtonGroup from "reactstrap/lib/ButtonGroup";
@@ -18,17 +18,17 @@ function Pagination({
 	isNext,
 }) {
 	const [pageBtns, setPageBtns] = useState([]);
-	const totalPagesRef = useRef(Math.ceil(totalCount / cheatsheetPerPage));
+	const [totalPages, setTotalPages] = useState(Math.ceil(totalCount / cheatsheetPerPage));
 
 	const range = () => {
         const buffer = Math.floor(PAGES_PER_VIEW / 2);
 
-        if(totalPagesRef.current <= 5) {
+        if(totalPages <= 5) {
             return pageBtns;
         } else if(currentPage <= buffer) {
             return pageBtns.slice(0, PAGES_PER_VIEW);
-        } else if(currentPage >= totalPagesRef.current - buffer) {
-            return pageBtns.slice(totalPagesRef.current - (2 * buffer) - 1, totalPagesRef.current);
+        } else if(currentPage >= totalPages - buffer) {
+            return pageBtns.slice(totalPages - (2 * buffer) - 1, totalPages);
         } else {
             return pageBtns.slice(currentPage - buffer - 1, currentPage + buffer);
         }
@@ -45,6 +45,12 @@ function Pagination({
 	};
 
 	useEffect(() => {
+		setTotalPages(Math.ceil(totalCount / cheatsheetPerPage));
+	}, [totalCount, cheatsheetPerPage])
+
+	useEffect(() => {
+		console.log('totalPages:', totalPages);
+
 		const selectPage = (pageNum) => {
 			paginate(pageNum);
 			resetView();
@@ -52,7 +58,7 @@ function Pagination({
 
 		let newPageBtns = [];
 
-		for (let i = 1; i <= totalPagesRef.current; i++) {
+		for (let i = 1; i <= totalPages; i++) {
 			const active = currentPage === i ? "active" : "";
 			newPageBtns.push(
 				<Button className={`waves-effect ${active}`} key={i} onClick={() => selectPage(i)}>
@@ -62,7 +68,7 @@ function Pagination({
 		}
 
 		setPageBtns(newPageBtns);
-	}, [currentPage, paginate]);
+	}, [currentPage, paginate, totalPages]);
 
 	return (
 		<nav>
