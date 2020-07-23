@@ -151,6 +151,8 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 	useEffect(() => {
 		if (currentPage === Math.ceil(displaySheets.length / cheatsheetPerPage)) {
 			setNext(false);
+		} else if ((Math.ceil(sheetsCount / SHEETS_PER_PAGE)) === 0) {
+			setNext(false);
 		} else {
 			setNext(true);
 		}
@@ -164,15 +166,11 @@ function Gallery({ cheatsheetArray = [], text = "", dropdown = true, numbering =
 
 	return (
 		<div>
-			<Container>
-				{isText
-					? <h3>Browse Cheatsheets</h3>
-					: <div>
-						<h3>{text}</h3>
-					</div>
-				}
-				{isDropdown
-					? <div id="gallery-toolbar">
+			<Container className="gallery-container">
+				{/* <h3>{title}</h3> */}
+
+				{hasToolbar ? (
+					<div id="gallery-toolbar">
 						<div className="gallery-tool-group">
 							<div className="gallery-tool-label">School</div>
 							<Select

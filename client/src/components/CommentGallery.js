@@ -3,10 +3,7 @@ import { Button, Comment, Form, Header } from "semantic-ui-react";
 
 import "./css/_CommentGallery.scss";
 
-import React, { useState, useEffect, useContext } from "react";
-import mongoose from "mongoose";
-import axios from "axios";
-import UserContext from "../context/UserContext";
+const URL_USERICON = "https://d2conugba1evp1.cloudfront.net/icons/icon-user.svg";
 
 function CommentGallery({ sheetID }) {
 	const { userData } = useContext(UserContext);
@@ -64,7 +61,6 @@ function CommentGallery({ sheetID }) {
 						<Button
 							id="submitBtn"
 							content="Submit Comment"
-							labelPosition="left"
 							icon="edit"
 							primary
 							onClick={submitComment}

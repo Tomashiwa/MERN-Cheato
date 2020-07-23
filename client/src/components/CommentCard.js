@@ -2,6 +2,10 @@ import React, { useContext, useState, useEffect } from "react";
 
 import userIcon from "../icons/icon-user.svg";
 import { Comment, Form, Button } from "semantic-ui-react";
+
+
+
+import UserContext from "../context/UserContext";
 import "./css/CommentCard.css";
 import axios from "axios";
 

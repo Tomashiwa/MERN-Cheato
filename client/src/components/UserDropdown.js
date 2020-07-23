@@ -45,7 +45,7 @@ function UserDropdown() {
                     alt="" />
                 {userData.user.name}
             </DropdownToggle>
-            <DropdownMenu>
+            <DropdownMenu id="userdropdown-menu">
                 <DropdownItem onClick={viewProfile}>My profile</DropdownItem>
                 <DropdownItem onClick ={viewUpload}>My uploads</DropdownItem>
                 <DropdownItem onClick={viewBookmarked}>My bookmarks</DropdownItem>

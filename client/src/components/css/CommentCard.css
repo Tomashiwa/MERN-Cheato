@@ -2,3 +2,7 @@ p{
     position:relative;
     right:5px;
 }
+
+#submitBtn{
+    background-color: #2185d0;
+}
