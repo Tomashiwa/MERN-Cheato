@@ -37,6 +37,7 @@ function Gallery({ hasToolbar = true, hasPagination = true, injectedSheets = und
 	const [modFilter, setModfilter] = useState(null);
 
 	const [sheets, setSheets] = useState([]);
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	const [schOpts, setSchOpts] = useState([]);
 	const [modOpts, setModOpts] = useState([]);
@@ -130,12 +131,14 @@ function Gallery({ hasToolbar = true, hasPagination = true, injectedSheets = und
 	
 			axios.post(`/api/cheatsheets/page/${currentPage}`, config).then((result) => {
 				setSheets(result.data);
+				setIsLoaded(true);
 			});
 		} else {
 			const start = (currentPage - 1) * SHEETS_PER_PAGE;
 			const end = start + SHEETS_PER_PAGE;
 			setSheets(injectedSheets.slice(start, end));
 			setSheetsCount(injectedSheets.length);
+			setIsLoaded(true);
 		}
 	}, [schFilter, modFilter, sortOrder, userData.user, currentPage, injectedSheets]);
 
@@ -213,7 +216,7 @@ function Gallery({ hasToolbar = true, hasPagination = true, injectedSheets = und
 				)}
 				<div className="gallery">
 					{
-						sheets.length > 0
+						!isLoaded || sheets.length > 0
 							? sheets.map((sheet, index) => (
 								<CheatsheetCard key={index} sheet={sheet} />
 							))
