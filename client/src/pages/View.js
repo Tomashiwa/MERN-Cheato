@@ -43,7 +43,9 @@ function View() {
 				.then(res => {
 					setSheet(res.data)
 				})
-				.catch(err => setErrorMsg(err.response.data.msg));
+				.catch(err => {
+					setErrorMsg(err.response.data.msg);
+				});
 		}
 	}, [id, userData]);
 

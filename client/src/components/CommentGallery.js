@@ -26,7 +26,7 @@ function CommentGallery({ sheetID }) {
 				setComments(res.data);
 			})
 			.catch((err) => {
-				console.log(`Fail to fetch comments: ${err}`);
+				console.log(`Error when fetching comments: Sheet with ${sheetID} cannot be found`);
 			});
 	}, [isStale, sheetID]);
 

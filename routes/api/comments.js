@@ -23,9 +23,6 @@ router.get("/bySheet/:sheetID", (req, res) => {
         .catch(err => res.status(404).json({msg: `Comment with ${req.params.id} cannot be found`}));
 })
 
-
-
-
 // @route POST api/comments
 // @descr Create a comment
 // @access Public

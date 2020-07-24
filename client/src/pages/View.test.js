@@ -1,341 +1,221 @@
-// import React from "react";
-// import { act } from "react-dom/test-utils";
-// import mount from "enzyme/build/mount";
-// import View from "./View";
-// import UserContext from "../context/UserContext";
-// import axios from "axios";
+import React from "react";
+import { act } from "react-dom/test-utils";
+import mount from "enzyme/build/mount";
+import View from "./View";
+import UserContext from "../context/UserContext";
+import axios from "axios";
+import { BrowserRouter } from "react-router-dom";
 
-// // Mock UserContext
-// const userData = { token: undefined, user: undefined, isLoaded: true };
-// const setUserData = (newToken, newUser, newIsLoaded) => ({
-// 	token: newToken,
-// 	user: newUser,
-// 	isLoaded: newIsLoaded,
-// });
+// Mock UserContext
+const userData = { token: undefined, user: undefined, isLoaded: true };
+const setUserData = (newToken, newUser, newIsLoaded) => ({
+	token: newToken,
+	user: newUser,
+	isLoaded: newIsLoaded,
+});
 
-// // Mock useParam to get sheet ID for viewing
-// jest.mock("react-router-dom", () => ({
-// 	...jest.requireActual("react-router-dom"),
-// 	useParams: () => ({
-// 		id: "123456789",
-// 	}),
-// 	useRouteMatch: () => ({ url: "/api/cheatsheets/123456789" }),
-// }));
+// Mock useParam to get sheet ID for viewing
+jest.mock("react-router-dom/cjs/react-router-dom.min", () => ({
+	...jest.requireActual("react-router-dom/cjs/react-router-dom.min"),
+	useParams: () => ({
+		id: "123456789",
+	}),
+	useRouteMatch: () => ({ url: "/api/cheatsheets/view/123456789" }),
+}));
 
-// describe("Fetching sheets", () => {
-// 	test("Public sheet", async () => {
-// 		const axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValueOnce({
-// 			status: 200,
-// 			data: {
-// 				comments: [],
-// 				datetime: "2020-06-18T07:39:21.799Z",
-// 				file: "https://cheato.s3.ap-southeast-1.amazonaws.com/123456789.png",
-// 				isAnonymous: false,
-// 				isPublic: true,
-// 				name: "SHEET_NAME",
-// 				module: "123456789",
-// 				school: "123456789",
-// 				rating: 0,
-// 				user: "123456789",
-// 				_id: "123456789",
-// 			},
-// 		});
+jest.mock("axios");
 
-// 		const axiosGetSpy = jest
-// 			.spyOn(axios, "get")
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "SCHOOL_NAME",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "MODULE_NAME",
-// 					school: "123456789",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					bookmarks: [],
-// 					isAdmin: false,
-// 					name: "OWNER_NAME",
-// 					password: "OWNER_PASSWORD",
-// 					_id: "123456789",
-// 				},
-// 			});
+let postError = new Error("Suggestions cannot be found");
+postError.status = 404;
+postError.response = { data: { msg: "Suggestions cannot be found" } };
 
-// 		let wrapper;
-// 		await act(async () => {
-// 			wrapper = await mount(
-// 				<UserContext.Provider value={{ userData, setUserData }}>
-// 					<View />
-// 				</UserContext.Provider>
-// 			);
+let getError = new Error("Comments cannot be found");
+getError.status = 404;
+getError.response = { data: { msg: "Comments cannot be found" } };
 
-// 			await wrapper.update();
-// 		});
+describe("Fetching sheets", () => {
+	test("View sheet when logged in", async () => {
+		axios.post
+			.mockResolvedValueOnce({
+				status: 200,
+				data: {
+					id: "123456789",
+					name: "SHEET_NAME",
+					file: "https://cheato.s3.ap-southeast-1.amazonaws.com/123456789.png",
+					author: "123456789",
+					authorName: "AUTHOR_NAME",
+					school: "SCHOOL_NAME",
+					module: "MODULE_NAME",
+					description: "SHEET_DESCRIPTION",
+					upvotedUsers: [],
+					downvotedUsers: [],
+					rating: 0,
+					hasBookmarked: false,
+				},
+			})
+			.mockRejectedValueOnce(postError);
 
-// 		expect(axiosPostSpy).toBeCalledWith("/api/cheatsheets/123456789", userData.user);
-// 		expect(axiosGetSpy).toBeCalledWith("/api/schools/123456789");
-// 		expect(axiosGetSpy).toBeCalledWith("/api/modules/123456789");
-// 		expect(axiosGetSpy).toBeCalledWith("/api/users/123456789");
+		axios.get.mockRejectedValueOnce(getError);
 
-// 		expect(wrapper.html().includes('<div id="view-container" class="container">')).toBe(true);
-// 		expect(wrapper.html().includes("<h2>SHEET_NAME</h2>")).toBe(true);
-// 		expect(wrapper.html().includes("<h5>SCHOOL_NAME - MODULE_NAME</h5>")).toBe(true);
-// 		expect(wrapper.html().includes("<h5>Uploaded by: OWNER_NAME</h5>")).toBe(true);
-// 	});
+		const div = document.createElement("div");
+		document.body.appendChild(div);
 
-// 	test("Accessing private sheet w/ owner", async () => {
-// 		const axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValueOnce({
-// 			status: 200,
-// 			data: {
-// 				comments: [],
-// 				datetime: "2020-06-18T07:39:21.799Z",
-// 				file: "https://cheato.s3.ap-southeast-1.amazonaws.com/123456789.png",
-// 				isAnonymous: false,
-// 				isPublic: false,
-// 				name: "SHEET_NAME",
-// 				module: "123456789",
-// 				school: "123456789",
-// 				rating: 0,
-// 				user: "123456789",
-// 				_id: "123456789",
-// 			},
-// 		});
+		let wrapper;
 
-// 		const axiosGetSpy = jest
-// 			.spyOn(axios, "get")
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "SCHOOL_NAME",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "MODULE_NAME",
-// 					school: "123456789",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					bookmarks: [],
-// 					isAdmin: false,
-// 					name: "OWNER_NAME",
-// 					password: "OWNER_PASSWORD",
-// 					_id: "123456789",
-// 				},
-// 			});
+		await act(async () => {
+			wrapper = await mount(
+				<UserContext.Provider value={{ userData, setUserData }}>
+					<View />
+				</UserContext.Provider>,
+				{ attachTo: div }
+			);
 
-// 		let wrapper;
-// 		await act(async () => {
-// 			wrapper = await mount(
-// 				<UserContext.Provider value={{ userData, setUserData }}>
-// 					<View />
-// 				</UserContext.Provider>
-// 			);
+			await wrapper.update();
+		});
 
-// 			await wrapper.update();
-// 		});
+		expect(wrapper.html().includes('<div id="view-container" class="container">')).toBe(true);
+		expect(wrapper.html().includes("<h2>SHEET_NAME</h2>")).toBe(true);
+		expect(wrapper.html().includes("<h5>SCHOOL_NAME - MODULE_NAME</h5>")).toBe(true);
+		expect(
+			wrapper
+				.html()
+				.includes(
+					'<button type="button" id="view-author" class="btn btn-link">AUTHOR_NAME</button>'
+				)
+		).toBe(true);
+	});
 
-// 		expect(wrapper.html().includes('<div id="view-container" class="container">')).toBe(true);
-// 		expect(wrapper.html().includes("<h2>SHEET_NAME</h2>")).toBe(true);
-// 		expect(wrapper.html().includes("<h5>SCHOOL_NAME - MODULE_NAME</h5>")).toBe(true);
-// 		expect(wrapper.html().includes("<h5>Uploaded by: OWNER_NAME</h5>")).toBe(true);
-// 	});
+	test("Viewing inaccessible sheet", async () => {
+		let inaccessibleErr = new Error("This cheatsheet is private");
+		inaccessibleErr.status = 404;
+		inaccessibleErr.response = { data: { msg: "This cheatsheet is private" } };
 
-// 	test("Accessing private sheet w/ non-owner", async () => {
-// 		let postError = new Error("This sheet is private");
-// 		postError.status = 404;
-// 		postError.response = { data: { msg: "This cheatsheet is private" } };
+		axios.post.mockRejectedValueOnce(inaccessibleErr);
 
-// 		const axiosPostSpy = jest.spyOn(axios, "post").mockRejectedValueOnce(postError);
+		axios.get.mockRejectedValueOnce(getError);
 
-// 		const axiosGetSpy = jest
-// 			.spyOn(axios, "get")
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "SCHOOL_NAME",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "MODULE_NAME",
-// 					school: "123456789",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					bookmarks: [],
-// 					isAdmin: false,
-// 					name: "OWNER_NAME",
-// 					password: "OWNER_PASSWORD",
-// 					_id: "123456789",
-// 				},
-// 			});
+		const div = document.createElement("div");
+		document.body.appendChild(div);
 
-// 		let wrapper;
-// 		await act(async () => {
-// 			wrapper = await mount(
-// 				<UserContext.Provider value={{ userData, setUserData }}>
-// 					<View />
-// 				</UserContext.Provider>
-// 			);
+		let wrapper;
 
-// 			await wrapper.update();
-// 		});
+		await act(async () => {
+			wrapper = await mount(
+				<UserContext.Provider value={{ userData, setUserData }}>
+					<View />
+				</UserContext.Provider>,
+				{ attachTo: div }
+			);
 
-// 		expect(wrapper.html().includes('<div id="view-container-error" class="container">')).toBe(
-// 			true
-// 		);
-// 		expect(
-// 			wrapper.html().includes('<h3 class="card-header">This cheatsheet is private</h3>')
-// 		).toBe(true);
-// 		expect(
-// 			wrapper
-// 				.html()
-// 				.includes(
-// 					`<p class="card-text">If you are the owner of this sheet, please try again after logging in <a href="/login">here</a>.</p>`
-// 				)
-// 		).toBe(true);
-// 	});
+			await wrapper.update();
+		});
 
-// 	test("Sheet not found", async () => {
-// 		let postError = new Error("No cheatsheet founde");
-// 		postError.status = 404;
-// 		postError.response = { data: { msg: "No cheatsheet found" } };
+		expect(wrapper.html().includes('<div id="view-container-error" class="container">')).toBe(
+			true
+		);
+		expect(
+			wrapper.html().includes('<h3 class="card-header">This cheatsheet is private</h3>')
+		).toBe(true);
+		expect(
+			wrapper
+				.html()
+				.includes(
+					`<p class="card-text">If you are the owner of this sheet, please try again after logging in <a href="/login">here</a>.</p>`
+				)
+		).toBe(true);
+	});
 
-// 		const axiosPostSpy = jest.spyOn(axios, "post").mockRejectedValueOnce(postError);
+	test("View sheet that does not exist", async () => {
+		let postError = new Error("No cheatsheet founde");
+		postError.status = 404;
+		postError.response = { data: { msg: "No cheatsheet found" } };
 
-// 		const axiosGetSpy = jest
-// 			.spyOn(axios, "get")
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "SCHOOL_NAME",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "MODULE_NAME",
-// 					school: "123456789",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					bookmarks: [],
-// 					isAdmin: false,
-// 					name: "OWNER_NAME",
-// 					password: "OWNER_PASSWORD",
-// 					_id: "123456789",
-// 				},
-// 			});
+		// const axiosPostSpy = jest.spyOn(axios, "post")
+		axios.post.mockRejectedValueOnce(postError);
 
-// 		let wrapper;
-// 		await act(async () => {
-// 			wrapper = await mount(
-// 				<UserContext.Provider value={{ userData, setUserData }}>
-// 					<View />
-// 				</UserContext.Provider>
-// 			);
+		const div = document.createElement("div");
+		document.body.appendChild(div);
 
-// 			await wrapper.update();
-// 		});
+		let wrapper;
 
-// 		expect(wrapper.html().includes('<div id="view-container-error" class="container">')).toBe(
-// 			true
-// 		);
-// 		expect(wrapper.html().includes('<h3 class="card-header">No cheatsheet found</h3>')).toBe(
-// 			true
-// 		);
-// 		expect(
-// 			wrapper
-// 				.html()
-// 				.includes(
-// 					`<p class="card-text">The cheatsheet you trying to acccess does not exist. You may try to find it in the search bar above.</p>`
-// 				)
-// 		).toBe(true);
-// 	});
+		await act(async () => {
+			wrapper = await mount(
+				<UserContext.Provider value={{ userData, setUserData }}>
+					<View />
+				</UserContext.Provider>,
+				{ attachTo: div }
+			);
 
-// 	test("Anonymous sheet", async () => {
-// 		const axiosPostSpy = jest.spyOn(axios, "post").mockResolvedValueOnce({
-// 			status: 200,
-// 			data: {
-// 				comments: [],
-// 				datetime: "2020-06-18T07:39:21.799Z",
-// 				file: "https://cheato.s3.ap-southeast-1.amazonaws.com/123456789.png",
-// 				isAnonymous: true,
-// 				isPublic: true,
-// 				name: "SHEET_NAME",
-// 				module: "123456789",
-// 				school: "123456789",
-// 				rating: 0,
-// 				user: "123456789",
-// 				_id: "123456789",
-// 			},
-// 		});
+			await wrapper.update();
+		});
 
-// 		const axiosGetSpy = jest
-// 			.spyOn(axios, "get")
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "SCHOOL_NAME",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					name: "MODULE_NAME",
-// 					school: "123456789",
-// 					_id: "123456789",
-// 				},
-// 			})
-// 			.mockResolvedValueOnce({
-// 				status: 200,
-// 				data: {
-// 					bookmarks: [],
-// 					isAdmin: false,
-// 					name: "OWNER_NAME",
-// 					password: "OWNER_PASSWORD",
-// 					_id: "123456789",
-// 				},
-// 			});
+		expect(wrapper.html().includes('<div id="view-container-error" class="container">')).toBe(
+			true
+		);
+		expect(wrapper.html().includes('<h3 class="card-header">No cheatsheet found</h3>')).toBe(
+			true
+		);
+		expect(
+			wrapper
+				.html()
+				.includes(
+					`<p class="card-text">The cheatsheet you trying to acccess does not exist. You may try to find it in the search bar above.</p>`
+				)
+		).toBe(true);
+	});
 
-// 		let wrapper;
-// 		await act(async () => {
-// 			wrapper = await mount(
-// 				<UserContext.Provider value={{ userData, setUserData }}>
-// 					<View />
-// 				</UserContext.Provider>
-// 			);
+	test("Anonymous sheet", async () => {
+		let getError = new Error("Comments cannot be found");
+		getError.status = 404;
+		getError.response = { data: { msg: "Comments cannot be found" } };
 
-// 			await wrapper.update();
-// 		});
+		axios.post
+			.mockResolvedValueOnce({
+				status: 200,
+				data: {
+					id: "123456789",
+					name: "SHEET_NAME",
+					file: "https://cheato.s3.ap-southeast-1.amazonaws.com/123456789.png",
+					author: "",
+					authorName: "ANONYMOUS",
+					school: "SCHOOL_NAME",
+					module: "MODULE_NAME",
+					description: "SHEET_DESCRIPTION",
+					upvotedUsers: [],
+					downvotedUsers: [],
+					rating: 0,
+					hasBookmarked: false,
+				},
+			})
+			.mockRejectedValueOnce(postError);
 
-// 		expect(wrapper.html().includes('<div id="view-container" class="container">')).toBe(true);
-// 		expect(wrapper.html().includes("<h2>SHEET_NAME</h2>")).toBe(true);
-// 		expect(wrapper.html().includes("<h5>SCHOOL_NAME - MODULE_NAME</h5>")).toBe(true);
-// 		expect(wrapper.html().includes("<h5>Uploaded by: Anonymous</h5>")).toBe(true);
-// 	});
-// });
+		axios.get.mockRejectedValueOnce(getError);
+
+		const div = document.createElement("div");
+		document.body.appendChild(div);
+
+		let wrapper;
+
+		await act(async () => {
+			wrapper = await mount(
+				<UserContext.Provider value={{ userData, setUserData }}>
+					<View />
+				</UserContext.Provider>,
+				{ attachTo: div }
+			);
+
+			await wrapper.update();
+		});
+
+		expect(wrapper.html().includes('<div id="view-container" class="container">')).toBe(true);
+		expect(wrapper.html().includes("<h2>SHEET_NAME</h2>")).toBe(true);
+		expect(wrapper.html().includes("<h5>SCHOOL_NAME - MODULE_NAME</h5>")).toBe(true);
+		expect(
+			wrapper
+				.html()
+				.includes(
+					'<button type="button" id="view-author" class="btn btn-link">ANONYMOUS</button>'
+				)
+		).toBe(true);
+	});
+});

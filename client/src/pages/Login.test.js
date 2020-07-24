@@ -2,6 +2,7 @@ import React from "react";
 import mount from "enzyme/build/mount";
 import UserContext from "../context/UserContext";
 import Login from "./Login";
+import axios from "axios";
 
 import { server, rest } from "../mockServer";
 
@@ -49,7 +50,7 @@ test("Redirecting to register page", () => {
 });
 
 test("Successful login", async () => {
-	const account = { username: "user123", password: "password" };
+	const account = { name: "user123", password: "password", isAdmin: false };
 
 	const wrapper = mount(
 		<UserContext.Provider value={{ userData, setUserData }}>
@@ -64,6 +65,15 @@ test("Successful login", async () => {
 
 	nameInput.value = account.username;
 	passInput.value = account.password;
+
+	const axiosPostSpy = jest.spyOn(axios, "post")
+		.mockResolvedValueOnce({
+			status: 200,
+			data: {
+				token: "0123456789",
+				user: { id: "abcdefgh", name: account.name, isAdmin: account.isAdmin },
+			}
+		});
 
 	return form
 		.prop("onSubmit")({ preventDefault: jest.fn() })

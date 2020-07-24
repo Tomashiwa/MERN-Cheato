@@ -21,7 +21,7 @@ function SuggestionGallery({ align = "vertical", limit = 3, filter = [] }) {
 						.slice(0, limit);
 					setSuggestions(givenSuggestions);
 				})
-				.catch(err => console.log(`err`, err));
+				.catch(err => console.log(`Error when fetching suggestions for user ${userData.user.id}`));
 		} else {
 			axios.post(`/api/suggestions/random/${limit + 1}`, userData.user)
 				.then(results => {
@@ -30,7 +30,7 @@ function SuggestionGallery({ align = "vertical", limit = 3, filter = [] }) {
 						.slice(0, limit);
 					setSuggestions(givenSuggestions)
 				})
-				.catch(err => console.log(`err`, err));
+				.catch(err => console.log(`Error when fetching random suggestions`));
 		}
 	}, [limit, filter, userData]);
 
