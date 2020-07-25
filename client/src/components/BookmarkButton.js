@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 import Tooltip from "reactstrap/lib/Tooltip";
@@ -11,6 +11,8 @@ function BookmarkButton({ sheet }) {
 	const { userData } = useContext(UserContext);
 	const [isToggled, setIsToggled] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
+
+	const btnRef = useRef(null);
 
 	const toggleHover = () => setIsHovered(!isHovered);
 
@@ -53,26 +55,22 @@ function BookmarkButton({ sheet }) {
 
 	return (
 		<>
-			<button id={`bookmarkbtn-${sheet.id}`} className="bookmarkbtn" type="button" onClick={bookmark} disabled={userData.user === undefined}>
+			<button id={`bookmarkbtn-${sheet.id}`} ref={btnRef} className="bookmarkbtn" type="button" onClick={bookmark} disabled={userData.user === undefined}>
 				{
 					isToggled
 						? <div className="bookmarkbtn-icon-toggled"></div>
 						: <div className="bookmarkbtn-icon"></div>
 				}
 			</button>
-			{
-				document.querySelector(`#bookmarkbtn-${sheet.id}`)
-					? 	<Tooltip
-							target={`bookmarkbtn-${sheet.id}`}
-							placement="right"
-							isOpen={isHovered}
-							autohide={false}
-							toggle={toggleHover}
-						> 
-							{isToggled ? "Unbookmark" : "Bookmark"}
-						</Tooltip>
-					:	<></>
-			}
+			<Tooltip
+				target={btnRef}
+				placement="right"
+				isOpen={isHovered}
+				autohide={false}
+				toggle={toggleHover}
+			> 
+				{isToggled ? "Unbookmark" : "Bookmark"}
+			</Tooltip>
 		</>
 	);
 }

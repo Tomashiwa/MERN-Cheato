@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 import Tooltip from "reactstrap/lib/Tooltip";
@@ -9,6 +9,8 @@ function EditButton({sheet}) {
     const [isHovered, setIsHovered] = useState(false);
     const history = useHistory();
 
+    const btnRef = useRef(null);
+
 	const toggleHover = () => setIsHovered(!isHovered);
 
     const goEdit = () => {
@@ -17,11 +19,11 @@ function EditButton({sheet}) {
     
     return (
         <>
-            <button id="editbtn" type="button" onClick={goEdit}>
+            <button id="editbtn" ref={btnRef} type="button" onClick={goEdit}>
                 <div id="editbtn-icon"></div>
             </button>
             <Tooltip
-				target="editbtn"
+				target={btnRef}
 				placement="right"
 				isOpen={isHovered}
 				autohide={false}

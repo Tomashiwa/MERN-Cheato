@@ -129,7 +129,7 @@ function Gallery({ hasToolbar = true, hasPagination = true, injectedSheets = und
 				setSheetsCount(result.data.count);
 			});
 	
-			axios.post(`/api/cheatsheets/page/${currentPage}`, config).then((result) => {
+			axios.post(`/api/cheatsheets/page/${currentPage}`, config).then((result) => {				
 				setSheets(result.data);
 				setIsLoaded(true);
 			});

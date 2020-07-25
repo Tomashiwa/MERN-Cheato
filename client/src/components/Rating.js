@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import UserContext from "../context/UserContext";
 
@@ -19,6 +19,9 @@ function Rating({ sheet }) {
 	const [isDownHover, setIsDownHover] = useState(false);
 
 	const [voteCount, setVoteCount] = useState(sheet.rating);
+
+	const upBtnRef = useRef(null);
+	const downBtnRef = useRef(null);
 
 	const toggleUpHover = () => setIsUpHover(!isUpHover);
 	const toggleDownHover = () => setIsDownHover(!isDownHover);
@@ -113,6 +116,7 @@ function Rating({ sheet }) {
 				<button
 					className="rating-btn"
 					id={`rating-up-${sheet.id}`}
+					ref={upBtnRef}
 					type="button"
 					onClick={upvote}
 					disabled={isLoading || userData.user === undefined}
@@ -123,23 +127,20 @@ function Rating({ sheet }) {
 						<div className="rating-up rating-icon" />
 					)}
 				</button>
-				{
-					document.querySelector(`#rating-up-${sheet.id}`)
-						?	<Tooltip
-								target={`rating-up-${sheet.id}`}
-								placement="right"
-								isOpen={isUpHover}
-								autohide={false}
-								toggle={toggleUpHover}
-							> 
-								{isUpToggled ? "Unvote" : "Upvote"}
-							</Tooltip>
-						:	<></>
-				}
+				<Tooltip
+					target={upBtnRef}
+					placement="right"
+					isOpen={isUpHover}
+					autohide={false}
+					toggle={toggleUpHover}
+				>
+					{isUpToggled ? "Unvote" : "Upvote"}
+				</Tooltip>
 
 				<button
 					className="rating-btn"
 					id={`rating-down-${sheet.id}`}
+					ref={downBtnRef}
 					type="button"
 					onClick={downvote}
 					disabled={isLoading || userData.user === undefined}
@@ -150,19 +151,15 @@ function Rating({ sheet }) {
 						<div className="rating-down rating-icon" />
 					)}
 				</button>
-				{
-					document.querySelector(`#rating-down-${sheet.id}`)
-						? 	<Tooltip
-								target={`rating-down-${sheet.id}`}
-								placement="right"
-								isOpen={isDownHover}
-								autohide={false}
-								toggle={toggleDownHover}
-							> 
-								{isDownToggled ? "Unvote" : "Downvote"}
-							</Tooltip>
-						: 	<></>
-				}
+				<Tooltip
+					target={downBtnRef}
+					placement="right"
+					isOpen={isDownHover}
+					autohide={false}
+					toggle={toggleDownHover}
+				>
+					{isDownToggled ? "Unvote" : "Downvote"}
+				</Tooltip>
 			</div>
 			<div className="rating-counter">{voteCount}</div>
 		</div>

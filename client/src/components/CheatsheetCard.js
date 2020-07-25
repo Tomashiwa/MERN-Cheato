@@ -42,9 +42,9 @@ function CheatsheetCard({ sheet }) {
 					<div className="sheetCard-info">
 						<div id={`sheetCard-name-${sheet.id}`} ref={nameRef} className="sheetCard-name">{sheet.name}</div>
 						{
-							hasElipsis && document.querySelector(`#sheetCard-name-${sheet.id}`)
+							hasElipsis
 								?	<Tooltip
-										target={`sheetCard-name-${sheet.id}`}
+										target={nameRef}
 										placement="right"
 										isOpen={isHovered}
 										autohide={false}
