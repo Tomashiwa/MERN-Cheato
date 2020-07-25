@@ -164,26 +164,29 @@ function FuseSearchbar() {
                 size={`${SEARCHBAR_MAX_CHARS}`}
                 autoComplete="off"
             />
-
-            <div id="searchbar-list">
-                {
-                    isFocused && results.map(result => (
-                        <Button key={result.id} onClick={() => browse(result)} color="light">
-                            <div>
-                                <img 
-                                    src={URL_SHEETICON} 
-                                    width={`${SEARCHBAR_ICON_SIZE}px`} 
-                                    height={`${SEARCHBAR_ICON_SIZE}px`} 
-                                    alt=""
-                                />
-                                <div>
-                                    <span>{result.data.name}</span>
-                                </div>
-                            </div>
-                        </Button>
-                    ))
-                }
-            </div>
+            {
+                isFocused
+                    ?   <div id="searchbar-list">
+                            {
+                                results.map(result => (
+                                    <Button key={result.id} onClick={() => browse(result)} color="light">
+                                        <div>
+                                            <img 
+                                                src={URL_SHEETICON} 
+                                                width={`${SEARCHBAR_ICON_SIZE}px`} 
+                                                height={`${SEARCHBAR_ICON_SIZE}px`} 
+                                                alt=""
+                                            />
+                                            <div>
+                                                <span>{result.data.name}</span>
+                                            </div>
+                                        </div>
+                                    </Button>
+                                ))
+                            }
+                        </div>
+                    :   <></>                    
+            }
         </div>
     )
 }
