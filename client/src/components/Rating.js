@@ -123,15 +123,19 @@ function Rating({ sheet }) {
 						<div className="rating-up rating-icon" />
 					)}
 				</button>
-				<Tooltip
-					target={`rating-up-${sheet.id}`}
-					placement="right"
-					isOpen={isUpHover}
-					autohide={false}
-					toggle={toggleUpHover}
-				> 
-					{isUpToggled ? "Unvote" : "Upvote"}
-				</Tooltip>
+				{
+					document.querySelector(`#rating-up-${sheet.id}`)
+						?	<Tooltip
+								target={`rating-up-${sheet.id}`}
+								placement="right"
+								isOpen={isUpHover}
+								autohide={false}
+								toggle={toggleUpHover}
+							> 
+								{isUpToggled ? "Unvote" : "Upvote"}
+							</Tooltip>
+						:	<></>
+				}
 
 				<button
 					className="rating-btn"
@@ -146,15 +150,19 @@ function Rating({ sheet }) {
 						<div className="rating-down rating-icon" />
 					)}
 				</button>
-				<Tooltip
-					target={`rating-down-${sheet.id}`}
-					placement="right"
-					isOpen={isDownHover}
-					autohide={false}
-					toggle={toggleDownHover}
-				> 
-					{isDownToggled ? "Unvote" : "Downvote"}
-				</Tooltip>
+				{
+					document.querySelector(`#rating-down-${sheet.id}`)
+						? 	<Tooltip
+								target={`rating-down-${sheet.id}`}
+								placement="right"
+								isOpen={isDownHover}
+								autohide={false}
+								toggle={toggleDownHover}
+							> 
+								{isDownToggled ? "Unvote" : "Downvote"}
+							</Tooltip>
+						: 	<></>
+				}
 			</div>
 			<div className="rating-counter">{voteCount}</div>
 		</div>

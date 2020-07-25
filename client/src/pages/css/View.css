@@ -48,3 +48,7 @@
 #view-desc-comment {
 	flex-grow: 1;
 }
+
+#view-desc > div {
+	text-align: justify;
+}

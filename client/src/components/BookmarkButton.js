@@ -60,15 +60,19 @@ function BookmarkButton({ sheet }) {
 						: <div className="bookmarkbtn-icon"></div>
 				}
 			</button>
-			<Tooltip
-				target={`bookmarkbtn-${sheet.id}`}
-				placement="right"
-				isOpen={isHovered}
-				autohide={false}
-				toggle={toggleHover}
-			> 
-				{isToggled ? "Unbookmark" : "Bookmark"}
-			</Tooltip>
+			{
+				document.querySelector(`#bookmarkbtn-${sheet.id}`)
+					? 	<Tooltip
+							target={`bookmarkbtn-${sheet.id}`}
+							placement="right"
+							isOpen={isHovered}
+							autohide={false}
+							toggle={toggleHover}
+						> 
+							{isToggled ? "Unbookmark" : "Bookmark"}
+						</Tooltip>
+					:	<></>
+			}
 		</>
 	);
 }

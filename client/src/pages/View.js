@@ -85,9 +85,9 @@ function View() {
 
 					<div id="view-footer">
 						<div id="view-desc-comment">
-							<div>
+							<div id="view-desc">
 								<h5>Description</h5>
-								<h6>{sheet.description}</h6>
+								<div>{sheet.description}</div>
 							</div>
 
 							<div className="view-section-line" />
