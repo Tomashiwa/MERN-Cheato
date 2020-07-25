@@ -7,6 +7,7 @@ import CommentCard from "../components/CommentCard";
 import UserContext from "../context/UserContext";
 
 import "./css/_CommentGallery.scss";
+import "./css/CommentGallery.css";
 
 function CommentGallery({ sheetID }) {
 	const { userData } = useContext(UserContext);
@@ -84,7 +85,7 @@ function CommentGallery({ sheetID }) {
 							/>
 						))
 					) : (
-						<div></div>
+						<div id="CommentGallery-notFound">No comments found</div>
 					)}
 				</Comment.Group>
 			</div>
